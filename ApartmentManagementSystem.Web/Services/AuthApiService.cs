@@ -1,30 +1,27 @@
-﻿using ApartmentManagementSystem.Web.ViewModels.Auth;
-
+﻿using ApartmentManagementSystem.Web.Services.DTOs.Login;
+using ApartmentManagementSystem.Web.Services.DTOs;
+//using Microsoft.AspNetCore.Identity.Data;
+//using Microsoft.AspNetCore.Identity;
+//using ApartmentManagementSystem.Web.Services.DTOs.Login;
 namespace ApartmentManagementSystem.Web.Services
 {
+
     public class AuthApiService
     {
-        private readonly HttpClient _client;
+        private readonly ApiClient _apiClient;
 
-        public AuthApiService(IHttpClientFactory factory)
+        public AuthApiService(ApiClient apiClient)
         {
-            _client = factory.CreateClient("ApiClient");
+            _apiClient = apiClient;
         }
 
-        public async Task<LoginResponseDto?> LoginAsync(LoginViewModel vm)
-        {
-            var response = await _client.PostAsJsonAsync(
-                "api/auth/login",
-                new LoginRequestDto
-                {
-                    Email = vm.Email,
-                    Password = vm.Password
-                });
+         public async Task<ApiResponse<LoginResponse>?> LoginAsync(LoginRequest request)
+         {
+             return await _apiClient.PostAsync<LoginRequest, ApiResponse<LoginResponse>>(
+                 "api/AuthApi/login",
+                 request
+             );
+         }
 
-            if (!response.IsSuccessStatusCode)
-                return null;
-
-            return await response.Content.ReadFromJsonAsync<LoginResponseDto>();
-        }
     }
 }

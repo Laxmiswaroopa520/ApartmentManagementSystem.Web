@@ -1,30 +1,38 @@
-﻿using ApartmentManagementSystem.Web.ViewModels.Auth;
+﻿using ApartmentManagementSystem.Web.Services.DTOs.Onboarding;
+using ApartmentManagementSystem.Web.Services.DTOs;
 
-namespace ApartmentManagementSystem.Web.Services
+namespace ApartmentManagementSystem.Web.Services;
+
+public class OnboardingApiService
 {
-    public class OnboardingApiService
+    private readonly ApiClient _apiClient;
+
+    public OnboardingApiService(ApiClient apiClient)
     {
-        private readonly ApiClient _api;
+        _apiClient = apiClient;
+    }
 
-        public OnboardingApiService(ApiClient api)
-        {
-            _api = api;
-        }
+    public async Task<ApiResponse<CreateInviteResponse>?> CreateInviteAsync(CreateInviteRequest request)
+    {
+        return await _apiClient.PostAsync<CreateInviteRequest, ApiResponse<CreateInviteResponse>>(
+            "api/OnboardingApi/create-invite",
+            request
+        );
+    }
 
-        public async Task VerifyOtpAsync(VerifyInviteViewModel vm)
-        {
-            await _api.PostAsync<object>(
-                "/api/onboarding/verify-otp",
-                vm
-            );
-        }
+    public async Task<ApiResponse<VerifyOtpResponse>?> VerifyOtpAsync(VerifyOtpRequest request)
+    {
+        return await _apiClient.PostAsync<VerifyOtpRequest, ApiResponse<VerifyOtpResponse>>(
+            "api/OnboardingApi/verify-otp",
+            request
+        );
+    }
 
-        public async Task CompleteRegistrationAsync(CompleteRegistrationViewModel vm)
-        {
-            await _api.PostAsync<object>(
-                "/api/onboarding/complete-registration",
-                vm
-            );
-        }
+    public async Task<ApiResponse<CompleteRegistrationResponse>?> CompleteRegistrationAsync(CompleteRegistrationRequest request)
+    {
+        return await _apiClient.PostAsync<CompleteRegistrationRequest, ApiResponse<CompleteRegistrationResponse>>(
+            "api/OnboardingApi/complete-registration",
+            request
+        );
     }
 }

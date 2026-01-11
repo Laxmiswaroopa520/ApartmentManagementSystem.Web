@@ -1,18 +1,67 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ApartmentManagementSystem.Web.ViewModels.Auth.LoginViewModel
+@*model LoginViewModel*@
 @{
+    ViewData["Title"] = "Login";
     Layout = "_Layout";
 }
 
-<h3>Login</h3>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h3 class="mb-0">🔐 Login</h3>
+                <small>Apartment Management System</small>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Index" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-<form>
-    <label>Email</label><br />
-    <input type="text" /><br /><br />
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label fw-bold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">👤</span>
+                            <input asp-for="Username" class="form-control" placeholder="Enter your username" autofocus />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
 
-    <label>Password</label><br />
-    <input type="password" /><br /><br />
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-bold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">🔒</span>
+                            <input asp-for="Password" class="form-control" placeholder="Enter your password" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
 
-    <button type="submit">Login</button>
-</form>
+                    <div class="mb-3 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label"></label>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <strong>Login</strong>
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4" />
+
+                <div class="text-center">
+                    <p class="text-muted mb-2">New user? Have an invitation?</p>
+                    <a asp-controller="VerifyInvite" asp-action="Index" class="btn btn-outline-info w-100">
+                        📱 Verify Invitation
+                    </a>
+                </div>
+            </div>
+            <div class="card-footer text-center text-muted">
+                <small>Default Admin: admin / Admin@123</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

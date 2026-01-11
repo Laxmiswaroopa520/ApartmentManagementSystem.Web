@@ -1,0 +1,131 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ApartmentManagementSystem.Web.ViewModels.Onboarding.InviteSuccessViewModel
+@{
+    ViewData["Title"] = "Invitation Sent";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white text-center py-3">
+                    <h3 class="mb-0">✅ Invitation Sent Successfully!</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-success text-center" role="alert">
+                        <h4 class="alert-heading">🎉 Resident Invited!</h4>
+                        <p class="mb-0">Share the following details with the new resident</p>
+                    </div>
+
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">📋 Invitation Details</h5>
+                            <hr />
+
+                            <div class="row mb-3">
+                                <div class="col-4 fw-bold">Full Name:</div>
+                                <div class="col-8">@Model.FullName</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-4 fw-bold">Phone Number:</div>
+                                <div class="col-8">
+                                    <span class="badge bg-info fs-6">@Model.PhoneNumber</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-4 fw-bold">OTP Code:</div>
+                                <div class="col-8">
+                                    <span class="badge bg-warning text-dark fs-4"
+                                          style="letter-spacing: 0.3em; font-family: 'Courier New', monospace;">
+                                        @Model.OtpCode
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-4 fw-bold">Valid Until:</div>
+                                <div class="col-8 text-danger">
+                                    @Model.ExpiresAt.ToString("hh:mm tt") (10 minutes)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert">
+                        <strong>⚠️ Important:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>This OTP is valid for <strong>10 minutes only</strong></li>
+                            <li>Share it securely with the resident</li>
+                            <li>They should visit: <code>http://localhost:5002/VerifyInvite</code></li>
+                            <li>After verification, they can complete registration</li>
+                        </ul>
+                    </div>
+
+                    <div class="card bg-info text-white mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title">📱 Instructions for Resident</h6>
+                            <ol class="mb-0">
+                                <li>Open the apartment management portal</li>
+                                <li>Click "Verify Invitation"</li>
+                                <li>Enter Phone: <strong>@Model.PhoneNumber</strong></li>
+                                <li>Enter OTP: <strong>@Model.OtpCode</strong></li>
+                                <li>Complete the registration form</li>
+                                <li>Login with new credentials</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" onclick="copyDetails()">
+                            📋 Copy Details to Clipboard
+                        </button>
+                        <a asp-action="Create" class="btn btn-success">
+                            ➕ Send Another Invitation
+                        </a>
+                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
+                            ← Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+                function copyDetails() {
+                    const details = `Apartment Management System - Invitation Details
+
+        Full Name: @Model.FullName
+        Phone Number: @Model.PhoneNumber
+        OTP Code: @Model.OtpCode
+
+        Instructions:
+        1. Visit: http://localhost:5002/VerifyInvite
+        2. Enter your phone number and OTP
+        3. Complete registration form
+        4. Login with your credentials
+
+        OTP valid until: @Model.ExpiresAt.ToString("hh:mm tt")`;
+
+                    navigator.clipboard.writeText(details).then(function() {
+                        alert('✅ Details copied to clipboard!');
+                    }, function(err) {
+                        alert('❌ Failed to copy: ' + err);
+                    });
+                }
+
+                // Auto-refresh warning after 9 minutes
+                setTimeout(function() {
+                    if (confirm('OTP is about to expire! Do you want to create a new invitation?')) {
+                        window.location.href = '@Url.Action("Create", "Onboarding")';
+                    }
+                }, 540000); // 9 minutes
+    </script>
+}

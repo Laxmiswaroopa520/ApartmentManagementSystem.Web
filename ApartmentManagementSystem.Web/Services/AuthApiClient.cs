@@ -1,4 +1,4 @@
-﻿using ApartmentManagementSystem.Web.DTOs.Auth;
+﻿/*using ApartmentManagementSystem.Web.DTOs.Auth;
 using ApartmentManagementSystem.Web.DTOs.Auth;
 using System.Net.Http.Json;
 namespace ApartmentManagementSystem.Web.Services
@@ -32,3 +32,4 @@ namespace ApartmentManagementSystem.Web.Services
         }
     }
 }
+*/

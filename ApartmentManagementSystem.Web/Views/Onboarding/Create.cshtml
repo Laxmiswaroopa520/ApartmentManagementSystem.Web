@@ -1,0 +1,93 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ApartmentManagementSystem.Web.ViewModels.Onboarding.CreateInviteViewModel
+@{
+    ViewData["Title"] = "Onboard New Resident";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0">👥 Onboard New Resident</h3>
+                    <small>Create invitation for new resident</small>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info" role="alert">
+                        <strong>ℹ️ Instructions:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Fill in the new resident's details</li>
+                            <li>An OTP will be generated</li>
+                            <li>Share the OTP with the resident</li>
+                            <li>They can complete registration online</li>
+                        </ul>
+                    </div>
+
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label fw-bold"></label>
+                            <div class="input-group">
+                                <span class="input-group-text">👤</span>
+                                <input asp-for="FullName"
+                                       class="form-control"
+                                       placeholder="e.g., Rajesh Kumar"
+                                       autofocus />
+                            </div>
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PrimaryPhone" class="form-label fw-bold"></label>
+                            <div class="input-group">
+                                <span class="input-group-text">📱</span>
+                                <input asp-for="PrimaryPhone"
+                                       class="form-control"
+                                       placeholder="9876543210"
+                                       maxlength="10" />
+                            </div>
+                            <span asp-validation-for="PrimaryPhone" class="text-danger small"></span>
+                            <small class="text-muted">Enter 10-digit mobile number</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="RoleId" class="form-label fw-bold"></label>
+                            <div class="input-group">
+                                <span class="input-group-text">🏷️</span>
+                                <select asp-for="RoleId"
+                                        asp-items="@(new SelectList(Model.AvailableRoles, "Id", "Name"))"
+                                        class="form-select">
+                                    <option value="">-- Select Role --</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="RoleId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <strong>📤 Send Invitation</strong>
+                            </button>
+                            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
+                                ← Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Auto-format phone number
+        document.querySelector('input[name="PrimaryPhone"]').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    </script>
+}

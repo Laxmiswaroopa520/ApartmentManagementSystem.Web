@@ -1,0 +1,155 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<!-- ============================================ -->
+<!-- UPDATED: ApartmentManagementSystem.Web/Views/Dashboard/Index.cshtml -->
+<!-- Now includes "Onboard Resident" button for admins -->
+<!-- ============================================ -->
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_Layout";
+}
+
+@{
+    var userRole = ViewBag.UserRole?.ToString() ?? "Unknown";
+    var canOnboard = userRole == "SuperAdmin" || userRole == "President" || userRole == "Secretary";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1">Welcome, @ViewBag.UserName! 👋</h2>
+            <p class="text-muted">
+                Role: <span class="badge bg-primary fs-6">@ViewBag.UserRole</span>
+            </p>
+        </div>
+    </div>
+
+    @if (canOnboard)
+    {
+        <!-- Admin Actions Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">🔧 Admin Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-grid">
+                                    <a asp-controller="Onboarding" asp-action="Create" class="btn btn-success btn-lg">
+                                        <i class="bi bi-person-plus"></i>
+                                        👥 Onboard New Resident
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-grid">
+                                    <a asp-controller="Onboarding" asp-action="List" class="btn btn-outline-primary btn-lg">
+                                        📜 View Invitation History
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="alert alert-success" role="alert">
+        <h5 class="alert-heading">🎉 System Status: Online</h5>
+        <p class="mb-0">Phase 0 & 1 Complete! Authentication and onboarding are fully functional.</p>
+    </div>
+
+    <hr class="my-4" />
+
+    <div class="row g-4">
+        <!-- My Flats Card -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 mb-3">🏢</div>
+                    <h5 class="card-title">My Flats</h5>
+                    <p class="card-text">View and manage your apartments</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 3</small></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complaints Card -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 mb-3">📝</div>
+                    <h5 class="card-title">Complaints</h5>
+                    <p class="card-text">Raise and track complaints</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 5</small></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Card -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 mb-3">💰</div>
+                    <h5 class="card-title">Billing</h5>
+                    <p class="card-text">View bills and payments</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 6</small></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visitors Card -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 mb-3">🚪</div>
+                    <h5 class="card-title">Visitors</h5>
+                    <p class="card-text">Manage visitor access</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 7</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">📊 Quick Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <h3 class="text-primary">0</h3>
+                            <p class="text-muted">Total Residents</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-success">0</h3>
+                            <p class="text-muted">Active Complaints</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-info">₹0</h3>
+                            <p class="text-muted">Pending Payments</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-warning">0</h3>
+                            <p class="text-muted">Today's Visitors</p>
+                        </div>
+                    </div>
+                    <hr />
+                    <p class="text-center text-muted mb-0">
+                        <small>Data will populate as features are implemented in upcoming phases</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,368 @@
 ﻿@model ApartmentManagementSystem.Web.ViewModels.Auth.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<style>
+    body {
+        background-color: #f4f6f8;
+    }
+
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+    }
+
+    /* LEFT PANEL */
+    .login-brand {
+        flex: 1;
+        background-image: linear-gradient(rgba(15, 42, 68, 0.85), rgba(15, 42, 68, 0.85)), url('/images/login-bg.jpg');
+        background-size: cover;
+        background-position: center;
+        color: #ffffff;
+        padding: 4rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .login-brand h1 {
+            font-size: 2.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .login-brand p {
+            font-size: 1.05rem;
+            opacity: 0.95;
+            max-width: 420px;
+            line-height: 1.6;
+        }
+
+    /* RIGHT PANEL */
+    .login-form-wrapper {
+        flex: 1;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-form {
+        width: 100%;
+        max-width: 380px;
+    }
+
+        .login-form h2 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .login-form small {
+            color: #6c757d;
+        }
+
+    .form-control {
+        height: 46px;
+    }
+
+    .btn-login {
+        height: 46px;
+        font-weight: 600;
+    }
+</style>
+
+<div class="login-container">
+
+    <!-- LEFT BRAND PANEL -->
+    <div class="login-brand">
+        <h1>Skyline</h1>
+        <p>
+            A modern platform designed to manage residential communities,
+            operations, and services with clarity, security, and efficiency.
+        </p>
+    </div>
+
+    <!-- RIGHT LOGIN PANEL -->
+    <div class="login-form-wrapper">
+        <div class="login-form">
+
+            <h2>Sign in</h2>
+            <small>Use your Skyline credentials</small>
+
+            <form asp-action="Index" method="post" class="mt-4">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <!-- Username -->
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label">Username</label>
+                    <input asp-for="Username"
+                           class="form-control"
+                           placeholder="Enter username"
+                           autofocus />
+                    <span asp-validation-for="Username" class="text-danger small"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="Enter password" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <!-- Remember me -->
+                <div class="form-check mb-4">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label asp-for="RememberMe" class="form-check-label">
+                        Remember me
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-login">
+                        Sign In
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <a asp-controller="VerifyInvite"
+                   asp-action="Index"
+                   class="text-decoration-none">
+                    Have an invitation?
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Auth.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<style>
+    body {
+        background-color: #f4f6f8;
+    }
+
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+    }
+
+    /* LEFT PANEL */
+    .login-brand {
+        flex: 1;
+        background-color: #0f2a44;
+        color: #ffffff;
+        padding: 4rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .login-brand h1 {
+        font-size: 2.2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .login-brand p {
+        font-size: 1.05rem;
+        opacity: 0.9;
+        max-width: 420px;
+    }
+
+    /* RIGHT PANEL */
+    .login-form-wrapper {
+        flex: 1;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-form {
+        width: 100%;
+        max-width: 380px;
+    }
+
+    .login-form h2 {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .login-form small {
+        color: #6c757d;
+    }
+
+    .form-control {
+        height: 46px;
+    }
+
+    .btn-login {
+        height: 46px;
+        font-weight: 600;
+    }
+
+    .footer-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 2rem;
+        text-align: center;
+    }
+</style>
+
+<div class="login-container">
+
+    <!-- LEFT BRAND PANEL -->
+    <div class="login-brand">
+        <h1>Apartment Management System</h1>
+        <p>
+            A centralized platform to manage residents, billing, maintenance,
+            visitors, and security operations efficiently.
+        </p>
+    </div>
+
+    <!-- RIGHT LOGIN PANEL -->
+    <div class="login-form-wrapper">
+        <div class="login-form">
+
+            <h2>Sign in</h2>
+            <small>Use your system credentials</small>
+
+            <form asp-action="Index" method="post" class="mt-4">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <!-- Username -->
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label">Username</label>
+                    <input asp-for="Username"
+                           class="form-control"
+                           placeholder="Enter username"
+                           autofocus />
+                    <span asp-validation-for="Username" class="text-danger small"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="Enter password" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <!-- Remember me -->
+                <div class="form-check mb-4">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label asp-for="RememberMe" class="form-check-label">
+                        Remember me
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-login">
+                        Sign In
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <a asp-controller="VerifyInvite"
+                   asp-action="Index"
+                   class="text-decoration-none">
+                    Have an invitation?
+                </a>
+            </div>
+
+            <div class="footer-text">
+                Default Admin: <strong>admin / Admin@123</strong>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @*model LoginViewModel*@
+@*
 @{
     ViewData["Title"] = "Login";
     Layout = "_Layout";
@@ -65,3 +428,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+*@

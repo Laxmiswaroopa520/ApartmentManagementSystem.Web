@@ -51,6 +51,48 @@ namespace ApartmentManagementSystem.Web.Controllers
 
             if (response?.Success == true && response.Data != null)
             {
+                var successModel = new InviteSuccessViewModel
+                {
+                    FullName = response.Data.FullName,
+                    PhoneNumber = response.Data.PrimaryPhone,
+                    OtpCode = response.Data.OtpCode,
+                    GeneratedAt = DateTime.Now
+                };
+
+                TempData["InviteSuccessModel"] =
+                    System.Text.Json.JsonSerializer.Serialize(successModel);
+
+                return RedirectToAction(nameof(Success));
+            }
+
+            ModelState.AddModelError(string.Empty, response?.Message ?? "Failed to create invite");
+            model.AvailableRoles = await _onboardingApiService.GetAvailableRolesAsync();
+
+            return View(model);
+        }
+
+        /*
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateInviteViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.AvailableRoles = await _onboardingApiService.GetAvailableRolesAsync();
+                return View(model);
+            }
+
+            var request = new CreateInviteRequest
+            {
+                FullName = model.FullName,
+                PrimaryPhone = model.PrimaryPhone,
+                RoleId = model.RoleId
+            };
+
+            var response = await _onboardingApiService.CreateInviteAsync(request);
+
+            if (response?.Success == true && response.Data != null)
+            {
                 TempData["InviteSuccess"] = true;
                 TempData["InvitedUserName"] = response.Data.FullName;
                 TempData["InvitedPhone"] = response.Data.PrimaryPhone;
@@ -64,9 +106,9 @@ namespace ApartmentManagementSystem.Web.Controllers
 
             return View(model);
         }
-
+        */
         // GET: /Onboarding/Success
-        [HttpGet]
+        /*[HttpGet]
         public IActionResult Success()
         {
             if (TempData["InviteSuccess"] == null)
@@ -80,6 +122,38 @@ namespace ApartmentManagementSystem.Web.Controllers
             };
 
             return View(model);
+        */
+        [HttpGet]
+        public IActionResult Success()
+        {
+            var json = TempData["InviteSuccessModel"]?.ToString();
+
+            if (string.IsNullOrEmpty(json))
+                return RedirectToAction(nameof(Create));
+
+            var model = System.Text.Json.JsonSerializer
+                .Deserialize<InviteSuccessViewModel>(json)!;
+
+            return View(model);
         }
+
+      /*  [HttpGet]
+        public IActionResult Success()
+        {
+            // Check without consuming
+            if (TempData.Peek("InviteSuccess") == null)             //Reads the value;;  doesn't delete it;;value remains available..
+                return RedirectToAction(nameof(Create));
+            // now Safely read Values..
+            var model = new InviteSuccessViewModel
+            {
+                FullName = TempData["InvitedUserName"]?.ToString() ?? "",
+                PhoneNumber = TempData["InvitedPhone"]?.ToString() ?? "",
+                OtpCode = TempData["GeneratedOTP"]?.ToString() ?? "",
+                GeneratedAt = DateTime.Now
+            };
+
+            return View(model);
+        }
+      */
     }
 }

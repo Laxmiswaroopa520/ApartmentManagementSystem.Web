@@ -1,0 +1,172 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ApartmentManagementSystem.Web.ViewModels.Dashboard.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1">Welcome, @Model.FullName! 👋</h2>
+            <p class="text-muted">
+                Role: <span class="badge bg-primary fs-6">@Model.Role</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Admin Actions Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">🔧 Admin Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a asp-controller="Onboarding" asp-action="Create" class="btn btn-success btn-lg">
+                                    👥 Onboard New Resident
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="#" class="btn btn-outline-primary btn-lg">
+                                    📜 View All Residents
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="#" class="btn btn-outline-info btn-lg">
+                                    📊 View Reports
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body text-center">
+                    <h3 class="display-4">@Model.Stats.TotalResidents</h3>
+                    <p class="mb-0">Total Residents</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h3 class="display-4">@Model.Stats.TotalFlats</h3>
+                    <p class="mb-0">Total Flats</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h3 class="display-4">@Model.Stats.OccupiedFlats</h3>
+                    <p class="mb-0">Occupied Flats</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <h3 class="display-4">@Model.Stats.VacantFlats</h3>
+                    <p class="mb-0">Vacant Flats</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Module Cards -->
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 mb-3">📝</div>
+                    <h5 class="card-title">Complaints</h5>
+                    <h3>@Model.Stats.PendingComplaints</h3>
+                    <p class="card-text">Pending complaints</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 5</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 mb-3">💰</div>
+                    <h5 class="card-title">Billing</h5>
+                    <h3>@Model.Stats.PendingBills</h3>
+                    <p class="card-text">Pending bills</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 6</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 mb-3">🚪</div>
+                    <h5 class="card-title">Visitors</h5>
+                    <h3>@Model.Stats.TodaysVisitors</h3>
+                    <p class="card-text">Today's visitors</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 7</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-white bg-dark h-100">
+                <div class="card-body text-center">
+                    <div class="display-1 mb-3">📊</div>
+                    <h5 class="card-title">Reports</h5>
+                    <p class="card-text">View analytics</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 7</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    @if (Model.RecentActivities.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">📅 Recent Activities</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var activity in Model.RecentActivities)
+                            {
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <span>@activity.Activity</span>
+                                        <span class="badge bg-info">@activity.Timestamp.ToString("MMM dd, hh:mm tt")</span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

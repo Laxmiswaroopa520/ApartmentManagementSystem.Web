@@ -1,0 +1,133 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ApartmentManagementSystem.Web.ViewModels.Dashboard.OwnerDashboardViewModel
+@{
+    ViewData["Title"] = "My Dashboard";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1">Welcome, @Model.FullName! 👋</h2>
+            <p class="text-muted">
+                Role: <span class="badge bg-success fs-6">Resident Owner</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- My Flats Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">🏢 My Flats</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.MyFlats.Any())
+                    {
+                        <div class="row">
+                            @foreach (var flat in Model.MyFlats)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border-primary">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Flat @flat.FlatNumber</h5>
+                                            <p class="card-text">
+                                                <strong>Building:</strong> @flat.ApartmentName<br />
+                                                <strong>Owner:</strong> @flat.OwnerName<br />
+                                                @if (!string.IsNullOrEmpty(flat.TenantName))
+                                                {
+                                                    <strong>Tenant:</strong> <span class="badge bg-info">@flat.TenantName</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning">Vacant</span>
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <strong>ℹ️ No flats assigned yet.</strong><br />
+                            Please contact the administrator to assign your flat.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <div class="display-4">📝</div>
+                    <h3>@Model.PendingComplaints</h3>
+                    <p class="mb-0">Pending Complaints</p>
+                    <hr class="bg-white" />
+                    <small>Coming in Phase 5</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-danger">
+                <div class="card-body text-center">
+                    <div class="display-4">💳</div>
+                    <h3>@Model.PendingBills</h3>
+                    <p class="mb-0">Pending Bills</p>
+                    <hr class="bg-white" />
+                    <small>Coming in Phase 6</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <div class="display-4">₹</div>
+                    <h3>₹@Model.TotalOutstanding.ToString("N2")</h3>
+                    <p class="mb-0">Total Outstanding</p>
+                    <hr class="bg-white" />
+                    <small>Coming in Phase 6</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">⚡ Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <button class="btn btn-outline-primary w-100" disabled>
+                                📝 Raise Complaint (Phase 5)
+                            </button>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <button class="btn btn-outline-success w-100" disabled>
+                                💰 Pay Bills (Phase 6)
+                            </button>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <button class="btn btn-outline-info w-100" disabled>
+                                🚪 Manage Visitors (Phase 7)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

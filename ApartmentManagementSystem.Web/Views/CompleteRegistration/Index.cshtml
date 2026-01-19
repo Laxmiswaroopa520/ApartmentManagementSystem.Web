@@ -1,8 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model ApartmentManagementSystem.Web.ViewModels.Onboarding.CompleteRegistrationViewModel
-
+@*
 @{
     ViewData["Title"] = "Complete Registration";
     Layout = "_Layout";
@@ -112,3 +111,283 @@
             });
     </script>
 }
+
+*@
+
+
+
+@model ApartmentManagementSystem.Web.ViewModels.Onboarding.CompleteRegistrationViewModel
+
+@{
+    ViewData["Title"] = "Complete Registration";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-success text-white text-center py-3">
+                <h3 class="mb-0">✅ Complete Registration</h3>
+                <small>Step 2 of 2</small>
+            </div>
+
+            <div class="card-body p-4">
+
+                <div class="alert alert-success">
+                    OTP verified successfully. Please complete your profile.
+                </div>
+
+                <form asp-action="CompleteRegistration" asp-controller="Onboarding" method="post">
+                    <input type="hidden" asp-for="PrimaryPhone" />
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <!-- PERSONAL INFO -->
+                    <h5 class="text-primary mb-3">📝 Personal Information</h5>
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="SecondaryPhone" class="form-label"></label>
+                        <input asp-for="SecondaryPhone" class="form-control" maxlength="10" />
+                    </div>
+
+                    <hr />
+
+                    <!-- FLAT ALLOCATION -->
+                    <h5 class="text-primary mb-3">🏠 Flat Allocation</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label">Floor</label>
+                        <select asp-for="FloorId"
+                                asp-items="Model.Floors"
+                                class="form-select"
+                                id="floorDropdown">
+                            <option value="">-- Select Floor --</option>
+                        </select>
+                        <span asp-validation-for="FloorId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Flat</label>
+                        <select asp-for="FlatId"
+                                class="form-select"
+                                id="flatDropdown">
+                            <option value="">-- Select Flat --</option>
+                        </select>
+                        <span asp-validation-for="FlatId" class="text-danger"></span>
+                    </div>
+
+                    <hr />
+
+                    <!-- LOGIN INFO -->
+                    <h5 class="text-primary mb-3">🔐 Login Credentials</h5>
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label"></label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            Complete Registration
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById("floorDropdown")
+            .addEventListener("change", function () {
+
+                const floorId = this.value;
+                const flatDropdown = document.getElementById("flatDropdown");
+
+                if (!floorId) {
+                    flatDropdown.innerHTML = '<option value="">-- Select Flat --</option>';
+                    return;
+                }
+
+                flatDropdown.innerHTML = '<option>Loading...</option>';
+
+                fetch(`/api/onboarding/available-flats?floorId=${floorId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        flatDropdown.innerHTML = '<option value="">-- Select Flat --</option>';
+                        data.forEach(f => {
+                            flatDropdown.innerHTML +=
+                                `<option value="${f.id}">${f.flatNumber}</option>`;
+                        });
+                    })
+                    .catch(() => {
+                        flatDropdown.innerHTML =
+                            '<option value="">Failed to load flats</option>';
+                    });
+            });
+    </script>
+}
+
+
+
+
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Onboarding.CompleteRegistrationViewModel
+
+@{
+    ViewData["Title"] = "Complete Registration";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-success text-white text-center py-3">
+                <h3 class="mb-0">✅ Complete Registration</h3>
+                <small>Step 2 of 2</small>
+            </div>
+
+            <div class="card-body p-4">
+
+                <div class="alert alert-success">
+                    OTP verified successfully. Please complete your profile.
+                </div>
+
+                <form asp-action="Index" method="post">
+                    <input type="hidden" asp-for="PrimaryPhone" />
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <!-- PERSONAL INFO -->
+                    <h5 class="text-primary mb-3">📝 Personal Information</h5>
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="SecondaryPhone" class="form-label"></label>
+                        <input asp-for="SecondaryPhone" class="form-control" maxlength="10" />
+                    </div>
+
+                    <hr />
+
+                    <!-- FLAT ALLOCATION -->
+                    <h5 class="text-primary mb-3">🏠 Flat Allocation</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label">Floor</label>
+                        <select asp-for="SelectedFloorId"
+                                asp-items="Model.Floors"
+                                class="form-select"
+                                id="floorDropdown">
+                            <option value="">-- Select Floor --</option>
+                        </select>
+                        <span asp-validation-for="SelectedFloorId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Flat</label>
+                        <select asp-for="SelectedFlatId"
+                                class="form-select"
+                                id="flatDropdown">
+                            <option value="">-- Select Flat --</option>
+                        </select>
+                        <span asp-validation-for="SelectedFlatId" class="text-danger"></span>
+                    </div>
+
+                    <hr />
+
+                    <!-- LOGIN INFO -->
+                    <h5 class="text-primary mb-3">🔐 Login Credentials</h5>
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label"></label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            Complete Registration
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById("floorDropdown")
+            .addEventListener("change", function () {
+
+                const floorId = this.value;
+                const flatDropdown = document.getElementById("flatDropdown");
+
+                flatDropdown.innerHTML = '<option>Loading...</option>';
+
+                fetch(`/Onboarding/GetAvailableFlats?floorId=${floorId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        flatDropdown.innerHTML = '<option value="">-- Select Flat --</option>';
+                        data.forEach(f => {
+                            flatDropdown.innerHTML +=
+                                `<option value="${f.id}">${f.flatNumber}</option>`;
+                        });
+                    });
+            });
+    </script>
+}
+*@

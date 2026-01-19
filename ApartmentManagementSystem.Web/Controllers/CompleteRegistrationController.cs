@@ -38,13 +38,55 @@ public class CompleteRegistrationController : Controller
         return View(model);
     }
 
+    /*   [HttpPost]
+       [ValidateAntiForgeryToken]
+       public async Task<IActionResult> Index(CompleteRegistrationViewModel model)
+       {
+           if (!ModelState.IsValid)
+           {
+               TempData.Keep("VerifiedPhone"); // Keep for re-render
+               return View(model);
+           }
+
+           try
+           {
+               var request = new CompleteRegistrationRequest
+               {
+                   PrimaryPhone = model.PrimaryPhone,
+                   FullName = model.FullName,
+                   SecondaryPhone = model.SecondaryPhone,
+                   Email = model.Email,
+                   Username = model.Username,
+                   Password = model.Password
+               };
+
+               var response = await _onboardingApiService.CompleteRegistrationAsync(request);
+
+               if (response?.Success == true)
+               {
+                   TempData["SuccessMessage"] = "Registration completed! Please login with your credentials.";
+                   TempData["NewUsername"] = model.Username; // Pre-fill login form
+                   return RedirectToAction("Index", "Login");
+               }
+
+               ModelState.AddModelError(string.Empty, response?.Message ?? "Registration failed");
+               TempData.Keep("VerifiedPhone"); // Keep for re-render
+           }
+           catch (Exception ex)
+           {
+               ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
+               TempData.Keep("VerifiedPhone"); // Keep for re-render
+           }
+
+           return View(model);
+       }*/
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Index(CompleteRegistrationViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            TempData.Keep("VerifiedPhone"); // Keep for re-render
+            TempData.Keep("VerifiedPhone");
             return View(model);
         }
 
@@ -57,29 +99,33 @@ public class CompleteRegistrationController : Controller
                 SecondaryPhone = model.SecondaryPhone,
                 Email = model.Email,
                 Username = model.Username,
-                Password = model.Password
+                Password = model.Password,
+
+                // ✅ NEW
+                FloorId = model.FloorId,
+                FlatId = model.FlatId
             };
 
             var response = await _onboardingApiService.CompleteRegistrationAsync(request);
 
             if (response?.Success == true)
             {
-                TempData["SuccessMessage"] = "Registration completed! Please login with your credentials.";
-                TempData["NewUsername"] = model.Username; // Pre-fill login form
+                TempData["SuccessMessage"] = "Registration completed! Please login.";
+                TempData["NewUsername"] = model.Username;
                 return RedirectToAction("Index", "Login");
             }
 
             ModelState.AddModelError(string.Empty, response?.Message ?? "Registration failed");
-            TempData.Keep("VerifiedPhone"); // Keep for re-render
         }
         catch (Exception ex)
         {
-            ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
-            TempData.Keep("VerifiedPhone"); // Keep for re-render
+            ModelState.AddModelError(string.Empty, ex.Message);
         }
 
+        TempData.Keep("VerifiedPhone");
         return View(model);
     }
+
 }
 
 

@@ -3,10 +3,132 @@ using ApartmentManagementSystem.Web.ViewModels.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+/*
+namespace ApartmentManagementSystem.Web.Controllers;
+
+[Authorize]
+public class DashboardController : Controller
+{
+    public IActionResult Index()
+    {
+        var model = new DashboardViewModel
+        {
+            FullName = User.FindFirstValue(ClaimTypes.Name) ?? "",
+            Role = User.FindFirstValue(ClaimTypes.Role) ?? "",
+            Email = User.FindFirstValue(ClaimTypes.Email) ?? "",
+            Phone = User.FindFirst("Phone")?.Value ?? "",
+            FlatNumber = User.FindFirst("FlatNumber")?.Value
+        };
+
+        return View(model);
+    }
+}
+
+
+*/
+
+using ApartmentManagementSystem.Web.Services;
+using ApartmentManagementSystem.Web.ViewModels.Dashboard;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ApartmentManagementSystem.Web.Controllers;
 
-[Authorize] // Protects entire controller
+[Authorize]
+public class DashboardController : Controller
+{
+    private readonly DashboardApiService _dashboardApiService;
+
+    public DashboardController(DashboardApiService dashboardApiService)
+    {
+        _dashboardApiService = dashboardApiService;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var role = User.FindFirstValue(ClaimTypes.Role) ?? "";
+
+        // =========================
+        // BASE MODEL (claims)
+        // =========================
+        var model = new DashboardViewModel
+        {
+            FullName = User.FindFirstValue(ClaimTypes.Name) ?? "",
+            Role = role,
+            Email = User.FindFirstValue(ClaimTypes.Email) ?? "",
+            Phone = User.FindFirst("Phone")?.Value ?? "",
+            FlatNumber = User.FindFirst("FlatNumber")?.Value ?? "Not Assigned"
+        };
+
+        // =========================
+        // ADMIN DASHBOARD
+        // =========================
+        if (role == "SuperAdmin" || role == "President" ||
+            role == "Secretary" || role == "Treasurer")
+        {
+            var response = await _dashboardApiService.GetAdminDashboardAsync();
+
+            if (response?.Success == true && response.Data?.Stats != null)
+            {
+                model.TotalResidents = response.Data.Stats.TotalResidents;
+                model.TotalFlats = response.Data.Stats.TotalFlats;
+                model.OccupiedFlats = response.Data.Stats.OccupiedFlats;
+                model.VacantFlats = response.Data.Stats.VacantFlats;
+
+                // You are using this for "Pending Registrations" tile
+                model.PendingRegistrations = response.Data.Stats.PendingComplaints;
+            }
+        }
+
+        // =========================
+        // OWNER DASHBOARD
+        // =========================
+        else if (role == "ResidentOwner")
+        {
+            var response = await _dashboardApiService.GetOwnerDashboardAsync();
+
+            if (response?.Success == true && response.Data != null)
+            {
+                model.FlatNumber =
+                    response.Data.MyFlats?.FirstOrDefault()?.FlatNumber
+                    ?? "Not Assigned";
+            }
+        }
+
+        // =========================
+        // TENANT DASHBOARD
+        // =========================
+        else if (role == "Tenant")
+        {
+            var response = await _dashboardApiService.GetTenantDashboardAsync();
+
+            if (response?.Success == true && response.Data?.MyFlat != null)
+            {
+                model.FlatNumber = response.Data.MyFlat.FlatNumber;
+            }
+        }
+
+        return View(model);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*[Authorize] // Protects entire controller
 public class DashboardController : Controller
 {
     private readonly DashboardApiService _dashboardApiService;
@@ -186,51 +308,24 @@ public class DashboardController : Controller
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Mvc;
-
-namespace ApartmentManagementSystem.Web.Controllers;
-
-[Authorize] // THIS IS CRITICAL - Protects the entire controller
-public class DashboardController : Controller
-{
-    public IActionResult Index()
-    {
-        // These come from authentication cookie claims
-        var userName = User.Identity?.Name ?? "User";
-        var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Unknown";
-        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-        ViewBag.UserName = userName;
-        ViewBag.UserRole = userRole;
-        ViewBag.UserId = userId;
-
-        return View();
-    }
-}
-
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

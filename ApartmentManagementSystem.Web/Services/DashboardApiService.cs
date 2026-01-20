@@ -6,39 +6,44 @@ namespace ApartmentManagementSystem.Web.Services
 
     public class DashboardApiService
     {
-        private readonly ApiClient _apiClient;
+        private readonly ApiClient ApiClient;
 
         public DashboardApiService(ApiClient apiClient)
         {
-            _apiClient = apiClient;
+            ApiClient = apiClient;
         }
 
         public async Task<ApiResponse<AdminDashboardResponse>?> GetAdminDashboardAsync()
         {
-            return await _apiClient.GetAsync<ApiResponse<AdminDashboardResponse>>(
+            return await ApiClient.GetAsync<ApiResponse<AdminDashboardResponse>>(
                 "api/DashboardApi/admin"
             );
         }
 
         public async Task<ApiResponse<OwnerDashboardResponse>?> GetOwnerDashboardAsync()
         {
-            return await _apiClient.GetAsync<ApiResponse<OwnerDashboardResponse>>(
+            return await ApiClient.GetAsync<ApiResponse<OwnerDashboardResponse>>(
                 "api/DashboardApi/owner"
             );
         }
 
         public async Task<ApiResponse<TenantDashboardResponse>?> GetTenantDashboardAsync()
         {
-            return await _apiClient.GetAsync<ApiResponse<TenantDashboardResponse>>(
+            return await ApiClient.GetAsync<ApiResponse<TenantDashboardResponse>>(
                 "api/DashboardApi/tenant"
             );
         }
 
-        public async Task<ApiResponse<DashboardStatsResponse>?> GetDashboardStatsAsync()
+      /*  public async Task<ApiResponse<DashboardStatsResponse>?> GetDashboardStatsAsync()
         {
             return await _apiClient.GetAsync<ApiResponse<DashboardStatsResponse>>(
                 "api/DashboardApi/stats"
             );
+        }*/
+        public async Task<ApiResponse<DashboardStatsDto>?> GetDashboardStatsAsync()
+        {
+            return await ApiClient.GetAsync<ApiResponse<DashboardStatsDto>>(
+                "api/DashboardApi/stats");
         }
     }
 }

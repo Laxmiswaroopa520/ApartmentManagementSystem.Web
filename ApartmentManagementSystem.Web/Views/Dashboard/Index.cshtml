@@ -5,6 +5,171 @@
 <!-- UPDATED: ApartmentManagementSystem.Web/Views/Dashboard/Index.cshtml -->
 <!-- Now includes "Onboard Resident" button for admins -->
 <!-- ============================================ -->
+@model ApartmentManagementSystem.Web.ViewModels.Dashboard.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>
+                <i class="bi bi-speedometer2"></i> Welcome, @Model.FullName
+            </h2>
+            <p class="text-muted">Role: <span class="badge bg-primary">@Model.Role</span></p>
+        </div>
+    </div>
+
+    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
+    {
+        <!-- Admin Dashboard -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Total Residents</h6>
+                                <h2 class="mb-0">@Model.TotalResidents</h2>
+                            </div>
+                            <i class="bi bi-people-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-white bg-warning shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Pending Registrations</h6>
+                                <h2 class="mb-0">@Model.PendingRegistrations</h2>
+                            </div>
+                            <i class="bi bi-hourglass-split" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <a asp-controller="AdminResidents" asp-action="Pending"
+                           class="btn btn-sm btn-light">
+                            <i class="bi bi-eye"></i> View Pending
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-white bg-success shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Total Flats</h6>
+                                <h2 class="mb-0">@Model.TotalFlats</h2>
+                            </div>
+                            <i class="bi bi-building" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-white bg-info shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Vacant Flats</h6>
+                                <h2 class="mb-0">@Model.VacantFlats</h2>
+                            </div>
+                            <i class="bi bi-house" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-task"></i> Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2 d-md-flex">
+                            <a asp-controller="Onboarding" asp-action="Create"
+                               class="btn btn-primary">
+                                <i class="bi bi-person-plus"></i> Onboard New Resident
+                            </a>
+                            <a asp-controller="AdminResidents" asp-action="Pending"
+                               class="btn btn-warning">
+                                <i class="bi bi-hourglass-split"></i> View Pending Registrations
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Resident Dashboard -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person-circle"></i> My Profile
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>Name:</th>
+                                <td>@Model.FullName</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>@Model.Email</td>
+                            </tr>
+                            <tr>
+                                <th>Phone:</th>
+                                <td>@Model.Phone</td>
+                            </tr>
+                            <tr>
+                                <th>Flat Number:</th>
+                                <td>
+                                    @if (string.IsNullOrEmpty(Model.FlatNumber) || Model.FlatNumber == "Not Assigned")
+                                    {
+                                        <span class="badge bg-warning text-dark">Awaiting Assignment</span>
+                                    }
+                                    else
+                                    {
+                                        <strong>@Model.FlatNumber</strong>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
+
+
+
+
+
+
+
+@*
+
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "_Layout";
@@ -153,3 +318,4 @@
         </div>
     </div>
 </div>
+*@

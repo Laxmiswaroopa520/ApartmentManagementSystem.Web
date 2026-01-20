@@ -8,5 +8,8 @@ namespace ApartmentManagementSystem.Web.Services.DTOs.Onboarding
     public string PrimaryPhone { get; set; } = string.Empty;
     public string OtpCode { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
-}
+        public string ResidentType { get; set; } = string.Empty;
+
+
+    }
 }

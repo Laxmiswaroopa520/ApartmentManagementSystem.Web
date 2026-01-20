@@ -35,11 +35,11 @@ builder.Services.AddHttpClient<ApiClient>(client =>
 // ===============================
 builder.Services.AddScoped<AuthApiService>();
 builder.Services.AddScoped<OnboardingApiService>();
-builder.Services.AddScoped<DashboardApiService>(); // ✅ NEW (Phase 2)
+builder.Services.AddScoped<DashboardApiService>(); //  NEW (Phase 2)
+builder.Services.AddScoped< AdminResidentApiService>();
 
-// ===============================
+//builder.Services.AddScoped<ApiClient>();
 // COOKIE AUTHENTICATION (CRITICAL)
-// ===============================
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

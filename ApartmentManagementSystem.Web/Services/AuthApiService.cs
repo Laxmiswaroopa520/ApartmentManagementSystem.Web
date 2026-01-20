@@ -8,16 +8,16 @@ namespace ApartmentManagementSystem.Web.Services
 
     public class AuthApiService
     {
-        private readonly ApiClient _apiClient;
+        private readonly ApiClient ApiClient;
 
         public AuthApiService(ApiClient apiClient)
         {
-            _apiClient = apiClient;
+            ApiClient = apiClient;
         }
 
          public async Task<ApiResponse<LoginResponse>?> LoginAsync(LoginRequest request)
          {
-             return await _apiClient.PostAsync<LoginRequest, ApiResponse<LoginResponse>>(
+             return await ApiClient.PostAsync<LoginRequest, ApiResponse<LoginResponse>>(
                  "api/AuthApi/login",
                  request
              );

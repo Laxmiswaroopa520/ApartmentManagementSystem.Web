@@ -1,0 +1,87 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<ApartmentManagementSystem.Web.ViewModels.Admin.PendingResidentViewModel>
+
+@{
+    ViewData["Title"] = "Pending Resident Registrations";
+}
+
+    <div class="container-fluid mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">
+                    <i class="bi bi-hourglass-split"></i> Pending Resident Registrations
+                </h4>
+            </div>
+            <div class="card-body">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (Model == null || !Model.Any())
+                {
+                    <div class="alert alert-info text-center">
+                        <i class="bi bi-info-circle"></i> No pending registrations at the moment.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Resident Type</th>
+                                    <th>Registered On</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var resident in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>@resident.FullName</strong>
+                                        </td>
+                                        <td>
+                                            <i class="bi bi-telephone"></i> @resident.PrimaryPhone
+                                        </td>
+                                        <td>@resident.Email</td>
+                                        <td>
+                                            <span class="badge bg-info">@resident.ResidentType</span>
+                                        </td>
+                                        <td>@resident.RegisteredOn.ToString("dd MMM yyyy")</td>
+                                        <td>
+                                            <span class="badge bg-warning text-dark">@resident.Status</span>
+                                        </td>
+                                        <td>
+                                            <a asp-action="AssignFlat"
+                                               asp-route-userId="@resident.UserId"
+                                               asp-route-userName="@resident.FullName"
+                                               class="btn btn-sm btn-primary">
+                                                <i class="bi bi-house-check"></i> Assign Flat
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                <div class="mt-3">
+                    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>

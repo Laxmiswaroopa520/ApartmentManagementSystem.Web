@@ -7,6 +7,80 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApartmentManagementSystem.Web.Controllers;
 
+public class CompleteRegistrationController : Controller
+{
+    private readonly OnboardingApiService OnboardingApiService;
+
+    public CompleteRegistrationController(OnboardingApiService onboardingApiService)
+    {
+        OnboardingApiService = onboardingApiService;
+    }
+
+    [HttpGet]
+    public IActionResult Index()
+    {
+        var phone = TempData["VerifiedPhone"] as string;
+        var fullName = TempData["FullName"] as string;
+
+        if (string.IsNullOrEmpty(phone))
+            return RedirectToAction("Index", "VerifyInvite");
+
+        var model = new CompleteRegistrationViewModel
+        {
+            PrimaryPhone = phone,
+            FullName = fullName ?? ""
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Index(CompleteRegistrationViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var request = new CompleteRegistrationRequest
+        {
+            PrimaryPhone = model.PrimaryPhone,
+            FullName = model.FullName,
+            SecondaryPhone = model.SecondaryPhone,
+            Email = model.Email,
+            Username = model.Username,
+            Password = model.Password
+        };
+
+        var response = await OnboardingApiService.CompleteRegistrationAsync(request);
+
+        if (response?.Success == true)
+        {
+            TempData["SuccessMessage"] = "Registration completed! Awaiting flat assignment from admin. You'll receive an email once assigned.";
+            return RedirectToAction("Index", "Login");
+        }
+
+        ModelState.AddModelError("", response?.Message ?? "Registration failed");
+        return View(model);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 [AllowAnonymous] // Public page - no auth required
 public class CompleteRegistrationController : Controller
 {
@@ -79,7 +153,7 @@ public class CompleteRegistrationController : Controller
            }
 
            return View(model);
-       }*/
+       }-----
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Index(CompleteRegistrationViewModel model)
@@ -127,93 +201,12 @@ public class CompleteRegistrationController : Controller
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-/*
-namespace ApartmentManagementSystem.Web.Controllers
-{
-    using ApartmentManagementSystem.Web.Services;
-    using ApartmentManagementSystem.Web.ViewModels.Onboarding;
-    // using global::ApartmentManagementSystem.Web.Services;
-    using global::ApartmentManagementSystem.Web.Services.DTOs.Onboarding;
-    using global::ApartmentManagementSystem.Web.ViewModels.Auth;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-
-    // namespace ApartmentManagementSystem.Web.Controllers;
-
-    public class CompleteRegistrationController : Controller
-    {
-        private readonly OnboardingApiService _onboardingApiService;
-
-        public CompleteRegistrationController(OnboardingApiService onboardingApiService)
-        {
-            _onboardingApiService = onboardingApiService;
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Index()
-        {
-            var phone = TempData["VerifiedPhone"]?.ToString();
-            if (string.IsNullOrEmpty(phone))
-            {
-                TempData["ErrorMessage"] = "Please verify OTP first";
-                return RedirectToAction("Index", "VerifyInvite");
-            }
-
-            var model = new CompleteRegistrationViewModel
-            {
-                PrimaryPhone = phone
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Index(CompleteRegistrationViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            try
-            {
-                var request = new CompleteRegistrationRequest
-                {
-                    PrimaryPhone = model.PrimaryPhone,
-                    FullName = model.FullName,
-                    SecondaryPhone = model.SecondaryPhone,
-                    Email = model.Email,
-                    Username = model.Username,
-                    Password = model.Password
-                };
-
-                var response = await _onboardingApiService.CompleteRegistrationAsync(request);
-
-                if (response?.Success == true)
-                {
-                    TempData["SuccessMessage"] = "Registration completed! Please login with your credentials.";
-                    return RedirectToAction("Index", "Login");
-                }
-
-                ModelState.AddModelError(string.Empty, response?.Message ?? "Registration failed");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
-            }
-
-            return View(model);
-        }
-    }
-}
 */
+
+
+
+
+
+
+
+

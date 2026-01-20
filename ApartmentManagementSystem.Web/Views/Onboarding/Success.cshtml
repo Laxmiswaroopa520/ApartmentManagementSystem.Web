@@ -2,6 +2,101 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @model ApartmentManagementSystem.Web.ViewModels.Onboarding.InviteSuccessViewModel
+
+@{
+
+ViewData["Title"] = "Invite Created Successfully";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-success">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-check-circle"></i> Invite Created Successfully
+                    </h4>
+                </div>
+                <div class="card-body text-center">
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle-fill"></i> @Model.Message
+                    </div>
+
+                    <h5 class="mb-3">Resident Details</h5>
+                    <table class="table table-borderless">
+                        <tr>
+                            <th class="text-end">Name:</th>
+                            <td class="text-start">@Model.FullName</td>
+                        </tr>
+                        <tr>
+                            <th class="text-end">Phone:</th>
+                            <td class="text-start">@Model.PrimaryPhone</td>
+                        </tr>
+                        <tr>
+                            <th class="text-end">Type:</th>
+                            <td class="text-start">@Model.ResidentType</td>
+                        </tr>
+                    </table>
+
+                    <div class="otp-display mt-4 mb-4">
+                        <h3 class="text-muted">Generated OTP</h3>
+                        <div class="otp-code-large">
+                            @Model.OtpCode
+                        </div>
+                        <p class="text-muted small mt-2">
+                            <i class="bi bi-info-circle"></i> Share this OTP with the resident securely
+                        </p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> Onboard Another Resident
+                        </a>
+                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
+                            Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .otp-display {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .otp-code-large {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #0d6efd;
+        letter-spacing: 10px;
+        font-family: 'Courier New', monospace;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+
 @{
     ViewData["Title"] = "Invitation Sent";
     Layout = "_Layout";
@@ -129,3 +224,4 @@
                 }, 540000); // 9 minutes
     </script>
 }
+*@

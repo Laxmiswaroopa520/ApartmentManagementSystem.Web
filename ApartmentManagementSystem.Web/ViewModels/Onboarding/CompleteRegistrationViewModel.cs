@@ -109,20 +109,5 @@ namespace ApartmentManagementSystem.Web.ViewModels.Onboarding
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
-        // ===========================
-        // Flat allocation
-        // ===========================
-        [Display(Name = "Floor")]
-        public Guid? FloorId { get; set; }          // bound to dropdown
-        [Display(Name = "Flat")]
-        public Guid? FlatId { get; set; }           // bound to dropdown
-
-        // Optional selected IDs (can be used for JS / pre-selection)
-        public Guid SelectedFloorId { get; set; }
-        public Guid SelectedFlatId { get; set; }
-
-        // Dropdown lists
-        public IEnumerable<SelectListItem> Floors { get; set; } = new List<SelectListItem>();
-        public IEnumerable<SelectListItem> Flats { get; set; } = new List<SelectListItem>();
     }
 }

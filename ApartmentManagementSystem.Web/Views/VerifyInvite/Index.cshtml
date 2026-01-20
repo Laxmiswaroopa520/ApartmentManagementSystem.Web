@@ -2,6 +2,77 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @model ApartmentManagementSystem.Web.ViewModels.Onboarding.VerifyOtpViewModel
+
+@{
+    ViewData["Title"] = "Verify OTP - New User";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-shield-check"></i> Verify Your OTP
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        Enter the phone number and OTP provided by your admin to continue registration.
+                    </p>
+
+                    <form asp-action="Index" method="post">
+                        <div class="mb-3">
+                            <label asp-for="PrimaryPhone" class="form-label">Phone Number</label>
+                            <input asp-for="PrimaryPhone" class="form-control" placeholder="Enter phone number" />
+                            <span asp-validation-for="PrimaryPhone" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="OtpCode" class="form-label">OTP Code</label>
+                            <input asp-for="OtpCode" class="form-control text-center"
+                                   placeholder="Enter 6-digit OTP" maxlength="6" />
+                            <span asp-validation-for="OtpCode" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Verify OTP
+                            </button>
+                            <a asp-controller="Login" asp-action="Index" class="btn btn-outline-secondary">
+                                Back to Login
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
 @{
     ViewData["Title"] = "Verify OTP";
     Layout = "_Layout";
@@ -88,3 +159,4 @@
         });
     </script>
 }
+*@

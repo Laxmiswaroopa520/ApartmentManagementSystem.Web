@@ -225,20 +225,21 @@ namespace ApartmentManagementSystem.Web.Controllers
             var model = new AssignFlatViewModel
             {
                 UserId = userId,
-                UserName = userName,
+                UserName = userName ?? string.Empty,
                 Floors = floorsResponse?.Data?
                     .Select(f => new FloorDropdownViewModel
                     {
                         Id = f.Id,
-                        FloorNumber = f.FloorNumber // IMPORTANT
+                        FloorNumber = f.FloorNumber
                     })
                     .ToList() ?? new List<FloorDropdownViewModel>(),
 
-                Flats = new List<FlatOption>()
+                Flats = new List<FlatOption>()   //  IMPORTANT
             };
 
             return View(model);
         }
+
 
         /*  [HttpGet]
           public async Task<IActionResult> AssignFlat(Guid userId, string userName)

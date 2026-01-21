@@ -17,14 +17,14 @@ namespace ApartmentManagementSystem.Web.ViewModels.Admin
 
         public string UserName { get; set; } = string.Empty;
         public List<FloorDropdownViewModel> Floors { get; set; } = new();
-       // public List<FloorOption>? Floors { get; set; }
-        public List<FlatOption>? Flats { get; set; }
+        // public List<FloorOption>? Floors { get; set; }
+        public List<FlatOption>? Flats { get; set; } = new();
     }
     public class FloorDropdownViewModel
     {
         public Guid Id { get; set; }
         // public string FloorNumber { get; set; } = string.Empty;
-        public int FloorNumber;
+        public int FloorNumber { get; set; }
     }
   /*  public class FloorOption
     {

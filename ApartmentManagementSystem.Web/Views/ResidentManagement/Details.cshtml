@@ -1,0 +1,269 @@
+﻿@model ApartmentManagementSystem.Web.ViewModels.Community.ResidentDetailViewModel
+@{
+    ViewData["Title"] = "Resident Details";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2><i class="bi bi-person-circle"></i> Resident Details</h2>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Personal Information -->
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-badge"></i> Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="40%">Full Name:</th>
+                            <td><strong>@Model.FullName</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>@Model.Email</td>
+                        </tr>
+                        <tr>
+                            <th>Primary Phone:</th>
+                            <td>@Model.PrimaryPhone</td>
+                        </tr>
+                        @if (!string.IsNullOrEmpty(Model.SecondaryPhone))
+                        {
+                            <tr>
+                                <th>Secondary Phone:</th>
+                                <td>@Model.SecondaryPhone</td>
+                            </tr>
+                        }
+                        <tr>
+                            <th>Resident Type:</th>
+                            <td>
+                                @if (Model.ResidentType == "Owner")
+                                {
+                                    <span class="badge bg-success fs-6">
+                                        <i class="bi bi-house-fill"></i> Owner
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info fs-6">
+                                        <i class="bi bi-person"></i> Tenant
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Registered On:</th>
+                            <td>@Model.RegisteredOn.ToString("MMMM dd, yyyy")</td>
+                        </tr>
+                        <tr>
+                            <th>Status:</th>
+                            <td>
+                                @if (Model.Status == "Active")
+                                {
+                                    <span class="badge bg-success fs-6">Active</span>
+                                }
+                                else if (Model.Status == "Pending Assignment")
+                                {
+                                    <span class="badge bg-warning text-dark fs-6">Pending Assignment</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger fs-6">Inactive</span>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Property Information -->
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-building"></i> Property Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="40%">Flat Number:</th>
+                            <td>
+                                @if (string.IsNullOrEmpty(Model.FlatNumber))
+                                {
+                                    <span class="badge bg-warning text-dark">Not Assigned</span>
+                                }
+                                else
+                                {
+                                    <strong class="fs-5">@Model.FlatNumber</strong>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Apartment/Building:</th>
+                            <td>@(Model.ApartmentName ?? "N/A")</td>
+                        </tr>
+                    </table>
+
+                    @if (string.IsNullOrEmpty(Model.FlatNumber))
+                    {
+                        <div class="alert alert-warning mt-3">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            This resident has not been assigned a flat yet.
+                            <a asp-controller="AdminResidents" asp-action="AssignFlat"
+                               asp-route-userId="@Model.UserId"
+                               asp-route-userName="@Model.FullName"
+                               class="alert-link">
+                                Assign flat now
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Roles & Permissions -->
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-shield-check"></i> Roles & Permissions</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Roles.Any())
+                    {
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var role in Model.Roles)
+                            {
+                                @if (role == "President")
+                                {
+                                    <span class="badge bg-danger fs-6">
+                                        <i class="bi bi-star-fill"></i> President
+                                    </span>
+                                }
+                                else if (role == "Secretary")
+                                {
+                                    <span class="badge bg-primary fs-6">
+                                        <i class="bi bi-file-earmark-text"></i> Secretary
+                                    </span>
+                                }
+                                else if (role == "Treasurer")
+                                {
+                                    <span class="badge bg-success fs-6">
+                                        <i class="bi bi-cash-coin"></i> Treasurer
+                                    </span>
+                                }
+                                else if (role == "ResidentOwner")
+                                {
+                                    <span class="badge bg-success fs-6">
+                                        <i class="bi bi-house-fill"></i> Resident Owner
+                                    </span>
+                                }
+                                else if (role == "Tenant")
+                                {
+                                    <span class="badge bg-info fs-6">
+                                        <i class="bi bi-person"></i> Tenant
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary fs-6">@role</span>
+                                }
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No special roles assigned</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Statistics -->
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Activity Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h3 class="text-primary">@Model.TotalComplaints</h3>
+                                <small class="text-muted">Total Complaints</small>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h3 class="text-danger">₹@Model.OutstandingBills.ToString("N2")</h3>
+                                <small class="text-muted">Outstanding Bills</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mb-0">
+                        <small><i class="bi bi-info-circle"></i> Detailed statistics coming in Phase 5-6</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions (Admin Only) -->
+    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-tools"></i> Admin Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex gap-2">
+                            @if (string.IsNullOrEmpty(Model.FlatNumber))
+                            {
+                                <a asp-controller="AdminResidents" asp-action="AssignFlat"
+                                   asp-route-userId="@Model.UserId"
+                                   asp-route-userName="@Model.FullName"
+                                   class="btn btn-primary">
+                                    <i class="bi bi-house-add"></i> Assign Flat
+                                </a>
+                            }
+
+                            @if (Model.Status == "Active")
+                            {
+                                <form asp-controller="ResidentManagement" asp-action="Deactivate" method="post" class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to deactivate @Model.FullName?');">
+                                    <input type="hidden" name="userId" value="@Model.UserId" />
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-x-circle"></i> Deactivate Account
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-controller="ResidentManagement" asp-action="Activate" method="post" class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to activate @Model.FullName?');">
+                                    <input type="hidden" name="userId" value="@Model.UserId" />
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle"></i> Activate Account
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

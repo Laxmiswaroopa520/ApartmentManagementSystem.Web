@@ -1,7 +1,7 @@
 ﻿using ApartmentManagementSystem.Web.ViewModels.Community;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using ApartmentManagementSystem.Web.Services.DTOs.Staff;
 using ApartmentManagementSystem.Web.Services;
 
 namespace ApartmentManagementSystem.Web.Controllers;

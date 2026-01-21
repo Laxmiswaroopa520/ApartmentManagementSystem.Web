@@ -1,0 +1,14 @@
+﻿namespace ApartmentManagementSystem.Web.ViewModels.Dashboard
+{
+  public  class StaffDashboardViewModel
+    {
+    public string FullName { get; set; } = string.Empty;
+    public string StaffType { get; set; } = string.Empty;
+    public DateTime ShiftStart { get; set; }
+    public DateTime ShiftEnd { get; set; }
+    public int TodaysTasks { get; set; }
+    public int CompletedTasks { get; set; }
+    public int PendingTasks { get; set; }
+    public List<TaskViewModel> MyTasks { get; set; } = new();
+}
+}

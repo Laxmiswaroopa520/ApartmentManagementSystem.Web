@@ -1,11 +1,363 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-<!-- ============================================ -->
-<!-- UPDATED: ApartmentManagementSystem.Web/Views/Dashboard/Index.cshtml -->
-<!-- Now includes "Onboard Resident" button for admins -->
-<!-- ============================================ -->
-@model ApartmentManagementSystem.Web.ViewModels.Dashboard.DashboardViewModel
+
+@model ApartmentManagementSystem.Web.ViewModels.Dashboard.EnhancedDashboardViewModel
+@{
+    ViewData["Title"] = "Enhanced Admin Dashboard";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1">
+                <i class="bi bi-speedometer2"></i> Welcome, @Model.FullName! 👋
+            </h2>
+            <p class="text-muted">
+                Role:
+                @foreach (var role in Model.AllRoles)
+                {
+                    <span class="badge bg-primary me-1">@role</span>
+                }
+            </p>
+        </div>
+    </div>
+
+    <!-- Quick Actions Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-primary shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a asp-controller="Onboarding" asp-action="Create" class="btn btn-success w-100 btn-lg">
+                                <i class="bi bi-person-plus"></i> Onboard Resident
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="CommunityMembers" asp-action="Index" class="btn btn-info w-100 btn-lg">
+                                <i class="bi bi-people"></i> Community Members
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="StaffMembers" asp-action="Index" class="btn btn-warning w-100 btn-lg">
+                                <i class="bi bi-person-badge"></i> Staff Members
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="ResidentManagement" asp-action="Index" class="btn btn-primary w-100 btn-lg">
+                                <i class="bi bi-house-door"></i> All Residents
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards Row 1 -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Total Residents</h6>
+                            <h2 class="mb-0 display-4">@Model.Stats.TotalResidents</h2>
+                        </div>
+                        <i class="bi bi-people-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <small>
+                        <i class="bi bi-arrow-up-right"></i>
+                        Active users in system
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Pending Registrations</h6>
+                            <h2 class="mb-0 display-4">@Model.Stats.PendingRegistrations</h2>
+                        </div>
+                        <i class="bi bi-hourglass-split" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a asp-controller="AdminResidents" asp-action="Pending" class="btn btn-sm btn-light">
+                        <i class="bi bi-eye"></i> View Pending
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Total Flats</h6>
+                            <h2 class="mb-0 display-4">@Model.Stats.TotalFlats</h2>
+                        </div>
+                        <i class="bi bi-building" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <small>
+                        <i class="bi bi-check-circle"></i>
+                        @Model.Stats.OccupiedFlats Occupied
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Vacant Flats</h6>
+                            <h2 class="mb-0 display-4">@Model.Stats.VacantFlats</h2>
+                        </div>
+                        <i class="bi bi-house" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <small>
+                        <i class="bi bi-graph-up"></i>
+                        Available for assignment
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards Row 2 -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-dark shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Staff Members</h6>
+                            <h2 class="mb-0 display-5">@Model.Stats.TotalStaffMembers</h2>
+                            <small>@Model.Stats.ActiveStaffMembers Active</small>
+                        </div>
+                        <i class="bi bi-person-badge-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-secondary shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Community Members</h6>
+                            <h2 class="mb-0 display-5">@Model.Stats.CommunityMembers</h2>
+                            <small>President, Secretary, Treasurer</small>
+                        </div>
+                        <i class="bi bi-award-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-danger shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Pending Complaints</h6>
+                            <h2 class="mb-0 display-5">@Model.Stats.PendingComplaints</h2>
+                            <small>Resolved: @Model.Stats.ResolvedComplaintsThisMonth</small>
+                        </div>
+                        <i class="bi bi-exclamation-triangle-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white shadow h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Today's Visitors</h6>
+                            <h2 class="mb-0 display-5">@Model.Stats.TodaysVisitors</h2>
+                            <small>Security on duty: @Model.Stats.ActiveSecurityPersonnel</small>
+                        </div>
+                        <i class="bi bi-door-open-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Summary (Only for SuperAdmin & Treasurer) -->
+    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Treasurer"))
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-success shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-currency-rupee"></i> Financial Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6 class="text-muted">Total Outstanding</h6>
+                                <h3 class="text-danger">₹@Model.Stats.TotalOutstandingBills.ToString("N2")</h3>
+                            </div>
+                            <div class="col-md-4">
+                                <h6 class="text-muted">Collection This Month</h6>
+                                <h3 class="text-success">₹@Model.Stats.CollectionThisMonth.ToString("N2")</h3>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="#" class="btn btn-outline-success btn-lg w-100 mt-3">
+                                    <i class="bi bi-graph-up"></i> View Detailed Reports
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Module Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-gradient shadow h-100" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body text-center">
+                    <div class="display-3 mb-3"><i class="bi bi-clipboard-check"></i></div>
+                    <h5 class="card-title">Complaints Management</h5>
+                    <h3>@Model.Stats.PendingComplaints Pending</h3>
+                    <p class="card-text">Track and resolve resident complaints</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 5</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-gradient shadow h-100" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="card-body text-center">
+                    <div class="display-3 mb-3"><i class="bi bi-receipt"></i></div>
+                    <h5 class="card-title">Billing & Payments</h5>
+                    <h3>₹@Model.Stats.TotalOutstandingBills.ToString("N0")</h3>
+                    <p class="card-text">Manage maintenance & utility bills</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 6</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-gradient shadow h-100" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <div class="card-body text-center">
+                    <div class="display-3 mb-3"><i class="bi bi-calendar-event"></i></div>
+                    <h5 class="card-title">Visitor Management</h5>
+                    <h3>@Model.Stats.TodaysVisitors Today</h3>
+                    <p class="card-text">Track visitors and deliveries</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 7</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    @if (Model.RecentActivities != null && Model.RecentActivities.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Activities</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Activity</th>
+                                        <th>Type</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var activity in Model.RecentActivities.Take(10))
+                                    {
+                                        <tr>
+                                            <td>@activity.Activity</td>
+                                            <td>
+                                                <span class="badge bg-primary">@activity.Type</span>
+                                            </td>
+                                            <td>@activity.Timestamp.ToString("MMM dd, yyyy hh:mm tt")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .bg-gradient {
+        background-size: 200% 200%;
+        animation: gradient 15s ease infinite;
+    }
+
+    @@keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+        }
+</style>
+
+
+
+
+
+
+
+
+
+@*
+    @model ApartmentManagementSystem.Web.ViewModels.Dashboard.DashboardViewModel
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -161,161 +513,10 @@
 
 
 
-
-
-
-
-
-
-
-@*
-
-@{
-    ViewData["Title"] = "Dashboard";
-    Layout = "_Layout";
-}
-
-@{
-    var userRole = ViewBag.UserRole?.ToString() ?? "Unknown";
-    var canOnboard = userRole == "SuperAdmin" || userRole == "President" || userRole == "Secretary";
-}
-
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="mb-1">Welcome, @ViewBag.UserName! 👋</h2>
-            <p class="text-muted">
-                Role: <span class="badge bg-primary fs-6">@ViewBag.UserRole</span>
-            </p>
-        </div>
-    </div>
-
-    @if (canOnboard)
-    {
-        <!-- Admin Actions Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card border-primary">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">🔧 Admin Actions</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="d-grid">
-                                    <a asp-controller="Onboarding" asp-action="Create" class="btn btn-success btn-lg">
-                                        <i class="bi bi-person-plus"></i>
-                                        👥 Onboard New Resident
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="d-grid">
-                                    <a asp-controller="Onboarding" asp-action="List" class="btn btn-outline-primary btn-lg">
-                                        📜 View Invitation History
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-
-    <div class="alert alert-success" role="alert">
-        <h5 class="alert-heading">🎉 System Status: Online</h5>
-        <p class="mb-0">Phase 0 & 1 Complete! Authentication and onboarding are fully functional.</p>
-    </div>
-
-    <hr class="my-4" />
-
-    <div class="row g-4">
-        <!-- My Flats Card -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card text-white bg-primary h-100">
-                <div class="card-body text-center">
-                    <div class="display-1 mb-3">🏢</div>
-                    <h5 class="card-title">My Flats</h5>
-                    <p class="card-text">View and manage your apartments</p>
-                    <hr class="bg-white" />
-                    <p class="mb-0"><small>Coming in Phase 3</small></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Complaints Card -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card text-white bg-success h-100">
-                <div class="card-body text-center">
-                    <div class="display-1 mb-3">📝</div>
-                    <h5 class="card-title">Complaints</h5>
-                    <p class="card-text">Raise and track complaints</p>
-                    <hr class="bg-white" />
-                    <p class="mb-0"><small>Coming in Phase 5</small></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Billing Card -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card text-white bg-info h-100">
-                <div class="card-body text-center">
-                    <div class="display-1 mb-3">💰</div>
-                    <h5 class="card-title">Billing</h5>
-                    <p class="card-text">View bills and payments</p>
-                    <hr class="bg-white" />
-                    <p class="mb-0"><small>Coming in Phase 6</small></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Visitors Card -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card text-white bg-warning h-100">
-                <div class="card-body text-center">
-                    <div class="display-1 mb-3">🚪</div>
-                    <h5 class="card-title">Visitors</h5>
-                    <p class="card-text">Manage visitor access</p>
-                    <hr class="bg-white" />
-                    <p class="mb-0"><small>Coming in Phase 7</small></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">📊 Quick Stats</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-md-3">
-                            <h3 class="text-primary">0</h3>
-                            <p class="text-muted">Total Residents</p>
-                        </div>
-                        <div class="col-md-3">
-                            <h3 class="text-success">0</h3>
-                            <p class="text-muted">Active Complaints</p>
-                        </div>
-                        <div class="col-md-3">
-                            <h3 class="text-info">₹0</h3>
-                            <p class="text-muted">Pending Payments</p>
-                        </div>
-                        <div class="col-md-3">
-                            <h3 class="text-warning">0</h3>
-                            <p class="text-muted">Today's Visitors</p>
-                        </div>
-                    </div>
-                    <hr />
-                    <p class="text-center text-muted mb-0">
-                        <small>Data will populate as features are implemented in upcoming phases</small>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 *@
+
+
+
+
+
+

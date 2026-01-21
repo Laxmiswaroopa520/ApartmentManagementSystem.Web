@@ -1,0 +1,114 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ApartmentManagementSystem.Web.ViewModels.Community.AssignCommunityRoleViewModel
+@{
+    ViewData["Title"] = "Assign Community Role";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-person-plus-fill"></i> Assign Community Role</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AssignRole" method="post">
+                        <div class="mb-3">
+                            <label asp-for="UserId" class="form-label">Select Resident</label>
+                            <select asp-for="UserId" class="form-select" required>
+                                <option value="">-- Select Resident --</option>
+                                @foreach (var resident in ViewBag.EligibleResidents)
+                                {
+                                    <option value="@resident.UserId">@resident.DisplayText</option>
+                                }
+                            </select>
+                            <span asp-validation-for="UserId" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i> Only resident owners with assigned flats can be given community roles.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CommunityRole" class="form-label">Community Role</label>
+                            <select asp-for="CommunityRole" class="form-select" required>
+                                <option value="">-- Select Role --</option>
+                                <option value="President">
+                                    <i class="bi bi-star-fill"></i> President (Leadership & Decision Making)
+                                </option>
+                                <option value="Secretary">
+                                    <i class="bi bi-file-earmark-text"></i> Secretary (Records & Communication)
+                                </option>
+                                <option value="Treasurer">
+                                    <i class="bi bi-cash-coin"></i> Treasurer (Financial Management)
+                                </option>
+                            </select>
+                            <span asp-validation-for="CommunityRole" class="text-danger"></span>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> <strong>Note:</strong> Each role can only be assigned to one person at a time. Assigning a role that's already taken will fail.
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Assign Role
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Role Responsibilities Card -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-list-check"></i> Role Responsibilities</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6 class="text-danger"><i class="bi bi-star-fill"></i> President</h6>
+                            <ul class="small">
+                                <li>Lead community meetings</li>
+                                <li>Make final decisions</li>
+                                <li>Represent the community</li>
+                                <li>Oversee all operations</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-primary"><i class="bi bi-file-earmark-text"></i> Secretary</h6>
+                            <ul class="small">
+                                <li>Maintain records</li>
+                                <li>Handle communications</li>
+                                <li>Manage documentation</li>
+                                <li>Organize meetings</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-success"><i class="bi bi-cash-coin"></i> Treasurer</h6>
+                            <ul class="small">
+                                <li>Manage finances</li>
+                                <li>Track collections</li>
+                                <li>Generate financial reports</li>
+                                <li>Budget planning</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

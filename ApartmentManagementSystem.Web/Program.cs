@@ -37,6 +37,12 @@ builder.Services.AddScoped<AuthApiService>();
 builder.Services.AddScoped<OnboardingApiService>();
 builder.Services.AddScoped<DashboardApiService>(); //  NEW (Phase 2)
 builder.Services.AddScoped< AdminResidentApiService>();
+builder.Services.AddScoped<CommunityMemberApiService>();
+builder.Services.AddScoped<StaffMemberApiService>();
+builder.Services.AddScoped<ResidentManagementApiService>();
+builder.Services.AddScoped<EnhancedDashboardApiService>();
+builder.Services.AddScoped<EnhancedDashboardApiService>();
+
 
 //builder.Services.AddScoped<ApiClient>();
 // COOKIE AUTHENTICATION (CRITICAL)

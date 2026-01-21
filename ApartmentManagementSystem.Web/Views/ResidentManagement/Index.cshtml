@@ -1,0 +1,217 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<ApartmentManagementSystem.Web.ViewModels.Community.ResidentListViewModel>
+@{
+    ViewData["Title"] = "All Residents";
+    Layout = "_Layout";
+    var currentFilter = ViewBag.CurrentFilter as string;
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="bi bi-people"></i> All Residents</h2>
+            <p class="text-muted">View and manage all resident owners and tenants</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-controller="Onboarding" asp-action="Create" class="btn btn-primary btn-lg">
+                <i class="bi bi-person-plus-fill"></i> Add New Resident
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter Buttons -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <a asp-action="Index" class="btn @(string.IsNullOrEmpty(currentFilter) ? "btn-primary" : "btn-outline-primary")">
+                    <i class="bi bi-people-fill"></i> All Residents (@Model.Count)
+                </a>
+                <a asp-action="Index" asp-route-residentType="Owner"
+                   class="btn @(currentFilter == "Owner" ? "btn-success" : "btn-outline-success")">
+                    <i class="bi bi-house-fill"></i> Owners (@Model.Count(r => r.ResidentType == "Owner"))
+                </a>
+                <a asp-action="Index" asp-route-residentType="Tenant"
+                   class="btn @(currentFilter == "Tenant" ? "btn-info" : "btn-outline-info")">
+                    <i class="bi bi-person"></i> Tenants (@Model.Count(r => r.ResidentType == "Tenant"))
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Residents Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        @if (string.IsNullOrEmpty(currentFilter))
+                        {
+                            <span>All Residents (@Model.Count)</span>
+                        }
+                        else
+                        {
+                            <span>@currentFilter Residents (@Model.Count)</span>
+                        }
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Type</th>
+                                        <th>Flat Number</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Status</th>
+                                        <th>Registered On</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var resident in Model)
+                                    {
+                                        <tr>
+                                            <td><strong>@resident.FullName</strong></td>
+                                            <td>
+                                                @if (resident.ResidentType == "Owner")
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-house-fill"></i> Owner
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-info">
+                                                        <i class="bi bi-person"></i> Tenant
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (string.IsNullOrEmpty(resident.FlatNumber))
+                                                {
+                                                    <span class="badge bg-warning text-dark">Not Assigned</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">@resident.FlatNumber</span>
+                                                }
+                                            </td>
+                                            <td>@resident.Email</td>
+                                            <td>@resident.Phone</td>
+                                            <td>
+                                                @if (resident.Status == "Active")
+                                                {
+                                                    <span class="badge bg-success">Active</span>
+                                                }
+                                                else if (resident.Status == "Pending Assignment")
+                                                {
+                                                    <span class="badge bg-warning text-dark">Pending</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Inactive</span>
+                                                }
+                                            </td>
+                                            <td>@resident.RegisteredOn.ToString("MMM dd, yyyy")</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a asp-action="Details" asp-route-userId="@resident.UserId"
+                                                       class="btn btn-sm btn-outline-primary"
+                                                       title="View Details">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
+                                                    {
+                                                        @if (resident.Status == "Active")
+                                                        {
+                                                            <form asp-action="Deactivate" method="post" class="d-inline"
+                                                                  onsubmit="return confirm('Deactivate @resident.FullName?');">
+                                                                <input type="hidden" name="userId" value="@resident.UserId" />
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Deactivate">
+                                                                    <i class="bi bi-x-circle"></i>
+                                                                </button>
+                                                            </form>
+                                                        }
+                                                        else
+                                                        {
+                                                            <form asp-action="Activate" method="post" class="d-inline"
+                                                                  onsubmit="return confirm('Activate @resident.FullName?');">
+                                                                <input type="hidden" name="userId" value="@resident.UserId" />
+                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Activate">
+                                                                    <i class="bi bi-check-circle"></i>
+                                                                </button>
+                                                            </form>
+                                                        }
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> No residents found.
+                            <a asp-controller="Onboarding" asp-action="Create" class="alert-link">
+                                Click here to add a new resident.
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body text-center">
+                    <h3>@Model.Count</h3>
+                    <p class="mb-0">Total Residents</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h3>@Model.Count(r => r.ResidentType == "Owner")</h3>
+                    <p class="mb-0">Owners</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h3>@Model.Count(r => r.ResidentType == "Tenant")</h3>
+                    <p class="mb-0">Tenants</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <h3>@Model.Count(r => r.Status == "Pending Assignment")</h3>
+                    <p class="mb-0">Pending Assignment</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,7 +2,7 @@
 using ApartmentManagementSystem.Web.ViewModels.Community;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using ApartmentManagementSystem.Web.Services.DTOs.Community;
 namespace ApartmentManagementSystem.Web.Controllers;
 
 [Authorize(Roles = "SuperAdmin,Manager")]
@@ -119,16 +119,3 @@ public class CommunityMembersController : Controller
     }
 }
 
-// ========================================
-// REQUEST DTOs (for API service)
-// ========================================
-public class AssignCommunityRoleRequest
-{
-    public Guid UserId { get; set; }
-    public string CommunityRole { get; set; } = string.Empty;
-}
-
-public class RemoveCommunityRoleRequest
-{
-    public Guid UserId { get; set; }
-}

@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using ApartmentManagementSystem.Web.Models;
-
+using Microsoft.AspNetCore.Authorization;
 namespace ApartmentManagementSystem.Web.Controllers;
 
+//make home public
+[AllowAnonymous]
 public class HomeController : Controller
 {
     public IActionResult Index()

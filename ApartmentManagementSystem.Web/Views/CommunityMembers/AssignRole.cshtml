@@ -18,13 +18,22 @@
                     <form asp-action="AssignRole" method="post">
                         <div class="mb-3">
                             <label asp-for="UserId" class="form-label">Select Resident</label>
-                            <select asp-for="UserId" class="form-select" required>
+                           <!-- <select asp-for="UserId" class="form-select" required>
                                 <option value="">-- Select Resident --</option>
                                 @foreach (var resident in ViewBag.EligibleResidents)
                                 {
                                     <option value="@resident.UserId">@resident.DisplayText</option>
                                 }
+                            </select>  -->
+                            <select asp-for="UserId" class="form-select">
+                                <option value="">-- Select Resident --</option>
+
+                                @foreach (var r in ViewBag.EligibleResidents)
+                                {
+                                    <option value="@r.UserId">@r.DisplayText</option>
+                                }
                             </select>
+
                             <span asp-validation-for="UserId" class="text-danger"></span>
                             <div class="form-text">
                                 <i class="bi bi-info-circle"></i> Only resident owners with assigned flats can be given community roles.

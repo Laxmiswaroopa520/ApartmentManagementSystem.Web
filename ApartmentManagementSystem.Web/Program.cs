@@ -46,12 +46,30 @@ builder.Services.AddScoped<EnhancedDashboardApiService>();
 
 //builder.Services.AddScoped<ApiClient>();
 // COOKIE AUTHENTICATION (CRITICAL)
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+/*builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Login/Index";
         options.LogoutPath = "/Login/Logout";
         options.AccessDeniedPath = "/Login/Index";
+
+        options.ExpireTimeSpan = TimeSpan.FromHours(24);
+        options.SlidingExpiration = true;
+
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.Name = ".ApartmentManagement.Auth";
+    });
+*/
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login/Index";
+        options.LogoutPath = "/Login/Logout";
+
+        // MUST NOT be Login
+        options.AccessDeniedPath = "/Home/AccessDenied";
 
         options.ExpireTimeSpan = TimeSpan.FromHours(24);
         options.SlidingExpiration = true;

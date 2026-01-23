@@ -1,4 +1,114 @@
-﻿using ApartmentManagementSystem.Web.Mappers;
+﻿using ApartmentManagementSystem.Web.Mappers.Dashboard;
+using ApartmentManagementSystem.Web.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+[Authorize]
+public class DashboardController : Controller
+{
+    private readonly EnhancedDashboardApiService EnhancedDashboardApi;
+    private readonly DashboardApiService BasicDashboardApi;
+
+    public DashboardController(
+        EnhancedDashboardApiService enhancedDashboardApi,
+        DashboardApiService basicDashboardApi)
+    {
+        EnhancedDashboardApi = enhancedDashboardApi;
+        BasicDashboardApi = basicDashboardApi;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var roles = User.FindAll(ClaimTypes.Role)
+                        .Select(r => r.Value)
+                        .ToList();
+
+        // ADMIN / COMMUNITY LEADERS
+        if (IsAdminRole(roles))
+        {
+            var response = await EnhancedDashboardApi.GetEnhancedAdminDashboardAsync();
+
+            if (response?.Success == true && response.Data != null)
+            {
+                var vm = AdminDashboardViewModelMapper.From(response.Data);
+                return View("Index", vm);
+            }
+        }
+
+        // STAFF
+        if (IsStaffRole(roles))
+        {
+            var response = await EnhancedDashboardApi.GetStaffDashboardAsync();
+
+            if (response?.Success == true && response.Data != null)
+            {
+                var vm = StaffDashboardViewModelMapper.From(response.Data);
+                return View("StaffDashboard", vm);
+            }
+        }
+
+        // OWNER
+        if (roles.Contains("ResidentOwner"))
+        {
+            var response = await BasicDashboardApi.GetOwnerDashboardAsync();
+
+            if (response?.Success == true && response.Data != null)
+            {
+                var vm = OwnerDashboardViewModelMapper.From(response.Data);
+                return View("OwnerDashboard", vm);
+            }
+        }
+
+        // TENANT
+        if (roles.Contains("Tenant"))
+        {
+            var response = await BasicDashboardApi.GetTenantDashboardAsync();
+
+            if (response?.Success == true && response.Data != null)
+            {
+                var vm = TenantDashboardViewModelMapper.From(response.Data);
+                return View("TenantDashboard", vm);
+            }
+        }
+
+        return RedirectToAction("AccessDenied", "Home");
+    }
+
+    private static bool IsAdminRole(IEnumerable<string> roles) =>
+        roles.Any(r => r is "SuperAdmin" or "Manager" or "President" or "Secretary" or "Treasurer");
+
+    private static bool IsStaffRole(IEnumerable<string> roles) =>
+        roles.Any(r => r is
+            "Security" or "Plumber" or "Electrician" or
+            "Carpenter" or "Sweeper" or "Gardener" or "MaintenanceStaff");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+using ApartmentManagementSystem.Web.Mappers.Dashboard;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.ViewModels.Dashboard;
 using Microsoft.AspNetCore.Authorization;
@@ -144,16 +254,14 @@ public class DashboardController : Controller
             }
         }
 
-        // =========================
         // OWNER DASHBOARD
-        // =========================
         /*  if (roles.Contains("ResidentOwner"))
           {
               var response = await _basicDashboardApi.GetOwnerDashboardAsync();
               if (response?.Success == true)
                   return View("OwnerDashboard", response.Data);
-          }*/
-        if (roles.Contains("ResidentOwner"))
+          }--------
+if (roles.Contains("ResidentOwner"))
         {
             var response = await BasicDashboardApi.GetOwnerDashboardAsync();
 
@@ -163,21 +271,8 @@ public class DashboardController : Controller
                 return View("OwnerDashboard", vm);
             }
         }
-
-
-        // =========================
-        // TENANT DASHBOARD
-        // =========================
-        /*  if (roles.Contains("Tenant"))
-          {
-              var response = await _basicDashboardApi.GetTenantDashboardAsync();
-              if (response?.Success == true)
-                  return View("TenantDashboard", response.Data);
-          }
-
-          return RedirectToAction("AccessDenied", "Home");*/
-   
-        // TENANT DASHBOARD (FIXED)
+        
+        // TENANT DASHBOARD 
         if (roles.Contains("Tenant"))
            {
                var response = await BasicDashboardApi.GetTenantDashboardAsync();
@@ -209,117 +304,6 @@ public class DashboardController : Controller
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*using ApartmentManagementSystem.Web.Services;
-using ApartmentManagementSystem.Web.ViewModels.Dashboard;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
-namespace ApartmentManagementSystem.Web.Controllers;
-
-[Authorize]
-public class DashboardController : Controller
-{
-    private readonly EnhancedDashboardApiService _dashboardApiService;
-
-    public DashboardController(EnhancedDashboardApiService dashboardApiService)
-    {
-        _dashboardApiService = dashboardApiService;
-    }
-
-    public async Task<IActionResult> Index()
-    {
-        var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
-
-      
-        // ADMIN / COMMUNITY LEADERS
-      
-        if (roles.Any(r =>
-            r == "SuperAdmin" ||
-            r == "Manager" ||
-            r == "President" ||
-            r == "Secretary" ||
-            r == "Treasurer"))
-        {
-            var response = await _dashboardApiService.GetEnhancedAdminDashboardAsync();
-
-            if (response?.Success == true && response.Data != null)
-            {
-                var vm = new EnhancedDashboardViewModel
-                {
-                    FullName = response.Data.FullName,
-                    AllRoles = response.Data.Roles,
-                    Stats = response.Data.Stats,
-                    RecentActivities = response.Data.RecentActivities
-                };
-
-                return View("Index", vm);
-            }
-        }
-
-        // =========================
-        // STAFF DASHBOARD
-        // =========================
-        if (roles.Any(r =>
-            r == "Security" ||
-            r == "Plumber" ||
-            r == "Electrician" ||
-            r == "Carpenter" ||
-            r == "Sweeper" ||
-            r == "Gardener" ||
-            r == "MaintenanceStaff"))
-        {
-            var response = await _dashboardApiService.GetStaffDashboardAsync();
-
-            if (response?.Success == true && response.Data != null)
-            {
-                var vm = new EnhancedDashboardViewModel
-                {
-                    FullName = User.Identity?.Name ?? "",
-                    AllRoles = roles,
-                    Stats = response.Data.Stats
-                };
-
-                return View("Index", vm);
-            }
-        }
-
-    
-        // FALLBACK
-        // =========================
-        return RedirectToAction("AccessDenied", "Auth");
-    }
-}
-
-
-
-
-
-
-
-
-
 */
 
 
@@ -332,103 +316,6 @@ public class DashboardController : Controller
 
 
 
-
-
-
-
-
-
-
-
-/*
-using ApartmentManagementSystem.Web.Services;
-using ApartmentManagementSystem.Web.ViewModels.Dashboard;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
-namespace ApartmentManagementSystem.Web.Controllers;
-
-[Authorize]
-public class DashboardController : Controller
-{
-    private readonly DashboardApiService _dashboardApiService;
-
-    public DashboardController(DashboardApiService dashboardApiService)
-    {
-        _dashboardApiService = dashboardApiService;
-    }
-
-    public async Task<IActionResult> Index()
-    {
-        var role = User.FindFirstValue(ClaimTypes.Role) ?? "";
-
-        // =========================
-        // BASE MODEL (claims)
-        // =========================
-        var model = new DashboardViewModel
-        {
-            FullName = User.FindFirstValue(ClaimTypes.Name) ?? "",
-            Role = role,
-            Email = User.FindFirstValue(ClaimTypes.Email) ?? "",
-            Phone = User.FindFirst("Phone")?.Value ?? "",
-            FlatNumber = User.FindFirst("FlatNumber")?.Value ?? "Not Assigned"
-        };
-
-        // =========================
-        // ADMIN DASHBOARD
-        // =========================
-        if (role == "SuperAdmin" || role == "President" ||
-            role == "Secretary" || role == "Treasurer")
-        {
-            var response = await _dashboardApiService.GetAdminDashboardAsync();
-
-            if (response?.Success == true && response.Data?.Stats != null)
-            {
-                model.TotalResidents = response.Data.Stats.TotalResidents;
-                model.TotalFlats = response.Data.Stats.TotalFlats;
-                model.OccupiedFlats = response.Data.Stats.OccupiedFlats;
-                model.VacantFlats = response.Data.Stats.VacantFlats;
-
-                // You are using this for "Pending Registrations" tile
-                model.PendingRegistrations = response.Data.Stats.PendingComplaints;
-            }
-        }
-
-        // =========================
-        // OWNER DASHBOARD
-        // =========================
-        else if (role == "ResidentOwner")
-        {
-            var response = await _dashboardApiService.GetOwnerDashboardAsync();
-
-            if (response?.Success == true && response.Data != null)
-            {
-                model.FlatNumber =
-                    response.Data.MyFlats?.FirstOrDefault()?.FlatNumber
-                    ?? "Not Assigned";
-            }
-        }
-
-        // =========================
-        // TENANT DASHBOARD
-        // =========================
-        else if (role == "Tenant")
-        {
-            var response = await _dashboardApiService.GetTenantDashboardAsync();
-
-            if (response?.Success == true && response.Data?.MyFlat != null)
-            {
-                model.FlatNumber = response.Data.MyFlat.FlatNumber;
-            }
-        }
-
-        return View(model);
-    }
-}
-
-
-*/
 
 
 

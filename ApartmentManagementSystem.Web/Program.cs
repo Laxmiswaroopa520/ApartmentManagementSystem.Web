@@ -1,7 +1,6 @@
-﻿// ApartmentManagementSystem.Web/Program.cs
-using ApartmentManagementSystem.Web.Services;
+﻿using ApartmentManagementSystem.Web.Services;
+using ApartmentManagementSystem.Web.Middlewares;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews()
@@ -23,9 +22,7 @@ builder.Services.AddHttpClient<ApiClient>(client =>
   //  client.Timeout = TimeSpan.FromMinutes(2);
 });
 
-// ===============================
 // API SERVICES
-// ===============================
 builder.Services.AddScoped<AuthApiService>();
 builder.Services.AddScoped<OnboardingApiService>();
 builder.Services.AddScoped<DashboardApiService>(); 
@@ -36,7 +33,6 @@ builder.Services.AddScoped<ResidentManagementApiService>();
 builder.Services.AddScoped<EnhancedDashboardApiService>();
 
 
-//builder.Services.AddScoped<ApiClient>();
 // COOKIE AUTHENTICATION (CRITICAL)
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -59,6 +55,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 // AUTHORIZATION
 builder.Services.AddAuthorization();
+
 
 // SESSION (TempData, OTP, flows)
 builder.Services.AddSession(options =>
@@ -84,6 +81,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<UserStatusMiddleware>();
+
 
 app.UseSession();
 
@@ -93,6 +92,20 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 ﻿namespace ApartmentManagementSystem.Web.ViewModels.Admin
 {
-    class PendingResidentViewModel
+    public class PendingResidentViewModel
     {
         public Guid UserId { get; set; }
         public string FullName { get; set; } = string.Empty;

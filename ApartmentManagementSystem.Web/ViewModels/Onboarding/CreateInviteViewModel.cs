@@ -2,39 +2,6 @@
 
 namespace ApartmentManagementSystem.Web.ViewModels.Onboarding
 {
-
-    /*  public class CreateInviteViewModel
-      {
-          [Required(ErrorMessage = "Full name is required")]
-          [StringLength(100)]
-          public string FullName { get; set; } = string.Empty;
-
-          [Required(ErrorMessage = "Phone number is required")]
-          [Phone(ErrorMessage = "Invalid phone number")]
-          [StringLength(20)]
-          public string PrimaryPhone { get; set; } = string.Empty;
-
-          [Required(ErrorMessage = "Resident type is required")]
-          public int ResidentType { get; set; } // 1=Owner, 2=Tenant, 3=Staff
-          public string Message { get; set; } = string.Empty;
-          public List<ResidentTypeOption>? ResidentTypes { get; set; }
-      }
-      */
-    /*  public class CreateInviteViewModel
-      {
-          [Required(ErrorMessage = "Full name is required")]
-          public string FullName { get; set; } = string.Empty;
-
-          [Required(ErrorMessage = "Phone number is required")]
-          public string PrimaryPhone { get; set; } = string.Empty;
-
-          [Required(ErrorMessage = "Please select resident type")]
-          [Range(1, 3, ErrorMessage = "Invalid resident type")]
-          public int ResidentType { get; set; }
-
-          public List<ResidentTypeOption>? ResidentTypes { get; set; }
-      }
-    */
     public class CreateInviteViewModel
     {
         [Required(ErrorMessage = "Full name is required")]
@@ -42,18 +9,17 @@ namespace ApartmentManagementSystem.Web.ViewModels.Onboarding
 
         [Required(ErrorMessage = "Phone number is required")]
         public string PrimaryPhone { get; set; } = string.Empty;
-
-        [Range(1, 3, ErrorMessage = "Please select a resident type")]
+        [Required(ErrorMessage = "Please select a resident type")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a resident type")]
         public int ResidentType { get; set; }
 
         public List<ResidentTypeOption> ResidentTypes { get; set; } = new();
-    }
 
 
-    public class ResidentTypeOption
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+      //  [Range(1, 3, ErrorMessage = "Please select a resident type")]
+//        public int ResidentType { get; set; }
+
+      //  public List<ResidentTypeOption> ResidentTypes { get; set; } = new();
     }
 
 

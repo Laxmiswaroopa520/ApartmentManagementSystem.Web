@@ -35,8 +35,15 @@
                         <!-- Resident Type -->
                         <div class="mb-3">
                             <label asp-for="ResidentType" class="form-label">Resident Type</label>
-                        
-                            <select asp-for="ResidentType" class="form-select" required>
+                            <select asp-for="ResidentType" class="form-select">
+                                <option value="">-- Select Resident Type --</option>
+                                @foreach (var type in Model.ResidentTypes)
+                                {
+                                    <option value="@type.Id">@type.Name</option>
+                                }
+                            </select>
+
+                          <!--  <select asp-for="ResidentType" class="form-select" required>
                                 <option value="0">-- Select Resident Type --</option>
                                 @foreach (var type in Model.ResidentTypes)
                                 {
@@ -49,7 +56,7 @@
                                         <option value="@type.Id">@type.Name</option>
                                     }
                                 }
-                            </select>
+                            </select>-->
 
                             <span asp-validation-for="ResidentType" class="text-danger"></span>
                         </div>

@@ -7,7 +7,7 @@ using System.Text.Json;
 public class ApiClient
 {
     private readonly HttpClient Httpclient;
-    private readonly IHttpContextAccessor HttpContextAccesor;
+    private readonly IHttpContextAccessor HttpContextAccesor;       //API calls would be unauthenticated;;[Authorize] would fail;;Roles like SuperAdmin wouldn’t work
     private readonly JsonSerializerOptions JsonOptions;
 
     public ApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
@@ -45,10 +45,8 @@ public class ApiClient
         var content = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<T>(content, JsonOptions);
     }
-
-    
+  
     // POST 
-
     public async Task<TResponse?> PostAsync<TRequest, TResponse>(string endpoint, TRequest data)
     {
         SetAuthorizationHeader();

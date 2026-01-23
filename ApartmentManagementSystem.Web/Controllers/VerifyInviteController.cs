@@ -1,12 +1,7 @@
 ﻿using ApartmentManagementSystem.Web.Services;
-//using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.Services.DTOs.Onboarding;
-using ApartmentManagementSystem.Web.ViewModels.Auth;
 using ApartmentManagementSystem.Web.ViewModels.Onboarding;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Mvc;
-
 namespace ApartmentManagementSystem.Web.Controllers;
 public class VerifyInviteController : Controller
 {

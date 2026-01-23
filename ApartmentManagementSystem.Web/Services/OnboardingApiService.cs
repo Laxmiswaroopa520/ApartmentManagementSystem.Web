@@ -1,9 +1,6 @@
 ﻿using ApartmentManagementSystem.Web.Services.DTOs;
 using ApartmentManagementSystem.Web.Services.DTOs.Onboarding;
-using ApartmentManagementSystem.Web.ViewModels.Onboarding;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace ApartmentManagementSystem.Web.Services
 {
@@ -33,6 +30,21 @@ namespace ApartmentManagementSystem.Web.Services
             return await ApiClient.PostAsync<CompleteRegistrationRequest, ApiResponse<CompleteRegistrationResponse>>(
                 "api/OnboardingApi/complete-registration", request);
         }
+        //added this method for resident type dto from the api
+        //for loading resident types
+        public async Task<ApiResponse<List<ResidentTypeDto>>?> GetResidentTypesAsync()
+        {
+            return await ApiClient.GetAsync<ApiResponse<List<ResidentTypeDto>>>(
+                "api/OnboardingApi/resident-types");
+        }
+
+      /*  public async Task<ApiResponse<List<ResidentTypeDto>>?> GetResidentTypesAsync()
+        {
+            return await ApiClient.GetAsync<ApiResponse<List<ResidentTypeDto>>>(
+                "api/onboarding/resident-types");
+        }
+      */
+
     }
 }
 

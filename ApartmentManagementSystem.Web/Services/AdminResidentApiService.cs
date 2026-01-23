@@ -28,13 +28,13 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<List<FloorDto>>?> GetFloorsAsync()
         {
             return await Apiclient.GetAsync<ApiResponse<List<FloorDto>>>(
-                "api/AdminResidentApi/floors");   // ✅ matches your API
+                "api/AdminResidentApi/floors");  
         }
 
         public async Task<ApiResponse<List<FlatDto>>?> GetVacantFlatsByFloorAsync(Guid floorId)
         {
             return await Apiclient.GetAsync<ApiResponse<List<FlatDto>>>(
-                $"api/AdminResidentApi/floors/{floorId}/flats"); // ✅ matches your API
+                $"api/AdminResidentApi/floors/{floorId}/flats"); 
         }
 
 

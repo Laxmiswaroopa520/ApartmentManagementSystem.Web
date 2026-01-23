@@ -5,30 +5,30 @@ namespace ApartmentManagementSystem.Web.Services
 {
     public class CommunityMemberApiService
     {
-        private readonly ApiClient _apiClient;
+        private readonly ApiClient ApiClient;
 
         public CommunityMemberApiService(ApiClient apiClient)
         {
-            _apiClient = apiClient;
+            ApiClient = apiClient;
         }
 
         public async Task<ApiResponse<List<CommunityMemberDto>>?> GetAllCommunityMembersAsync()
         {
-            return await _apiClient.GetAsync<ApiResponse<List<CommunityMemberDto>>>(
+            return await ApiClient.GetAsync<ApiResponse<List<CommunityMemberDto>>>(
                 "api/CommunityMembersApi"
             );
         }
 
         public async Task<ApiResponse<List<ResidentListDto>>?> GetEligibleResidentsAsync()
         {
-            return await _apiClient.GetAsync<ApiResponse<List<ResidentListDto>>>(
+            return await ApiClient.GetAsync<ApiResponse<List<ResidentListDto>>>(
                 "api/CommunityMembersApi/eligible-residents"
             );
         }
 
         public async Task<ApiResponse<CommunityMemberDto>?> AssignCommunityRoleAsync(AssignCommunityRoleRequest request)
         {
-            return await _apiClient.PostAsync<AssignCommunityRoleRequest, ApiResponse<CommunityMemberDto>>(
+            return await ApiClient.PostAsync<AssignCommunityRoleRequest, ApiResponse<CommunityMemberDto>>(
                 "api/CommunityMembersApi/assign-role",
                 request
             );
@@ -36,7 +36,7 @@ namespace ApartmentManagementSystem.Web.Services
 
         public async Task<ApiResponse<bool>?> RemoveCommunityRoleAsync(RemoveCommunityRoleRequest request)
         {
-            return await _apiClient.PostAsync<RemoveCommunityRoleRequest, ApiResponse<bool>>(
+            return await ApiClient.PostAsync<RemoveCommunityRoleRequest, ApiResponse<bool>>(
                 "api/CommunityMembersApi/remove-role",
                 request
             );
@@ -44,7 +44,7 @@ namespace ApartmentManagementSystem.Web.Services
 
         public async Task<ApiResponse<CommunityMemberDto>?> GetCommunityMemberAsync(Guid userId)
         {
-            return await _apiClient.GetAsync<ApiResponse<CommunityMemberDto>>(
+            return await ApiClient.GetAsync<ApiResponse<CommunityMemberDto>>(
                 $"api/CommunityMembersApi/{userId}"
             );
         }

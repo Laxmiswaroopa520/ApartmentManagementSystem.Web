@@ -1,7 +1,7 @@
 ﻿using ApartmentManagementSystem.Web.Services.DTOs.Dashboard;
 using ApartmentManagementSystem.Web.ViewModels.Dashboard;
 
-namespace ApartmentManagementSystem.Web.Mappers
+namespace ApartmentManagementSystem.Web.Mappers.Dashboard
 {
     //mapper class for ownerdashboard
     public static class OwnerDashboardViewModelMapper

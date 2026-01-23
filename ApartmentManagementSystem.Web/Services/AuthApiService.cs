@@ -1,11 +1,7 @@
 ﻿using ApartmentManagementSystem.Web.Services.DTOs.Login;
 using ApartmentManagementSystem.Web.Services.DTOs;
-//using Microsoft.AspNetCore.Identity.Data;
-//using Microsoft.AspNetCore.Identity;
-//using ApartmentManagementSystem.Web.Services.DTOs.Login;
 namespace ApartmentManagementSystem.Web.Services
 {
-
     public class AuthApiService
     {
         private readonly ApiClient ApiClient;
@@ -22,6 +18,15 @@ namespace ApartmentManagementSystem.Web.Services
                  request
              );
          }
+        //added for inactive users in our apartment
+        public async Task<bool> IsUserActiveAsync(Guid userId)
+        {
+            var response = await ApiClient.GetAsync<bool>(
+                $"api/AuthApi/users/{userId}/is-active");
+
+            return response;
+        }
+
 
     }
 }

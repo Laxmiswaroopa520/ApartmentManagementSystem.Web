@@ -5,44 +5,44 @@ namespace ApartmentManagementSystem.Web.Services;
 
 public class EnhancedDashboardApiService
 {
-    private readonly ApiClient _apiClient;
+    private readonly ApiClient ApiClient;
 
     public EnhancedDashboardApiService(ApiClient apiClient)
     {
-        _apiClient = apiClient;
+        ApiClient = apiClient;
     }
 
     public async Task<ApiResponse<EnhancedAdminDashboardDto>?> GetEnhancedAdminDashboardAsync()
     {
-        return await _apiClient.GetAsync<ApiResponse<EnhancedAdminDashboardDto>>(
+        return await ApiClient.GetAsync<ApiResponse<EnhancedAdminDashboardDto>>(
             "api/EnhancedDashboardApi/admin"
         );
     }
 
     public async Task<ApiResponse<StaffDashboardDto>?> GetStaffDashboardAsync()
     {
-        return await _apiClient.GetAsync<ApiResponse<StaffDashboardDto>>(
+        return await ApiClient.GetAsync<ApiResponse<StaffDashboardDto>>(
             "api/EnhancedDashboardApi/staff"
         );
     }
 
     public async Task<ApiResponse<AdvancedDashboardStatsDto>?> GetAdvancedDashboardStatsAsync()
     {
-        return await _apiClient.GetAsync<ApiResponse<AdvancedDashboardStatsDto>>(
+        return await ApiClient.GetAsync<ApiResponse<AdvancedDashboardStatsDto>>(
             "api/EnhancedDashboardApi/advanced-stats"
         );
     }
 
     public async Task<ApiResponse<FinancialSummaryDto>?> GetFinancialSummaryAsync()
     {
-        return await _apiClient.GetAsync<ApiResponse<FinancialSummaryDto>>(
+        return await ApiClient.GetAsync<ApiResponse<FinancialSummaryDto>>(
             "api/EnhancedDashboardApi/financial-summary"
         );
     }
 
     public async Task<ApiResponse<List<QuickActionDto>>?> GetQuickActionsAsync()
     {
-        return await _apiClient.GetAsync<ApiResponse<List<QuickActionDto>>>(
+        return await ApiClient.GetAsync<ApiResponse<List<QuickActionDto>>>(
             "api/EnhancedDashboardApi/quick-actions"
         );
     }

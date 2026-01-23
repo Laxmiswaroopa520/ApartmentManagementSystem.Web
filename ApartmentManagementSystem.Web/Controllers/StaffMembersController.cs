@@ -9,22 +9,20 @@ namespace ApartmentManagementSystem.Web.Controllers;
 [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
 public class StaffMembersController : Controller
 {
-    private readonly StaffMemberApiService _staffApiService;
+    private readonly StaffMemberApiService StaffApiService;
 
     public StaffMembersController(StaffMemberApiService staffApiService)
     {
-        _staffApiService = staffApiService;
+        StaffApiService = staffApiService;
     }
 
-    // =========================
     // GET: List All Staff Members
-    // =========================
     [HttpGet]
     public async Task<IActionResult> Index(string? staffType = null)
     {
         var response = string.IsNullOrEmpty(staffType)
-            ? await _staffApiService.GetAllStaffMembersAsync()
-            : await _staffApiService.GetStaffMembersByTypeAsync(staffType);
+            ? await StaffApiService.GetAllStaffMembersAsync()
+            : await StaffApiService.GetStaffMembersByTypeAsync(staffType);
 
         var viewModel = response?.Data?
             .Select(s => new StaffMemberViewModel
@@ -46,18 +44,14 @@ public class StaffMembersController : Controller
         return View(viewModel);
     }
 
-    // =========================
     // GET: Create Staff Member
-    // =========================
     [HttpGet]
     public IActionResult Create()
     {
         return View(new CreateStaffMemberViewModel());
     }
 
-    // =========================
     // POST: Create Staff Member
-    // =========================
     [HttpPost]
     public async Task<IActionResult> Create(CreateStaffMemberViewModel model)
     {
@@ -78,7 +72,7 @@ public class StaffMembersController : Controller
             Password = model.CreateLoginAccess ? model.Password : null
         };
 
-        var result = await _staffApiService.CreateStaffMemberAsync(request);
+        var result = await StaffApiService.CreateStaffMemberAsync(request);
 
         if (result?.Success == true)
         {
@@ -90,13 +84,11 @@ public class StaffMembersController : Controller
         return View(model);
     }
 
-    // =========================
     // GET: Edit Staff Member
-    // =========================
     [HttpGet]
     public async Task<IActionResult> Edit(Guid staffId)
     {
-        var response = await _staffApiService.GetStaffMemberByIdAsync(staffId);
+        var response = await StaffApiService.GetStaffMemberByIdAsync(staffId);
 
         if (response?.Data == null)
         {
@@ -119,9 +111,7 @@ public class StaffMembersController : Controller
         return View(viewModel);
     }
 
-    // =========================
     // POST: Edit Staff Member
-    // =========================
     [HttpPost]
     public async Task<IActionResult> Edit(UpdateStaffMemberViewModel model)
     {
@@ -142,7 +132,7 @@ public class StaffMembersController : Controller
             HourlyRate = model.HourlyRate
         };
 
-        var result = await _staffApiService.UpdateStaffMemberAsync(request);
+        var result = await StaffApiService.UpdateStaffMemberAsync(request);
 
         if (result?.Success == true)
         {
@@ -154,13 +144,11 @@ public class StaffMembersController : Controller
         return View(model);
     }
 
-    // =========================
     // POST: Deactivate Staff Member
-    // =========================
     [HttpPost]
     public async Task<IActionResult> Deactivate(Guid staffId)
     {
-        var result = await _staffApiService.DeactivateStaffMemberAsync(staffId);
+        var result = await StaffApiService.DeactivateStaffMemberAsync(staffId);
 
         if (result?.Success == true)
         {
@@ -174,13 +162,11 @@ public class StaffMembersController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // =========================
     // POST: Activate Staff Member
-    // =========================
     [HttpPost]
     public async Task<IActionResult> Activate(Guid staffId)
     {
-        var result = await _staffApiService.ActivateStaffMemberAsync(staffId);
+        var result = await StaffApiService.ActivateStaffMemberAsync(staffId);
 
         if (result?.Success == true)
         {

@@ -140,6 +140,7 @@
                                                         {
                                                             <form asp-action="Deactivate" method="post" class="d-inline"
                                                                   onsubmit="return confirm('Deactivate @resident.FullName?');">
+                                                                  @Html.AntiForgeryToken()
                                                                 <input type="hidden" name="userId" value="@resident.UserId" />
                                                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="Deactivate">
                                                                     <i class="bi bi-x-circle"></i>

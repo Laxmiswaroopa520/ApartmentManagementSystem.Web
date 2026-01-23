@@ -8,14 +8,15 @@ namespace ApartmentManagementSystem.Web.Controllers;
 [AllowAnonymous]
 public class HomeController : Controller
 {
+    [AllowAnonymous]
     public IActionResult Index()
     {
         // If user is authenticated, go to dashboard
-        if (User.Identity?.IsAuthenticated == true)
-            return RedirectToAction("Index", "Dashboard");
-
+       // if (User.Identity?.IsAuthenticated == true)
+         //   return RedirectToAction("Index", "Dashboard");
+        return View();
         // Otherwise, go to login
-        return RedirectToAction("Index", "Login");
+        //return RedirectToAction("Index", "Login");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

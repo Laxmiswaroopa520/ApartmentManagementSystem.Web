@@ -160,6 +160,7 @@ public class DashboardController : Controller
 */
 
 
+using ApartmentManagementSystem.Web.Mappers;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.ViewModels.Dashboard;
 using Microsoft.AspNetCore.Authorization;
@@ -313,12 +314,23 @@ public class DashboardController : Controller
         // =========================
         // OWNER DASHBOARD
         // =========================
+        /*  if (roles.Contains("ResidentOwner"))
+          {
+              var response = await _basicDashboardApi.GetOwnerDashboardAsync();
+              if (response?.Success == true)
+                  return View("OwnerDashboard", response.Data);
+          }*/
         if (roles.Contains("ResidentOwner"))
         {
             var response = await _basicDashboardApi.GetOwnerDashboardAsync();
+
             if (response?.Success == true)
-                return View("OwnerDashboard", response.Data);
+            {
+                var vm = OwnerDashboardViewModelMapper.From(response.Data);         //Instead of writing everything here to map from dto to view model i took mapper class..
+                return View("OwnerDashboard", vm);
+            }
         }
+
 
         // =========================
         // TENANT DASHBOARD
@@ -334,7 +346,7 @@ public class DashboardController : Controller
         // =========================
         // TENANT DASHBOARD (FIXED)
         // =========================
-           if (roles.Contains("Tenant"))
+        if (roles.Contains("Tenant"))
            {
                var response = await _basicDashboardApi.GetTenantDashboardAsync();
 

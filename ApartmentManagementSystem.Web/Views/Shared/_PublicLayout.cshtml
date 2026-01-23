@@ -1,0 +1,76 @@
+﻿@*
+Used for:Home,Login,VerifyInvite,Forgot Password (future)
+*@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>@ViewData["Title"] - Skyline Communities</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+        <style>
+            body {
+                background: #f5f6f7;
+                font-family: 'Segoe UI', sans-serif;
+            }
+
+            .navbar-public {
+                background: #1f2933;
+            }
+
+                .navbar-public .navbar-brand,
+                .navbar-public .nav-link {
+                    color: #e5e7eb;
+                }
+
+                    .navbar-public .nav-link:hover {
+                        color: #ffffff;
+                    }
+
+            footer {
+                background: #1f2933;
+                color: #cbd5e1;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- PUBLIC NAVBAR -->
+        <nav class="navbar navbar-expand-lg navbar-public">
+            <div class="container">
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-buildings"></i> Skyline
+                </a>
+
+                <div class="ms-auto">
+                    <a asp-controller="Home" asp-action="Index" class="nav-link d-inline me-3">
+                        Home
+                    </a>
+                    <a asp-controller="Login" asp-action="Index" class="btn btn-outline-light btn-sm">
+                        Login
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            @RenderBody()
+        </main>
+
+        <footer class="py-4 mt-5">
+            <div class="container text-center small">
+                &copy; 2026 Skyline Communities. All rights reserved.
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
+    </html>
+
+

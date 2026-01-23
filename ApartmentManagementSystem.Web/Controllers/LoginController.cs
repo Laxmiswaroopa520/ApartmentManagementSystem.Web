@@ -95,6 +95,7 @@ using System.Security.Claims;
 
 namespace ApartmentManagementSystem.Web.Controllers;
 
+[AllowAnonymous]                //Added Now..for home page..
 public class LoginController : Controller
 {
     private readonly AuthApiService _authApiService;

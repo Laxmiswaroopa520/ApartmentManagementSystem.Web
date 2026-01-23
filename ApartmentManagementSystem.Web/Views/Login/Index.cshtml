@@ -1,145 +1,171 @@
 ﻿@model ApartmentManagementSystem.Web.ViewModels.Auth.LoginViewModel
 @{
     ViewData["Title"] = "Login";
-    Layout = "_Layout";
+    Layout = "_PublicLayout";
 }
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
     body {
-        background-color: #f4f6f8;
+        background: #f2f3f5;
     }
 
-    .login-container {
+    .login-wrapper {
         min-height: 100vh;
-        display: flex;
-    }
-
-    /* LEFT PANEL */
-    .login-brand {
-        flex: 1;
-        background-image: linear-gradient(rgba(15, 42, 68, 0.85), rgba(15, 42, 68, 0.85)), url('/images/login-bg.jpg');
-        background-size: cover;
-        background-position: center;
-        color: #ffffff;
-        padding: 4rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-        .login-brand h1 {
-            font-size: 2.4rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            letter-spacing: 0.5px;
-        }
-
-        .login-brand p {
-            font-size: 1.05rem;
-            opacity: 0.95;
-            max-width: 420px;
-            line-height: 1.6;
-        }
-
-    /* RIGHT PANEL */
-    .login-form-wrapper {
-        flex: 1;
-        background-color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    .login-form {
+    .login-card {
         width: 100%;
-        max-width: 380px;
+        max-width: 1000px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        background: white;
+    }
+
+    /* LEFT IMAGE */
+    .login-image {
+        background: url("https://images.unsplash.com/photo-1501183638710-841dd1904471?w=1200") center/cover no-repeat;
+        position: relative;
+    }
+
+        .login-image::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+        }
+
+    .login-image-content {
+        position: relative;
+        z-index: 2;
+        color: #fff;
+        padding: 3rem;
+    }
+
+        .login-image-content h1 {
+            font-weight: 700;
+            font-size: 2.4rem;
+        }
+
+        .login-image-content p {
+            opacity: 0.85;
+            max-width: 400px;
+        }
+
+    /* RIGHT FORM */
+    .login-form {
+        padding: 3rem;
     }
 
         .login-form h2 {
             font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .login-form small {
-            color: #6c757d;
         }
 
     .form-control {
         height: 46px;
+        border-radius: 10px;
     }
 
     .btn-login {
+        background: #1f2933;
+        color: white;
+        border-radius: 30px;
         height: 46px;
         font-weight: 600;
     }
+
+        .btn-login:hover {
+            background: #111827;
+        }
+
+    .link-muted {
+        color: #6b7280;
+        text-decoration: none;
+    }
+
+        .link-muted:hover {
+            text-decoration: underline;
+        }
+
+    @@media(max - width: 768px)
+
+    {
+        .login-image {
+            display: none;
+        }
+    }
 </style>
 
-<div class="login-container">
+<div class="login-wrapper">
+    <div class="login-card row g-0">
 
-    <!-- LEFT BRAND PANEL -->
-    <div class="login-brand">
-        <h1>Skyline</h1>
-        <p>
-            A modern platform designed to manage residential communities,
-            operations, and services with clarity, security, and efficiency.
-        </p>
-    </div>
-
-    <!-- RIGHT LOGIN PANEL -->
-    <div class="login-form-wrapper">
-        <div class="login-form">
-
-            <h2>Sign in</h2>
-            <small>Use your Skyline credentials</small>
-
-            <form asp-action="Index" method="post" class="mt-4">
-                <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-                <!-- Username -->
-                <div class="mb-3">
-                    <label asp-for="Username" class="form-label">Username</label>
-                    <input asp-for="Username"
-                           class="form-control"
-                           placeholder="Enter username"
-                           autofocus />
-                    <span asp-validation-for="Username" class="text-danger small"></span>
-                </div>
-
-                <!-- Password -->
-                <div class="mb-3">
-                    <label asp-for="Password" class="form-label">Password</label>
-                    <input asp-for="Password"
-                           type="password"
-                           class="form-control"
-                           placeholder="Enter password" />
-                    <span asp-validation-for="Password" class="text-danger small"></span>
-                </div>
-
-                <!-- Remember me -->
-                <div class="form-check mb-4">
-                    <input asp-for="RememberMe" class="form-check-input" />
-                    <label asp-for="RememberMe" class="form-check-label">
-                        Remember me
-                    </label>
-                </div>
-
-                <!-- Submit -->
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-login">
-                        Sign In
-                    </button>
-                </div>
-            </form>
-
-            <div class="text-center mt-4">
-                <a asp-controller="VerifyInvite"
-                   asp-action="Index"
-                   class="text-decoration-none">
-                    Have an invitation?
-                </a>
+        <!-- LEFT IMAGE -->
+        <div class="col-md-6 login-image">
+            <div class="login-image-content">
+                <h1>Apartment Management</h1>
+                <p>
+                    Manage residents, billing, maintenance and community life
+                    from one peaceful, secure platform.
+                </p>
             </div>
-
         </div>
+
+        <!-- RIGHT FORM -->
+        <div class="col-md-6">
+            <div class="login-form">
+
+             <!--   <a href="/Home/Index" class="link-muted mb-4 d-inline-block">
+                    ← Back to Home
+                </a>-->
+
+                <h2 class="mb-1">Welcome back</h2>
+                <p class="text-muted mb-4">Sign in to continue</p>
+
+                <form asp-action="Index" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label">Username</label>
+                        <input asp-for="Username" class="form-control" placeholder="Enter username" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-login">
+                            Sign In
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <a asp-controller="VerifyInvite"
+                       asp-action="Index"
+                       class="link-muted">
+                        Have an invitation?
+                    </a>
+                </div>
+
+                
+
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -159,28 +185,8 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @*
+
 @model ApartmentManagementSystem.Web.ViewModels.Auth.LoginViewModel
 @{
     ViewData["Title"] = "Login";
@@ -336,7 +342,6 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-
 *@
 
 
@@ -361,71 +366,4 @@
 
 
 
-@*model LoginViewModel*@
-@*
-@{
-    ViewData["Title"] = "Login";
-    Layout = "_Layout";
-}
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-5 col-lg-4">
-        <div class="card shadow-lg border-0">
-            <div class="card-header bg-primary text-white text-center py-3">
-                <h3 class="mb-0">🔐 Login</h3>
-                <small>Apartment Management System</small>
-            </div>
-            <div class="card-body p-4">
-                <form asp-action="Index" method="post">
-                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-                    <div class="mb-3">
-                        <label asp-for="Username" class="form-label fw-bold"></label>
-                        <div class="input-group">
-                            <span class="input-group-text">👤</span>
-                            <input asp-for="Username" class="form-control" placeholder="Enter your username" autofocus />
-                        </div>
-                        <span asp-validation-for="Username" class="text-danger small"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Password" class="form-label fw-bold"></label>
-                        <div class="input-group">
-                            <span class="input-group-text">🔒</span>
-                            <input asp-for="Password" class="form-control" placeholder="Enter your password" />
-                        </div>
-                        <span asp-validation-for="Password" class="text-danger small"></span>
-                    </div>
-
-                    <div class="mb-3 form-check">
-                        <input asp-for="RememberMe" class="form-check-input" />
-                        <label asp-for="RememberMe" class="form-check-label"></label>
-                    </div>
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <strong>Login</strong>
-                        </button>
-                    </div>
-                </form>
-
-                <hr class="my-4" />
-
-                <div class="text-center">
-                    <p class="text-muted mb-2">New user? Have an invitation?</p>
-                    <a asp-controller="VerifyInvite" asp-action="Index" class="btn btn-outline-info w-100">
-                        📱 Verify Invitation
-                    </a>
-                </div>
-            </div>
-            <div class="card-footer text-center text-muted">
-                <small>Default Admin: admin / Admin@123</small>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
-*@

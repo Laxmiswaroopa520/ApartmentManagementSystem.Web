@@ -65,7 +65,7 @@ builder.Services.AddScoped<EnhancedDashboardApiService>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Login/Index";
+        options.LoginPath = "/Home/Index";
         options.LogoutPath = "/Login/Logout";
 
         // MUST NOT be Login

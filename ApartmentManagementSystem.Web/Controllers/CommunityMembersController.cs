@@ -8,17 +8,17 @@ using Microsoft.AspNetCore.Mvc;
 [Authorize(Roles = "SuperAdmin,Manager")]
 public class CommunityMembersController : Controller
 {
-    private readonly CommunityMemberApiService _communityApiService;
+    private readonly CommunityMemberApiService CommunityApiservice;
 
     public CommunityMembersController(CommunityMemberApiService communityApiService)
     {
-        _communityApiService = communityApiService;
+        CommunityApiservice = communityApiService;
     }
 
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var response = await _communityApiService.GetAllCommunityMembersAsync();
+        var response = await CommunityApiservice.GetAllCommunityMembersAsync();
 
         var viewModel = response?.Data?
             .Select(m => new CommunityMemberViewModel
@@ -36,14 +36,11 @@ public class CommunityMembersController : Controller
 
         return View(viewModel);
     }
-
-    // =========================
-    // GET: Assign Role
-    // =========================
+    // Assign Role
     [HttpGet]
     public async Task<IActionResult> AssignRole()
     {
-        var response = await _communityApiService.GetEligibleResidentsAsync();
+        var response = await CommunityApiservice.GetEligibleResidentsAsync();
 
         var eligibleList = response?.Data?
             .Select(r => new EligibleResidentViewModel
@@ -58,15 +55,14 @@ public class CommunityMembersController : Controller
         return View(new AssignCommunityRoleViewModel());
     }
 
-    // =========================
+  
     // POST: Assign Role
-    // =========================
     [HttpPost]
     public async Task<IActionResult> AssignRole(AssignCommunityRoleViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            var response = await _communityApiService.GetEligibleResidentsAsync();
+            var response = await CommunityApiservice.GetEligibleResidentsAsync();
 
             ViewBag.EligibleResidents = response?.Data?
                 .Select(r => new EligibleResidentViewModel
@@ -85,7 +81,7 @@ public class CommunityMembersController : Controller
             CommunityRole = model.CommunityRole
         };
 
-        var result = await _communityApiService.AssignCommunityRoleAsync(request);
+        var result = await CommunityApiservice.AssignCommunityRoleAsync(request);
 
         if (result?.Success == true)
         {
@@ -96,7 +92,7 @@ public class CommunityMembersController : Controller
         ModelState.AddModelError("", result?.Message ?? "Failed to assign role");
 
         // reload dropdown again on failure
-        var retryResponse = await _communityApiService.GetEligibleResidentsAsync();
+        var retryResponse = await CommunityApiservice.GetEligibleResidentsAsync();
         ViewBag.EligibleResidents = retryResponse?.Data?
             .Select(r => new EligibleResidentViewModel
             {
@@ -108,14 +104,12 @@ public class CommunityMembersController : Controller
         return View(model);
     }
 
-    // =========================
     // POST: Remove Role
-    // =========================
-    [HttpPost]
+     [HttpPost]
     public async Task<IActionResult> RemoveRole(Guid userId)
     {
         var request = new RemoveCommunityRoleRequest { UserId = userId };
-        var result = await _communityApiService.RemoveCommunityRoleAsync(request);
+        var result = await CommunityApiservice.RemoveCommunityRoleAsync(request);
 
         if (result?.Success == true)
         {

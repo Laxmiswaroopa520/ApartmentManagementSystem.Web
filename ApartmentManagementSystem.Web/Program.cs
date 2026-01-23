@@ -4,20 +4,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ===============================
-// ADD MVC + TempData (IMPORTANT)
-// ===============================
 builder.Services.AddControllersWithViews()
     .AddSessionStateTempDataProvider();
 
-// ===============================
 // HttpContext Accessor
-// ===============================
 builder.Services.AddHttpContextAccessor();
 
-// ===============================
 // HttpClient for API Communication
-// ===============================
 builder.Services.AddHttpClient<ApiClient>(client =>
 {
     var apiBaseUrl =
@@ -35,33 +28,17 @@ builder.Services.AddHttpClient<ApiClient>(client =>
 // ===============================
 builder.Services.AddScoped<AuthApiService>();
 builder.Services.AddScoped<OnboardingApiService>();
-builder.Services.AddScoped<DashboardApiService>(); //  NEW (Phase 2)
+builder.Services.AddScoped<DashboardApiService>(); 
 builder.Services.AddScoped< AdminResidentApiService>();
 builder.Services.AddScoped<CommunityMemberApiService>();
 builder.Services.AddScoped<StaffMemberApiService>();
 builder.Services.AddScoped<ResidentManagementApiService>();
 builder.Services.AddScoped<EnhancedDashboardApiService>();
-builder.Services.AddScoped<EnhancedDashboardApiService>();
 
 
 //builder.Services.AddScoped<ApiClient>();
 // COOKIE AUTHENTICATION (CRITICAL)
-/*builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Login/Index";
-        options.LogoutPath = "/Login/Logout";
-        options.AccessDeniedPath = "/Login/Index";
 
-        options.ExpireTimeSpan = TimeSpan.FromHours(24);
-        options.SlidingExpiration = true;
-
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-        options.Cookie.SameSite = SameSiteMode.Strict;
-        options.Cookie.Name = ".ApartmentManagement.Auth";
-    });
-*/
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -80,14 +57,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = ".ApartmentManagement.Auth";
     });
 
-// ===============================
 // AUTHORIZATION
-// ===============================
 builder.Services.AddAuthorization();
 
-// ===============================
 // SESSION (TempData, OTP, flows)
-// ===============================
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -97,9 +70,7 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// ===============================
 // HTTP PIPELINE
-// ===============================
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -111,15 +82,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// ⭐ ORDER MATTERS
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
 
-// ===============================
 // ROUTING
-// ===============================
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

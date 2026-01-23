@@ -1,26 +1,20 @@
-﻿using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-
-
-
+﻿
 namespace ApartmentManagementSystem.Web.Services;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
-
 public class ApiClient
 {
-    private readonly HttpClient _httpClient;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly JsonSerializerOptions _jsonOptions;
+    private readonly HttpClient Httpclient;
+    private readonly IHttpContextAccessor HttpContextAccesor;
+    private readonly JsonSerializerOptions JsonOptions;
 
     public ApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
     {
-        _httpClient = httpClient;
-        _httpContextAccessor = httpContextAccessor;
-        _jsonOptions = new JsonSerializerOptions
+        Httpclient = httpClient;
+        HttpContextAccesor = httpContextAccessor;
+        JsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
@@ -28,31 +22,28 @@ public class ApiClient
 
     private void SetAuthorizationHeader()
     {
-        var token = _httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+        var token = HttpContextAccesor.HttpContext?.Request.Cookies["AuthToken"];
 
-        _httpClient.DefaultRequestHeaders.Authorization = null;
+        Httpclient.DefaultRequestHeaders.Authorization = null;
 
         if (!string.IsNullOrWhiteSpace(token))
         {
-            _httpClient.DefaultRequestHeaders.Authorization =
+            Httpclient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
         }
     }
-
-   
     // GET
-   
-    public async Task<T?> GetAsync<T>(string endpoint)
+       public async Task<T?> GetAsync<T>(string endpoint)
     {
         SetAuthorizationHeader();
 
-        var response = await _httpClient.GetAsync(endpoint);
+        var response = await Httpclient.GetAsync(endpoint);
 
         if (!response.IsSuccessStatusCode)
             return default;
 
         var content = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<T>(content, _jsonOptions);
+        return JsonSerializer.Deserialize<T>(content, JsonOptions);
     }
 
     
@@ -65,14 +56,14 @@ public class ApiClient
         var json = JsonSerializer.Serialize(data);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await _httpClient.PostAsync(endpoint, content);
+        var response = await Httpclient.PostAsync(endpoint, content);
         var responseContent = await response.Content.ReadAsStringAsync();
 
         Console.WriteLine($"POST {endpoint} returned: {responseContent}");
 
         try
         {
-            return JsonSerializer.Deserialize<TResponse>(responseContent, _jsonOptions);
+            return JsonSerializer.Deserialize<TResponse>(responseContent, JsonOptions);
         }
         catch (Exception ex)
         {
@@ -116,7 +107,7 @@ public class ApiClient
         var json = JsonSerializer.Serialize(data);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        return await _httpClient.PostAsync(endpoint, content);
+        return await Httpclient.PostAsync(endpoint, content);
     }
 }
     

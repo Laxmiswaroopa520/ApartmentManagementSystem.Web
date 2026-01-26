@@ -1,4 +1,6 @@
-﻿namespace ApartmentManagementSystem.Web.ViewModels.Dashboard
+﻿using ApartmentManagementSystem.Web.ViewModels.Dashboard;
+
+namespace ApartmentManagementSystem.Web.ViewModels.Dashboard
 {
     public class EnhancedDashboardViewModel
     {

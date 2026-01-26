@@ -1,0 +1,249 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@* Views/ApartmentBuilder/Create.cshtml *@
+@*@model ApartmentManagementSystem.Web.ViewModels.Apartment.CreateApartmentViewModel;*@
+@* Views/ApartmentBuilder/Create.cshtml *@
+@{
+    ViewData["Title"] = "Create New Apartment";
+}
+
+<!-- Add Three.js BEFORE your custom scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<div class="apartment-builder-container">
+    <div class="builder-header">
+        <h1 class="builder-title">
+            <i class="fas fa-building"></i>
+            Create New Apartment Building
+        </h1>
+        <p class="builder-subtitle">Design your apartment complex with custom floors and flats</p>
+    </div>
+
+    <div class="builder-content">
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-label">Basic Info</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-label">Building Layout</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-label">Preview & Confirm</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Basic Information -->
+        <div class="builder-step" id="step1" style="display: block;">
+            <div class="form-card">
+                <h3 class="form-section-title">
+                    <i class="fas fa-info-circle"></i>
+                    Apartment Details
+                </h3>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="apartmentName">Building/Block Name *</label>
+                        <input type="text" id="apartmentName" class="form-control"
+                               placeholder="e.g., Green Valley Tower A" required>
+                        <small class="form-text">Enter a unique name for this building</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address *</label>
+                        <input type="text" id="address" class="form-control"
+                               placeholder="Street address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" class="form-control"
+                               placeholder="City name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" class="form-control"
+                               placeholder="State name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pinCode">PIN Code</label>
+                        <input type="text" id="pinCode" class="form-control"
+                               placeholder="6-digit PIN" maxlength="6">
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-next" onclick="nextStep(2)">
+                    Next: Building Layout <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Building Layout -->
+        <div class="builder-step" id="step2" style="display: none;">
+            <div class="form-card">
+                <h3 class="form-section-title">
+                    <i class="fas fa-layer-group"></i>
+                    Building Configuration
+                </h3>
+
+                <div class="layout-controls">
+                    <div class="control-group">
+                        <label for="totalFloors">Number of Floors *</label>
+                        <div class="number-input-wrapper">
+                            <button type="button" class="btn-decrease" onclick="changeFloors(-1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="totalFloors" class="number-input"
+                                   value="5" min="1" max="50" onchange="updatePreview()">
+                            <button type="button" class="btn-increase" onclick="changeFloors(1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <small class="form-text">1 to 50 floors</small>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="flatsPerFloor">Flats per Floor *</label>
+                        <div class="number-input-wrapper">
+                            <button type="button" class="btn-decrease" onclick="changeFlats(-1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="flatsPerFloor" class="number-input"
+                                   value="4" min="1" max="20" onchange="updatePreview()">
+                            <button type="button" class="btn-increase" onclick="changeFlats(1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <small class="form-text">1 to 20 flats per floor</small>
+                    </div>
+                </div>
+
+                <div class="building-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="displayFloors">5</div>
+                            <div class="stat-label">Total Floors</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-door-open"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="displayFlatsPerFloor">4</div>
+                            <div class="stat-label">Flats per Floor</div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-highlight">
+                        <div class="stat-icon"><i class="fas fa-home"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="displayTotalFlats">20</div>
+                            <div class="stat-label">Total Flats</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(1)">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                        Preview Building <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Preview -->
+        <div class="builder-step" id="step3" style="display: none;">
+            <div class="preview-container">
+                <h3 class="form-section-title">
+                    <i class="fas fa-eye"></i>
+                    Building Preview
+                </h3>
+
+                <!-- 2D Preview -->
+                <div class="preview-section">
+                    <div class="preview-header">
+                        <h4>2D Floor Plan View</h4>
+                        <div class="view-toggle">
+                            <button class="btn-toggle active" onclick="switchView('2d')">
+                                <i class="fas fa-th"></i> 2D
+                            </button>
+                            <button class="btn-toggle" onclick="switchView('3d')">
+                                <i class="fas fa-cube"></i> 3D
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="preview2D" class="preview-canvas"></div>
+                    <div id="preview3D" class="preview-canvas" style="display: none;"></div>
+                </div>
+
+                <div class="preview-summary">
+                    <h4>Summary</h4>
+                    <table class="summary-table">
+                        <tr>
+                            <td><strong>Building Name:</strong></td>
+                            <td id="summaryName">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Address:</strong></td>
+                            <td id="summaryAddress">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Floors:</strong></td>
+                            <td id="summaryFloors">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Flats per Floor:</strong></td>
+                            <td id="summaryFlatsPerFloor">-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Flats:</strong></td>
+                            <td id="summaryTotalFlats">-</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep(2)">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button type="button" class="btn btn-success btn-lg" onclick="submitApartment()">
+                        <i class="fas fa-check-circle"></i> Create Apartment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Creating your apartment building...</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/apartment-builder.js"></script>
+    <script src="~/js/apartment-visualizer-3d.js"></script>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/apartment-builder.css" />
+}
+
+@*
+@section Scripts {
+    <script src="~/js/apartment-builder.js"></script>
+    <script src="~/js/apartment-visualizer-3d.js"></script>
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/apartment-builder.css" />
+}
+*@

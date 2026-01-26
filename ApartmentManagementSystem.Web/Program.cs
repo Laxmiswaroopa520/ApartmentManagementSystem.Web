@@ -12,10 +12,11 @@ builder.Services.AddHttpContextAccessor();
 // HttpClient for API Communication
 builder.Services.AddHttpClient<ApiClient>(client =>
 {
+    //right now modified this..
     var apiBaseUrl =
         builder.Configuration["ApiSettings:BaseUrl"]
-        ?? "http://localhost:7093/";
-
+       ?? "http://localhost:7093/";
+    //var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7001/";
     client.BaseAddress = new Uri(apiBaseUrl);
     client.DefaultRequestHeaders.Add("Accept", "application/json");
     client.Timeout = TimeSpan.FromSeconds(30);
@@ -23,6 +24,7 @@ builder.Services.AddHttpClient<ApiClient>(client =>
 });
 
 // API SERVICES
+builder.Services.AddScoped<ApartmentApiService>();     // new service
 builder.Services.AddScoped<AuthApiService>();
 builder.Services.AddScoped<OnboardingApiService>();
 builder.Services.AddScoped<DashboardApiService>(); 

@@ -2,6 +2,489 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
+@* Views/Dashboard/EnhancedDashboard.cshtml *@
+@* Views/Dashboard/EnhancedDashboard.cshtml *@
+@model ApartmentManagementSystem.Web.ViewModels.Dashboard.EnhancedDashboardViewModel
+@{
+    ViewData["Title"] = "Enhanced Admin Dashboard";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1">
+                <i class="bi bi-speedometer2"></i> Welcome, @Model.FullName! 👋
+            </h2>
+            <p class="text-muted">
+                @if (Model.AllRoles.Any())
+                {
+                    <span>Roles: </span>
+                    @foreach (var role in Model.AllRoles)
+                    {
+                        <span class="badge bg-primary me-1">@role</span>
+                    }
+                }
+                else
+                {
+                    <span>Role: <span class="badge bg-primary">@Model.Role</span></span>
+                }
+            </p>
+        </div>
+    </div>
+
+    <!-- Quick Actions Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-primary shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <!-- Apartment Management (SuperAdmin Only) -->
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
+                            <div class="col-md-3">
+                                <a asp-controller="ApartmentBuilder" asp-action="ManageApartments"
+                                   class="btn btn-gradient w-100 btn-lg"
+                                   style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+                                    <i class="bi bi-buildings"></i> My Apartments
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a asp-controller="ApartmentBuilder" asp-action="Create"
+                                   class="btn btn-gradient w-100 btn-lg"
+                                   style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white;">
+                                    <i class="bi bi-building-add"></i> Create Apartment
+                                </a>
+                            </div>
+                        }
+
+                        <div class="col-md-3">
+                            <a asp-controller="Onboarding" asp-action="Create" class="btn btn-success w-100 btn-lg">
+                                <i class="bi bi-person-plus"></i> Onboard Resident
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="CommunityMembers" asp-action="Index" class="btn btn-info w-100 btn-lg">
+                                <i class="bi bi-people"></i> Community Members
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="StaffMembers" asp-action="Index" class="btn btn-warning w-100 btn-lg">
+                                <i class="bi bi-person-badge"></i> Staff Members
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="ResidentManagement" asp-action="Index" class="btn btn-primary w-100 btn-lg">
+                                <i class="bi bi-house-door"></i> All Residents
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apartment Portfolio (SuperAdmin Only) -->
+    @if (User.IsInRole("SuperAdmin") && Model.Stats.TotalApartments.HasValue)
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="card-header bg-transparent border-0 text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-buildings-fill"></i> Apartment Portfolio Overview
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-3">
+                                <div class="card bg-white bg-opacity-25 text-white border-0 h-100">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-building display-4 mb-2"></i>
+                                        <h2 class="display-5 mb-0">@Model.Stats.TotalApartments</h2>
+                                        <p class="mb-0">Total Apartments</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-white bg-opacity-25 text-white border-0 h-100">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-check-circle display-4 mb-2"></i>
+                                        <h2 class="display-5 mb-0">@Model.Stats.ActiveApartments</h2>
+                                        <p class="mb-0">Active Buildings</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-white bg-opacity-25 text-white border-0 h-100">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-layers display-4 mb-2"></i>
+                                        <h2 class="display-5 mb-0">@Model.Stats.TotalFloors</h2>
+                                        <p class="mb-0">Total Floors</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-white bg-opacity-25 text-white border-0 h-100">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-person-badge display-4 mb-2"></i>
+                                        <h2 class="display-5 mb-0">@Model.Stats.TotalManagers</h2>
+                                        <p class="mb-0">Assigned Managers</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a asp-controller="ApartmentBuilder" asp-action="ManageApartments"
+                               class="btn btn-light btn-lg">
+                                <i class="bi bi-gear-fill"></i> Manage All Apartments
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Statistics Cards Row 1 -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Total Residents</h6>
+                            <h2 class="mb-0 display-4">@Model.Stats.TotalResidents</h2>
+                        </div>
+                        <i class="bi bi-people-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <small>
+                        <i class="bi bi-arrow-up-right"></i>
+                        Active users in system
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Pending Registrations</h6>
+                            <h2 class="mb-0 display-4">@Model.Stats.PendingRegistrations</h2>
+                        </div>
+                        <i class="bi bi-hourglass-split" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a asp-controller="AdminResidents" asp-action="Pending" class="btn btn-sm btn-light">
+                        <i class="bi bi-eye"></i> View Pending
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Total Flats</h6>
+                            <h2 class="mb-0 display-4">@Model.Stats.TotalFlats</h2>
+                        </div>
+                        <i class="bi bi-building" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <small>
+                        <i class="bi bi-check-circle"></i>
+                        @Model.Stats.OccupiedFlats Occupied
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Vacant Flats</h6>
+                            <h2 class="mb-0 display-4">@Model.Stats.VacantFlats</h2>
+                        </div>
+                        <i class="bi bi-house" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <small>
+                        <i class="bi bi-graph-up"></i>
+                        Available for assignment
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards Row 2 -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-dark shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Staff Members</h6>
+                            <h2 class="mb-0 display-5">@Model.Stats.TotalStaffMembers</h2>
+                            <small>@Model.Stats.ActiveStaffMembers Active</small>
+                        </div>
+                        <i class="bi bi-person-badge-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-secondary shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Community Members</h6>
+                            <h2 class="mb-0 display-5">@Model.Stats.CommunityMembers</h2>
+                            <small>President, Secretary, Treasurer</small>
+                        </div>
+                        <i class="bi bi-award-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-danger shadow h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Pending Complaints</h6>
+                            <h2 class="mb-0 display-5">@Model.Stats.PendingComplaints</h2>
+                            <small>Resolved: @Model.Stats.ResolvedComplaintsThisMonth</small>
+                        </div>
+                        <i class="bi bi-exclamation-triangle-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white shadow h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-uppercase">Today's Visitors</h6>
+                            <h2 class="mb-0 display-5">@Model.Stats.TodaysVisitors</h2>
+                            <small>Security on duty: @Model.Stats.ActiveSecurityPersonnel</small>
+                        </div>
+                        <i class="bi bi-door-open-fill" style="font-size: 3rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Summary (Only for SuperAdmin & Treasurer) -->
+    @if ((User.IsInRole("SuperAdmin") || User.IsInRole("Treasurer")) && Model.FinancialSummary != null)
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-success shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-currency-rupee"></i> Financial Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6 class="text-muted">Total Outstanding</h6>
+                                <h3 class="text-danger">₹@Model.FinancialSummary.TotalOutstanding.ToString("N2")</h3>
+                            </div>
+                            <div class="col-md-4">
+                                <h6 class="text-muted">Collection This Month</h6>
+                                <h3 class="text-success">₹@Model.FinancialSummary.CollectionThisMonth.ToString("N2")</h3>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="#" class="btn btn-outline-success btn-lg w-100 mt-3">
+                                    <i class="bi bi-graph-up"></i> View Detailed Reports
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Module Cards -->
+    <div class="row g-4 mb-4">
+        <!-- Apartment Management (SuperAdmin Only) -->
+        @if (User.IsInRole("SuperAdmin"))
+        {
+            <div class="col-md-4">
+                <div class="card text-white bg-gradient shadow h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="card-body text-center">
+                        <div class="display-3 mb-3"><i class="bi bi-buildings-fill"></i></div>
+                        <h5 class="card-title">Apartment Management</h5>
+                        <h3>@(Model.Stats.TotalApartments ?? 0) Buildings</h3>
+                        <p class="card-text">Manage multiple apartment buildings</p>
+                        <hr class="bg-white" />
+                        <div class="d-grid gap-2">
+                            <a asp-controller="ApartmentBuilder" asp-action="ManageApartments"
+                               class="btn btn-light">
+                                <i class="bi bi-eye"></i> View All
+                            </a>
+                            <a asp-controller="ApartmentBuilder" asp-action="Create"
+                               class="btn btn-outline-light">
+                                <i class="bi bi-plus-circle"></i> Create New
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="col-md-4">
+            <div class="card text-white bg-gradient shadow h-100" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body text-center">
+                    <div class="display-3 mb-3"><i class="bi bi-clipboard-check"></i></div>
+                    <h5 class="card-title">Complaints Management</h5>
+                    <h3>@Model.Stats.PendingComplaints Pending</h3>
+                    <p class="card-text">Track and resolve resident complaints</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 5</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-gradient shadow h-100" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="card-body text-center">
+                    <div class="display-3 mb-3"><i class="bi bi-receipt"></i></div>
+                    <h5 class="card-title">Billing & Payments</h5>
+                    <h3>₹@Model.Stats.TotalOutstandingBills.ToString("N0")</h3>
+                    <p class="card-text">Manage maintenance & utility bills</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 6</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-gradient shadow h-100" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <div class="card-body text-center">
+                    <div class="display-3 mb-3"><i class="bi bi-calendar-event"></i></div>
+                    <h5 class="card-title">Visitor Management</h5>
+                    <h3>@Model.Stats.TodaysVisitors Today</h3>
+                    <p class="card-text">Track visitors and deliveries</p>
+                    <hr class="bg-white" />
+                    <p class="mb-0"><small>Coming in Phase 7</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    @if (Model.RecentActivities != null && Model.RecentActivities.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Activities</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Activity</th>
+                                        <th>Type</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var activity in Model.RecentActivities.Take(10))
+                                    {
+                                        <tr>
+                                            <td>@activity.Activity</td>
+                                            <td>
+                                                <span class="badge bg-primary">@activity.Type</span>
+                                            </td>
+                                            <td>@activity.Timestamp.ToString("MMM dd, yyyy hh:mm tt")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .bg-gradient {
+        background-size: 200% 200%;
+        animation: gradient 15s ease infinite;
+    }
+
+    @@keyframes gradient {
+       0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+        }
+
+    .btn-gradient {
+        transition: all 0.3s ease;
+    }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+    .bg-opacity-25 {
+        --bs-bg-opacity: 0.25;
+        background-color: rgba(255, 255, 255, var(--bs-bg-opacity)) !important;
+    }
+</style>
+
+
+
+
+
+
+
+@*
 @model ApartmentManagementSystem.Web.ViewModels.Dashboard.EnhancedDashboardViewModel
 @{
     ViewData["Title"] = "Enhanced Admin Dashboard";
@@ -350,171 +833,7 @@
 
 
 
-
-
-
-
-
-
-@*
-    @model ApartmentManagementSystem.Web.ViewModels.Dashboard.DashboardViewModel
-
-@{
-    ViewData["Title"] = "Dashboard";
-}
-
-<div class="container-fluid mt-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2>
-                <i class="bi bi-speedometer2"></i> Welcome, @Model.FullName
-            </h2>
-            <p class="text-muted">Role: <span class="badge bg-primary">@Model.Role</span></p>
-        </div>
-    </div>
-
-    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
-    {
-        <!-- Admin Dashboard -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="card text-white bg-primary shadow">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title">Total Residents</h6>
-                                <h2 class="mb-0">@Model.TotalResidents</h2>
-                            </div>
-                            <i class="bi bi-people-fill" style="font-size: 3rem; opacity: 0.3;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card text-white bg-warning shadow">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title">Pending Registrations</h6>
-                                <h2 class="mb-0">@Model.PendingRegistrations</h2>
-                            </div>
-                            <i class="bi bi-hourglass-split" style="font-size: 3rem; opacity: 0.3;"></i>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-0">
-                        <a asp-controller="AdminResidents" asp-action="Pending"
-                           class="btn btn-sm btn-light">
-                            <i class="bi bi-eye"></i> View Pending
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card text-white bg-success shadow">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title">Total Flats</h6>
-                                <h2 class="mb-0">@Model.TotalFlats</h2>
-                            </div>
-                            <i class="bi bi-building" style="font-size: 3rem; opacity: 0.3;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card text-white bg-info shadow">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title">Vacant Flats</h6>
-                                <h2 class="mb-0">@Model.VacantFlats</h2>
-                            </div>
-                            <i class="bi bi-house" style="font-size: 3rem; opacity: 0.3;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">
-                            <i class="bi bi-list-task"></i> Quick Actions
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2 d-md-flex">
-                            <a asp-controller="Onboarding" asp-action="Create"
-                               class="btn btn-primary">
-                                <i class="bi bi-person-plus"></i> Onboard New Resident
-                            </a>
-                            <a asp-controller="AdminResidents" asp-action="Pending"
-                               class="btn btn-warning">
-                                <i class="bi bi-hourglass-split"></i> View Pending Registrations
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-    else
-    {
-        <!-- Resident Dashboard -->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">
-                            <i class="bi bi-person-circle"></i> My Profile
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-borderless">
-                            <tr>
-                                <th>Name:</th>
-                                <td>@Model.FullName</td>
-                            </tr>
-                            <tr>
-                                <th>Email:</th>
-                                <td>@Model.Email</td>
-                            </tr>
-                            <tr>
-                                <th>Phone:</th>
-                                <td>@Model.Phone</td>
-                            </tr>
-                            <tr>
-                                <th>Flat Number:</th>
-                                <td>
-                                    @if (string.IsNullOrEmpty(Model.FlatNumber) || Model.FlatNumber == "Not Assigned")
-                                    {
-                                        <span class="badge bg-warning text-dark">Awaiting Assignment</span>
-                                    }
-                                    else
-                                    {
-                                        <strong>@Model.FlatNumber</strong>
-                                    }
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-</div>
-
-
-
-
 *@
-
 
 
 

@@ -2,6 +2,172 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @model ApartmentManagementSystem.Web.ViewModels.Admin.AssignFlatViewModel
+
+@{
+    ViewData["Title"] = "Assign Flat";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-house-check"></i> Assign Flat to Resident
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-person"></i>
+                        <strong>Resident:</strong> @Model.UserName
+                    </div>
+
+                    <form asp-action="AssignFlat" method="post">
+                        <input asp-for="UserId" type="hidden" />
+                        <input asp-for="UserName" type="hidden" />
+
+                        <!-- ⭐ NEW: Apartment Selection -->
+                        <div class="mb-3">
+                            <label asp-for="ApartmentId" class="form-label">Select Apartment</label>
+                            <select asp-for="ApartmentId"
+                                    class="form-select"
+                                    id="apartmentSelect"
+                                    asp-items="@(Model.Apartments != null
+                                                                            ? new SelectList(Model.Apartments, "Id", "Name")
+                                                                            : Enumerable.Empty<SelectListItem>())">
+                                <option value="">-- Select Apartment --</option>
+                            </select>
+                            <span asp-validation-for="ApartmentId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Floor Selection -->
+                        <div class="mb-3">
+                            <label asp-for="FloorId" class="form-label">Select Floor</label>
+                            <select asp-for="FloorId"
+                                    class="form-select"
+                                    id="floorSelect"
+                                    disabled>
+                                <option value="">-- First Select an Apartment --</option>
+                            </select>
+                            <span asp-validation-for="FloorId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Flat Selection -->
+                        <div class="mb-3">
+                            <label asp-for="FlatId" class="form-label">Select Flat</label>
+                            <select asp-for="FlatId"
+                                    class="form-select"
+                                    id="flatSelect"
+                                    disabled>
+                                <option value="">-- First Select a Floor --</option>
+                            </select>
+                            <span asp-validation-for="FlatId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Assign Flat
+                            </button>
+                            <a asp-action="Pending" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const apartmentSelect = document.getElementById('apartmentSelect');
+            const floorSelect = document.getElementById('floorSelect');
+            const flatSelect = document.getElementById('flatSelect');
+
+            // ⭐ When apartment changes, load floors
+            apartmentSelect.addEventListener('change', async function () {
+                const apartmentId = this.value;
+
+                // Reset floor and flat
+                floorSelect.innerHTML = '<option value="">-- Select Floor --</option>';
+                floorSelect.disabled = true;
+                flatSelect.innerHTML = '<option value="">-- First Select a Floor --</option>';
+                flatSelect.disabled = true;
+
+                if (!apartmentId) {
+                    floorSelect.innerHTML = '<option value="">-- First Select an Apartment --</option>';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/AdminResidents/GetFloorsByApartment?apartmentId=${apartmentId}`);
+                    const floors = await response.json();
+
+                    if (!floors || floors.length === 0) {
+                        floorSelect.innerHTML = '<option value="">No floors available</option>';
+                        return;
+                    }
+
+                    floorSelect.innerHTML = '<option value="">-- Select Floor --</option>';
+                    floors.forEach(floor => {
+                        const option = document.createElement('option');
+                        option.value = floor.id;
+                        option.textContent = `Floor ${floor.floorNumber}`;
+                        floorSelect.appendChild(option);
+                    });
+
+                    floorSelect.disabled = false;
+                } catch (err) {
+                    console.error("Floor load error:", err);
+                    floorSelect.innerHTML = '<option value="">Error loading floors</option>';
+                }
+            });
+
+            // When floor changes, load flats
+            floorSelect.addEventListener('change', async function () {
+                const floorId = this.value;
+
+                flatSelect.innerHTML = '<option value="">-- Select Flat --</option>';
+                flatSelect.disabled = true;
+
+                if (!floorId) {
+                    flatSelect.innerHTML = '<option value="">-- First Select a Floor --</option>';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/AdminResidents/GetFlatsByFloor?floorId=${floorId}`);
+                    const flats = await response.json();
+
+                    if (!flats || flats.length === 0) {
+                        flatSelect.innerHTML = '<option value="">No vacant flats available</option>';
+                        return;
+                    }
+
+                    flatSelect.innerHTML = '<option value="">-- Select Flat --</option>';
+                    flats.forEach(flat => {
+                        const option = document.createElement('option');
+                        option.value = flat.id;
+                        option.textContent = flat.flatNumber;
+                        flatSelect.appendChild(option);
+                    });
+
+                    flatSelect.disabled = false;
+                } catch (err) {
+                    console.error("Flat load error:", err);
+                    flatSelect.innerHTML = '<option value="">Error loading flats</option>';
+                }
+            });
+        });
+    </script>
+}
+
+
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Admin.AssignFlatViewModel
 @if (Model == null)
 {
     <h1 style="color:red">MODEL IS NULL</h1>
@@ -121,45 +287,4 @@
         });
     });
 </script>
-<!--
-<script>
-    document.getElementById('floorSelect').addEventListener('change', async function () {
-        const floorId = this.value;
-        const flatSelect = document.getElementById('flatSelect');
-
-        flatSelect.innerHTML = '';
-        flatSelect.disabled = true;
-
-        if (!floorId) {
-            flatSelect.innerHTML = '<option value="">-- First Select a Floor --</option>';
-            return;
-        }
-
-        try {
-            const response = await fetch(`/AdminResidents/GetFlatsByFloor?floorId=${floorId}`);
-            const flats = await response.json();
-
-            if (flats.length === 0) {
-                flatSelect.innerHTML = '<option value="">No vacant flats available</option>';
-                return;
-            }
-
-            flatSelect.innerHTML = '<option value="">-- Select Flat --</option>';
-
-            flats.forEach(flat => {
-                const option = document.createElement('option');
-                option.value = flat.id;
-                option.textContent = flat.flatNumber;
-                flatSelect.appendChild(option);
-            });
-
-            flatSelect.disabled = false; //  ENABLE HERE
-        }
-        catch (err) {
-            console.error(err);
-            flatSelect.innerHTML = '<option value="">Error loading flats</option>';
-        }
-    });
-</script>
-
--->
+*@

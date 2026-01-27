@@ -7,4 +7,5 @@
         public string Name { get; set; } = string.Empty;
         public List<FlatDiagramDto> Flats { get; set; } = new();
     }
+
 }

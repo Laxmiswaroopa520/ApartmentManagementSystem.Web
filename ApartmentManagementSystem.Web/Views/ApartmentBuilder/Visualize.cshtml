@@ -1,7 +1,1900 @@
 ﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+    Final Fixed Version - Visualize.cshtml
+    This version properly handles the data structure from your API
 *@
-@* Views/ApartmentBuilder/Visualize.cshtml *@
+
+@*
+    Final Fixed Version - Visualize.cshtml
+    This version properly handles the data structure from your API
+*@
+@model ApartmentManagementSystem.Web.ViewModels.Apartment.ApartmentDiagramViewModel
+
+@{
+    ViewData["Title"] = $"{Model.Name} - 3D Visualization";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: white;
+            overflow: hidden;
+        }
+
+        .visualizer-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .toolbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 31, 58, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+            z-index: 100;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #667eea;
+            color: white;
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+            .back-btn:hover {
+                background: #667eea;
+                color: white;
+            }
+
+        .building-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .building-info p {
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.35rem;
+            border-radius: 10px;
+        }
+
+        .view-btn {
+            padding: 0.65rem 1.25rem;
+            border-radius: 7px;
+            border: none;
+            background: transparent;
+            color: #a0aec0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+            .view-btn.active {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            }
+
+        .canvas-container {
+            width: 100%;
+            height: calc(100vh - 70px);
+            margin-top: 70px;
+        }
+
+        #canvas3D,
+        #canvas2D {
+            width: 100%;
+            height: 100%;
+        }
+
+        #canvas2D {
+            display: none;
+            overflow: auto;
+            padding: 2.5rem;
+            background: #0a0e27;
+        }
+
+        .controls-panel {
+            position: absolute;
+            right: 1.5rem;
+            top: 100px;
+            background: rgba(26, 31, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.25rem;
+            width: 240px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+            .controls-panel h3 {
+                margin-bottom: 1rem;
+                font-size: 1rem;
+                color: #667eea;
+            }
+
+        .control-item {
+            margin-bottom: 1rem;
+        }
+
+            .control-item label {
+                display: block;
+                margin-bottom: 0.5rem;
+                color: #a0aec0;
+                font-size: 0.85rem;
+            }
+
+        .control-slider {
+            width: 100%;
+            height: 5px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+            .control-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: #667eea;
+                cursor: pointer;
+            }
+
+        .legend {
+            position: absolute;
+            left: 1.5rem;
+            bottom: 1.5rem;
+            background: rgba(26, 31, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+            .legend h4 {
+                margin-bottom: 0.875rem;
+                color: #667eea;
+                font-size: 0.95rem;
+            }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            margin-bottom: 0.625rem;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 25px;
+            height: 18px;
+            border-radius: 4px;
+        }
+
+            .legend-color.vacant {
+                background: #3d4575;
+            }
+
+            .legend-color.occupied {
+                background: #ffeb3b;
+            }
+
+        .stats-panel {
+            position: absolute;
+            left: 1.5rem;
+            top: 100px;
+            background: rgba(26, 31, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            min-width: 180px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.625rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .stat-row:last-child {
+                border-bottom: none;
+            }
+
+        .stat-label {
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+        .stat-value {
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        /* 2D View Styles */
+        .building-2d-fullscreen {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .floor-2d-fullscreen {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .floor-label-fullscreen {
+            min-width: 90px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #667eea;
+            text-align: right;
+        }
+
+        .flats-row {
+            flex: 1;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .flat-box {
+            flex: 1;
+            min-width: 90px;
+            aspect-ratio: 1;
+            background: #1a1f3a;
+            border: 2px solid #3d4575;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .flat-box.occupied {
+                border-color: #ffeb3b;
+                background: rgba(255, 235, 59, 0.1);
+            }
+
+            .flat-box:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+            }
+
+        .flat-number-display {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .flat-status-display {
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+
+        .flat-occupant {
+            font-size: 0.7rem;
+            color: #ffeb3b;
+            margin-top: 0.35rem;
+            text-align: center;
+        }
+
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ff6b6b;
+            background: rgba(26, 31, 58, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #ff6b6b;
+            max-width: 600px;
+        }
+
+            .error-message i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+
+        .debug-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-width: 300px;
+            word-wrap: break-word;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="visualizer-container">
+        <!-- Debug Info (remove in production) -->
+        <div class="debug-info" id="debugInfo" style="display: none;"></div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <a href="@Url.Action("Details", "ApartmentBuilder", new { id = Model.ApartmentId })"
+                   class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </a>
+                <div class="building-info">
+                    <h2>@Model.Name</h2>
+                    <p>@Model.TotalFloors Floors • @(Model.Floors?.FirstOrDefault()?.Flats?.Count ?? 0) Flats per Floor</p>
+                </div>
+            </div>
+            <div class="view-controls">
+                <button class="view-btn active" onclick="switchView('3d')" id="btn3D">
+                    <i class="fas fa-cube"></i>
+                    3D View
+                </button>
+                <button class="view-btn" onclick="switchView('2d')" id="btn2D">
+                    <i class="fas fa-th"></i>
+                    2D View
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat-row">
+                <span class="stat-label">Total Flats:</span>
+                <span class="stat-value" id="totalFlats">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Occupied:</span>
+                <span class="stat-value" id="occupiedFlats">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Vacant:</span>
+                <span class="stat-value" id="vacantFlats">0</span>
+            </div>
+        </div>
+
+        <!-- 3D Controls -->
+        <div class="controls-panel" id="controls3D">
+            <h3><i class="fas fa-sliders-h"></i> 3D Controls</h3>
+            <div class="control-item">
+                <label>Rotation Speed</label>
+                <input type="range" class="control-slider" id="rotationSpeed"
+                       min="0" max="0.01" step="0.001" value="0.002">
+            </div>
+            <div class="control-item">
+                <label>Camera Distance</label>
+                <input type="range" class="control-slider" id="cameraZoom"
+                       min="20" max="100" value="50">
+            </div>
+            <div class="control-item">
+                <button class="back-btn" style="width: 100%; justify-content: center;" onclick="resetCamera()">
+                    <i class="fas fa-redo"></i> Reset View
+                </button>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <h4>Legend</h4>
+            <div class="legend-item">
+                <div class="legend-color vacant"></div>
+                <span>Vacant Flat</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color occupied"></div>
+                <span>Occupied Flat</span>
+            </div>
+        </div>
+
+        <!-- Canvas Containers -->
+        <div class="canvas-container">
+            <div id="canvas3D"></div>
+            <div id="canvas2D"></div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CRITICAL FIX: Proper data parsing
+        // ============================================
+        let apartmentData;
+        let isDataValid = false;
+
+        try {
+            // Parse the JSON data from the server
+            const jsonData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+            console.log('=== RAW JSON DATA ===');
+            console.log(JSON.stringify(jsonData, null, 2));
+
+            // Validate the data structure
+            if (!jsonData) {
+                throw new Error('No data received from server');
+            }
+
+            if (!jsonData.floors || !Array.isArray(jsonData.floors)) {
+                throw new Error('Invalid floors data structure');
+            }
+
+            if (jsonData.floors.length === 0) {
+                throw new Error('No floors found in the apartment data');
+            }
+
+            // Check if first floor has flats
+            if (!jsonData.floors[0].flats || !Array.isArray(jsonData.floors[0].flats)) {
+                throw new Error('Invalid flats data structure in floor');
+            }
+
+            if (jsonData.floors[0].flats.length === 0) {
+                throw new Error('No flats found in floor data');
+            }
+
+            // If we got here, data is valid
+            apartmentData = jsonData;
+            isDataValid = true;
+
+            console.log('=== DATA VALIDATION PASSED ===');
+            console.log('Apartment:', apartmentData.name);
+            console.log('Total Floors:', apartmentData.totalFloors);
+            console.log('Floors Array Length:', apartmentData.floors.length);
+            console.log('First Floor Flats:', apartmentData.floors[0].flats.length);
+
+        } catch (error) {
+            console.error('=== DATA LOADING ERROR ===');
+            console.error('Error:', error.message);
+            console.error('Stack:', error.stack);
+
+            // Show error to user
+            document.body.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h2>Data Loading Error</h2>
+                    <p>${error.message}</p>
+                    <p style="font-size: 0.9rem; margin-top: 1rem; color: #a0aec0;">
+                        This usually means the apartment data was not properly loaded from the database.
+                        Please check:
+                    </p>
+                    <ul style="text-align: left; margin: 1rem auto; max-width: 400px; font-size: 0.85rem; color: #a0aec0;">
+                        <li>Floors were created for this apartment</li>
+                        <li>Flats were created for each floor</li>
+                        <li>Database relationships are set up correctly</li>
+                        <li>API is using .Include() to load related data</li>
+                    </ul>
+                    <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 10px 20px; background: #667eea; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">
+                        Try Again
+                    </button>
+                    <a href="@Url.Action("Details", "ApartmentBuilder", new { id = Model.ApartmentId })"
+                       style="display: inline-block; margin-top: 10px; margin-left: 10px; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 2px solid #667eea; border-radius: 8px; color: white; text-decoration: none; font-weight: 600;">
+                        Go Back
+                    </a>
+                </div>
+            `;
+            throw error; // Stop execution
+        }
+
+        // Three.js variables
+        let scene, camera, renderer, buildingGroup;
+        let animationId;
+        let rotationSpeed = 0.002;
+        let isDragging = false;
+        let previousMouse = { x: 0, y: 0 };
+
+        // Initialize when page loads
+        console.log('=== INITIALIZING VISUALIZATION ===');
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        function init() {
+            if (!isDataValid) {
+                console.error('Cannot initialize: Data validation failed');
+                return;
+            }
+
+            console.log('Starting 3D initialization...');
+
+            try {
+                init3DView();
+                updateStats();
+                console.log('=== INITIALIZATION COMPLETE ===');
+            } catch (error) {
+                console.error('=== INITIALIZATION ERROR ===');
+                console.error(error);
+                showError('Failed to initialize 3D view: ' + error.message);
+            }
+        }
+
+        function showError(message) {
+            const container = document.getElementById('canvas3D');
+            if (container) {
+                container.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h2>Visualization Error</h2>
+                        <p>${message}</p>
+                        <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 10px 20px; background: #667eea; border: none; border-radius: 8px; color: white; cursor: pointer;">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function init3DView() {
+            const container = document.getElementById('canvas3D');
+            if (!container) {
+                throw new Error('Canvas container not found');
+            }
+
+            if (typeof THREE === 'undefined') {
+                throw new Error('Three.js library not loaded');
+            }
+
+            console.log('Setting up 3D scene...');
+
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0e27);
+            scene.fog = new THREE.Fog(0x0a0e27, 50, 200);
+
+            // Camera
+            const aspect = window.innerWidth / (window.innerHeight - 70);
+            camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000);
+
+            const floorHeight = 3;
+            const buildingHeight = apartmentData.totalFloors * floorHeight;
+            const cameraDistance = Math.max(buildingHeight * 1.5, 35);
+
+            camera.position.set(cameraDistance, buildingHeight * 0.7, cameraDistance);
+            camera.lookAt(0, buildingHeight / 2, 0);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: false
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight - 70);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(50, 100, 50);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            const pointLight1 = new THREE.PointLight(0x667eea, 1, 100);
+            pointLight1.position.set(-30, buildingHeight / 2, 30);
+            scene.add(pointLight1);
+
+            const pointLight2 = new THREE.PointLight(0x764ba2, 0.5, 100);
+            pointLight2.position.set(30, buildingHeight / 2, -30);
+            scene.add(pointLight2);
+
+            // Ground
+            const groundGeometry = new THREE.PlaneGeometry(200, 200);
+            const groundMaterial = new THREE.MeshStandardMaterial({
+                color: 0x1a1f3a,
+                roughness: 0.9
+            });
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.5;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // Grid
+            const gridHelper = new THREE.GridHelper(200, 80, 0x667eea, 0x2d3748);
+            gridHelper.material.opacity = 0.2;
+            gridHelper.material.transparent = true;
+            gridHelper.position.y = -0.4;
+            scene.add(gridHelper);
+
+            // Build apartment
+            buildApartment3D();
+
+            // Controls
+            setupMouseControls();
+
+            // Start animation
+            console.log('Starting animation...');
+            animate();
+        }
+
+        function buildApartment3D() {
+            console.log('Building 3D model...');
+
+            buildingGroup = new THREE.Group();
+            const floorHeight = 3;
+            const flatWidth = 4;
+            const flatDepth = 4;
+
+            const flatsPerFloor = apartmentData.floors[0].flats.length;
+            const buildingWidth = flatsPerFloor * flatWidth;
+
+            console.log(`Creating building: ${apartmentData.floors.length} floors, ${flatsPerFloor} flats per floor`);
+
+            apartmentData.floors.forEach((floorData, floorIndex) => {
+                const yPosition = floorIndex * floorHeight;
+
+                // Floor slab
+                const slabGeometry = new THREE.BoxGeometry(buildingWidth, 0.3, flatDepth);
+                const slabMaterial = new THREE.MeshStandardMaterial({
+                    color: 0x2d3561,
+                    roughness: 0.7,
+                    metalness: 0.3
+                });
+                const slab = new THREE.Mesh(slabGeometry, slabMaterial);
+                slab.position.y = yPosition;
+                slab.castShadow = true;
+                slab.receiveShadow = true;
+                buildingGroup.add(slab);
+
+                // Flats
+                floorData.flats.forEach((flat, flatIndex) => {
+                    const flatGroup = create3DFlat(flatWidth, floorHeight, flatDepth, flat);
+                    flatGroup.position.x = (flatIndex - flatsPerFloor / 2) * flatWidth + flatWidth / 2;
+                    flatGroup.position.y = yPosition;
+                    buildingGroup.add(flatGroup);
+                });
+            });
+
+            // Glass facade
+            createGlassFacade(buildingWidth, apartmentData.totalFloors * floorHeight, flatDepth);
+
+            scene.add(buildingGroup);
+            console.log('Building created successfully!');
+        }
+
+        function create3DFlat(width, height, depth, flatData) {
+            const flatGroup = new THREE.Group();
+            const isOccupied = flatData.isOccupied || false;
+            const wallColor = isOccupied ? 0xffeb3b : 0x3d4575;
+            const emissiveColor = isOccupied ? 0x665500 : 0x000000;
+
+            const wallGeometry = new THREE.BoxGeometry(width - 0.4, height - 0.6, 0.2);
+            const wallMaterial = new THREE.MeshStandardMaterial({
+                color: wallColor,
+                roughness: 0.6,
+                metalness: 0.2,
+                emissive: emissiveColor,
+                emissiveIntensity: isOccupied ? 0.4 : 0
+            });
+
+            const backWall = new THREE.Mesh(wallGeometry, wallMaterial);
+            backWall.position.z = -depth / 2 + 0.1;
+            backWall.castShadow = true;
+            flatGroup.add(backWall);
+
+            if (isOccupied) {
+                const windowGeometry = new THREE.BoxGeometry(width * 0.6, height * 0.4, 0.1);
+                const windowMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xffffdd,
+                    emissive: 0xffff88,
+                    emissiveIntensity: 0.9
+                });
+                const window = new THREE.Mesh(windowGeometry, windowMaterial);
+                window.position.z = -depth / 2 + 0.15;
+                flatGroup.add(window);
+            }
+
+            return flatGroup;
+        }
+
+        function createGlassFacade(width, height, depth) {
+            const glassMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0x88ccff,
+                transparent: true,
+                opacity: 0.15,
+                roughness: 0.1,
+                metalness: 0.9
+            });
+
+            const frontGeometry = new THREE.PlaneGeometry(width, height);
+            const frontGlass = new THREE.Mesh(frontGeometry, glassMaterial);
+            frontGlass.position.z = depth / 2;
+            frontGlass.position.y = height / 2;
+            buildingGroup.add(frontGlass);
+        }
+
+        function setupMouseControls() {
+            const canvas = renderer.domElement;
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMouse = { x: e.clientX, y: e.clientY };
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDragging && buildingGroup) {
+                    const deltaX = e.clientX - previousMouse.x;
+                    buildingGroup.rotation.y += deltaX * 0.005;
+                    previousMouse = { x: e.clientX, y: e.clientY };
+                }
+            });
+
+            canvas.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            canvas.addEventListener('mouseleave', () => {
+                isDragging = false;
+            });
+
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 1.1 : 0.9;
+                camera.position.multiplyScalar(delta);
+                const distance = camera.position.length();
+                if (distance < 20) camera.position.normalize().multiplyScalar(20);
+                if (distance > 100) camera.position.normalize().multiplyScalar(100);
+            });
+        }
+
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+
+            if (buildingGroup && !isDragging) {
+                buildingGroup.rotation.y += rotationSpeed;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function switchView(view) {
+            document.getElementById('btn3D').classList.remove('active');
+            document.getElementById('btn2D').classList.remove('active');
+            document.getElementById('controls3D').style.display = view === '3d' ? 'block' : 'none';
+
+            if (view === '3d') {
+                document.getElementById('canvas3D').style.display = 'block';
+                document.getElementById('canvas2D').style.display = 'none';
+                document.getElementById('btn3D').classList.add('active');
+                if (!animationId) animate();
+            } else {
+                document.getElementById('canvas3D').style.display = 'none';
+                document.getElementById('canvas2D').style.display = 'block';
+                document.getElementById('btn2D').classList.add('active');
+                render2DView();
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+            }
+        }
+
+        function render2DView() {
+            const container = document.getElementById('canvas2D');
+            container.innerHTML = '';
+
+            const building = document.createElement('div');
+            building.className = 'building-2d-fullscreen';
+
+            // Render floors from top to bottom (reverse order)
+            apartmentData.floors.slice().reverse().forEach(floor => {
+                const floorDiv = document.createElement('div');
+                floorDiv.className = 'floor-2d-fullscreen';
+
+                const label = document.createElement('div');
+                label.className = 'floor-label-fullscreen';
+                label.textContent = `Floor ${floor.floorNumber}`;
+                floorDiv.appendChild(label);
+
+                const flatsRow = document.createElement('div');
+                flatsRow.className = 'flats-row';
+
+                floor.flats.forEach(flat => {
+                    const flatBox = document.createElement('div');
+                    flatBox.className = `flat-box ${flat.isOccupied ? 'occupied' : ''}`;
+                    flatBox.innerHTML = `
+                        <div class="flat-number-display">${flat.flatNumber}</div>
+                        <div class="flat-status-display">
+                            <i class="fas fa-${flat.isOccupied ? 'user' : 'key'}"></i>
+                            ${flat.status}
+                        </div>
+                        ${flat.occupantName ? `<div class="flat-occupant">${flat.occupantName}</div>` : ''}
+                    `;
+                    flatsRow.appendChild(flatBox);
+                });
+
+                floorDiv.appendChild(flatsRow);
+                building.appendChild(floorDiv);
+            });
+
+            container.appendChild(building);
+        }
+
+        function updateStats() {
+            let total = 0;
+            let occupied = 0;
+
+            apartmentData.floors.forEach(floor => {
+                floor.flats.forEach(flat => {
+                    total++;
+                    if (flat.isOccupied) occupied++;
+                });
+            });
+
+            console.log(`Stats: Total=${total}, Occupied=${occupied}, Vacant=${total - occupied}`);
+
+            document.getElementById('totalFlats').textContent = total;
+            document.getElementById('occupiedFlats').textContent = occupied;
+            document.getElementById('vacantFlats').textContent = total - occupied;
+        }
+
+        function resetCamera() {
+            if (!camera || !buildingGroup) return;
+
+            const floorHeight = 3;
+            const buildingHeight = apartmentData.totalFloors * floorHeight;
+            const cameraDistance = Math.max(buildingHeight * 1.5, 35);
+
+            camera.position.set(cameraDistance, buildingHeight * 0.7, cameraDistance);
+            camera.lookAt(0, buildingHeight / 2, 0);
+            buildingGroup.rotation.set(0, 0, 0);
+        }
+
+        // Controls event listeners
+        document.getElementById('rotationSpeed').addEventListener('input', (e) => {
+            rotationSpeed = parseFloat(e.target.value);
+        });
+
+        document.getElementById('cameraZoom').addEventListener('input', (e) => {
+            const distance = parseFloat(e.target.value);
+            camera.position.normalize().multiplyScalar(distance);
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (renderer && camera) {
+                const aspect = window.innerWidth / (window.innerHeight - 70);
+                camera.aspect = aspect;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight - 70);
+            }
+        });
+    </script>
+</body>
+</html>
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Apartment.ApartmentDiagramViewModel
+
+@{
+    ViewData["Title"] = $"{Model.Name} - 3D Visualization";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: white;
+            overflow: hidden;
+        }
+
+        .visualizer-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .toolbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 31, 58, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+            z-index: 100;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #667eea;
+            color: white;
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+            .back-btn:hover {
+                background: #667eea;
+                color: white;
+            }
+
+        .building-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .building-info p {
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.35rem;
+            border-radius: 10px;
+        }
+
+        .view-btn {
+            padding: 0.65rem 1.25rem;
+            border-radius: 7px;
+            border: none;
+            background: transparent;
+            color: #a0aec0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+            .view-btn.active {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            }
+
+        .canvas-container {
+            width: 100%;
+            height: calc(100vh - 70px);
+            margin-top: 70px;
+        }
+
+        #canvas3D,
+        #canvas2D {
+            width: 100%;
+            height: 100%;
+        }
+
+        #canvas2D {
+            display: none;
+            overflow: auto;
+            padding: 2.5rem;
+            background: #0a0e27;
+        }
+
+        .controls-panel {
+            position: absolute;
+            right: 1.5rem;
+            top: 100px;
+            background: rgba(26, 31, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.25rem;
+            width: 240px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+            .controls-panel h3 {
+                margin-bottom: 1rem;
+                font-size: 1rem;
+                color: #667eea;
+            }
+
+        .control-item {
+            margin-bottom: 1rem;
+        }
+
+            .control-item label {
+                display: block;
+                margin-bottom: 0.5rem;
+                color: #a0aec0;
+                font-size: 0.85rem;
+            }
+
+        .control-slider {
+            width: 100%;
+            height: 5px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+            .control-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: #667eea;
+                cursor: pointer;
+            }
+
+        .legend {
+            position: absolute;
+            left: 1.5rem;
+            bottom: 1.5rem;
+            background: rgba(26, 31, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+            .legend h4 {
+                margin-bottom: 0.875rem;
+                color: #667eea;
+                font-size: 0.95rem;
+            }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            margin-bottom: 0.625rem;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 25px;
+            height: 18px;
+            border-radius: 4px;
+        }
+
+            .legend-color.vacant {
+                background: #3d4575;
+            }
+
+            .legend-color.occupied {
+                background: #ffeb3b;
+            }
+
+        .stats-panel {
+            position: absolute;
+            left: 1.5rem;
+            top: 100px;
+            background: rgba(26, 31, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            min-width: 180px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.625rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .stat-row:last-child {
+                border-bottom: none;
+            }
+
+        .stat-label {
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+        .stat-value {
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        /* 2D View Styles */
+        .building-2d-fullscreen {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .floor-2d-fullscreen {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .floor-label-fullscreen {
+            min-width: 90px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #667eea;
+            text-align: right;
+        }
+
+        .flats-row {
+            flex: 1;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .flat-box {
+            flex: 1;
+            min-width: 90px;
+            aspect-ratio: 1;
+            background: #1a1f3a;
+            border: 2px solid #3d4575;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .flat-box.occupied {
+                border-color: #ffeb3b;
+                background: rgba(255, 235, 59, 0.1);
+            }
+
+            .flat-box:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+            }
+
+        .flat-number-display {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .flat-status-display {
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+
+        .flat-occupant {
+            font-size: 0.7rem;
+            color: #ffeb3b;
+            margin-top: 0.35rem;
+            text-align: center;
+        }
+
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ff6b6b;
+            background: rgba(26, 31, 58, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #ff6b6b;
+            max-width: 600px;
+        }
+
+            .error-message i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+
+        .debug-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-width: 300px;
+            word-wrap: break-word;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="visualizer-container">
+        <!-- Debug Info (remove in production) -->
+        <div class="debug-info" id="debugInfo" style="display: none;"></div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <a href="@Url.Action("Details", "ApartmentBuilder", new { id = Model.ApartmentId })"
+                   class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </a>
+                <div class="building-info">
+                    <h2>@Model.Name</h2>
+                    <p>@Model.TotalFloors Floors • @(Model.Floors?.FirstOrDefault()?.Flats?.Count ?? 0) Flats per Floor</p>
+                </div>
+            </div>
+            <div class="view-controls">
+                <button class="view-btn active" onclick="switchView('3d')" id="btn3D">
+                    <i class="fas fa-cube"></i>
+                    3D View
+                </button>
+                <button class="view-btn" onclick="switchView('2d')" id="btn2D">
+                    <i class="fas fa-th"></i>
+                    2D View
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat-row">
+                <span class="stat-label">Total Flats:</span>
+                <span class="stat-value" id="totalFlats">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Occupied:</span>
+                <span class="stat-value" id="occupiedFlats">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Vacant:</span>
+                <span class="stat-value" id="vacantFlats">0</span>
+            </div>
+        </div>
+
+        <!-- 3D Controls -->
+        <div class="controls-panel" id="controls3D">
+            <h3><i class="fas fa-sliders-h"></i> 3D Controls</h3>
+            <div class="control-item">
+                <label>Rotation Speed</label>
+                <input type="range" class="control-slider" id="rotationSpeed"
+                       min="0" max="0.01" step="0.001" value="0.002">
+            </div>
+            <div class="control-item">
+                <label>Camera Distance</label>
+                <input type="range" class="control-slider" id="cameraZoom"
+                       min="20" max="100" value="50">
+            </div>
+            <div class="control-item">
+                <button class="back-btn" style="width: 100%; justify-content: center;" onclick="resetCamera()">
+                    <i class="fas fa-redo"></i> Reset View
+                </button>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <h4>Legend</h4>
+            <div class="legend-item">
+                <div class="legend-color vacant"></div>
+                <span>Vacant Flat</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color occupied"></div>
+                <span>Occupied Flat</span>
+            </div>
+        </div>
+
+        <!-- Canvas Containers -->
+        <div class="canvas-container">
+            <div id="canvas3D"></div>
+            <div id="canvas2D"></div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CRITICAL FIX: Proper data parsing
+        // ============================================
+        let apartmentData;
+        let isDataValid = false;
+
+        try {
+            // Parse the JSON data from the server
+            const jsonData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+            console.log('=== RAW JSON DATA ===');
+            console.log(JSON.stringify(jsonData, null, 2));
+
+            // Validate the data structure
+            if (!jsonData) {
+                throw new Error('No data received from server');
+            }
+
+            if (!jsonData.floors || !Array.isArray(jsonData.floors)) {
+                throw new Error('Invalid floors data structure');
+            }
+
+            if (jsonData.floors.length === 0) {
+                throw new Error('No floors found in the apartment data');
+            }
+
+            // Check if first floor has flats
+            if (!jsonData.floors[0].flats || !Array.isArray(jsonData.floors[0].flats)) {
+                throw new Error('Invalid flats data structure in floor');
+            }
+
+            if (jsonData.floors[0].flats.length === 0) {
+                throw new Error('No flats found in floor data');
+            }
+
+            // If we got here, data is valid
+            apartmentData = jsonData;
+            isDataValid = true;
+
+            console.log('=== DATA VALIDATION PASSED ===');
+            console.log('Apartment:', apartmentData.name);
+            console.log('Total Floors:', apartmentData.totalFloors);
+            console.log('Floors Array Length:', apartmentData.floors.length);
+            console.log('First Floor Flats:', apartmentData.floors[0].flats.length);
+
+        } catch (error) {
+            console.error('=== DATA LOADING ERROR ===');
+            console.error('Error:', error.message);
+            console.error('Stack:', error.stack);
+
+            // Show error to user
+            document.body.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h2>Data Loading Error</h2>
+                    <p>${error.message}</p>
+                    <p style="font-size: 0.9rem; margin-top: 1rem; color: #a0aec0;">
+                        This usually means the apartment data was not properly loaded from the database.
+                        Please check:
+                    </p>
+                    <ul style="text-align: left; margin: 1rem auto; max-width: 400px; font-size: 0.85rem; color: #a0aec0;">
+                        <li>Floors were created for this apartment</li>
+                        <li>Flats were created for each floor</li>
+                        <li>Database relationships are set up correctly</li>
+                        <li>API is using .Include() to load related data</li>
+                    </ul>
+                    <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 10px 20px; background: #667eea; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">
+                        Try Again
+                    </button>
+                    <a href="@Url.Action("Details", "ApartmentBuilder", new { id = Model.ApartmentId })"
+                       style="display: inline-block; margin-top: 10px; margin-left: 10px; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 2px solid #667eea; border-radius: 8px; color: white; text-decoration: none; font-weight: 600;">
+                        Go Back
+                    </a>
+                </div>
+            `;
+            throw error; // Stop execution
+        }
+
+        // Three.js variables
+        let scene, camera, renderer, buildingGroup;
+        let animationId;
+        let rotationSpeed = 0.002;
+        let isDragging = false;
+        let previousMouse = { x: 0, y: 0 };
+
+        // Initialize when page loads
+        console.log('=== INITIALIZING VISUALIZATION ===');
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        function init() {
+            if (!isDataValid) {
+                console.error('Cannot initialize: Data validation failed');
+                return;
+            }
+
+            console.log('Starting 3D initialization...');
+
+            try {
+                init3DView();
+                updateStats();
+                console.log('=== INITIALIZATION COMPLETE ===');
+            } catch (error) {
+                console.error('=== INITIALIZATION ERROR ===');
+                console.error(error);
+                showError('Failed to initialize 3D view: ' + error.message);
+            }
+        }
+
+        function showError(message) {
+            const container = document.getElementById('canvas3D');
+            if (container) {
+                container.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h2>Visualization Error</h2>
+                        <p>${message}</p>
+                        <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 10px 20px; background: #667eea; border: none; border-radius: 8px; color: white; cursor: pointer;">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function init3DView() {
+            const container = document.getElementById('canvas3D');
+            if (!container) {
+                throw new Error('Canvas container not found');
+            }
+
+            if (typeof THREE === 'undefined') {
+                throw new Error('Three.js library not loaded');
+            }
+
+            console.log('Setting up 3D scene...');
+
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0e27);
+            scene.fog = new THREE.Fog(0x0a0e27, 50, 200);
+
+            // Camera
+            const aspect = window.innerWidth / (window.innerHeight - 70);
+            camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000);
+
+            const floorHeight = 3;
+            const buildingHeight = apartmentData.totalFloors * floorHeight;
+            const cameraDistance = Math.max(buildingHeight * 1.5, 35);
+
+            camera.position.set(cameraDistance, buildingHeight * 0.7, cameraDistance);
+            camera.lookAt(0, buildingHeight / 2, 0);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: false
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight - 70);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(50, 100, 50);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            const pointLight1 = new THREE.PointLight(0x667eea, 1, 100);
+            pointLight1.position.set(-30, buildingHeight / 2, 30);
+            scene.add(pointLight1);
+
+            const pointLight2 = new THREE.PointLight(0x764ba2, 0.5, 100);
+            pointLight2.position.set(30, buildingHeight / 2, -30);
+            scene.add(pointLight2);
+
+            // Ground
+            const groundGeometry = new THREE.PlaneGeometry(200, 200);
+            const groundMaterial = new THREE.MeshStandardMaterial({
+                color: 0x1a1f3a,
+                roughness: 0.9
+            });
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.5;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // Grid
+            const gridHelper = new THREE.GridHelper(200, 80, 0x667eea, 0x2d3748);
+            gridHelper.material.opacity = 0.2;
+            gridHelper.material.transparent = true;
+            gridHelper.position.y = -0.4;
+            scene.add(gridHelper);
+
+            // Build apartment
+            buildApartment3D();
+
+            // Controls
+            setupMouseControls();
+
+            // Start animation
+            console.log('Starting animation...');
+            animate();
+        }
+
+        function buildApartment3D() {
+            console.log('Building 3D model...');
+
+            buildingGroup = new THREE.Group();
+            const floorHeight = 3;
+            const flatWidth = 4;
+            const flatDepth = 4;
+
+            const flatsPerFloor = apartmentData.floors[0].flats.length;
+            const buildingWidth = flatsPerFloor * flatWidth;
+
+            console.log(`Creating building: ${apartmentData.floors.length} floors, ${flatsPerFloor} flats per floor`);
+
+            apartmentData.floors.forEach((floorData, floorIndex) => {
+                const yPosition = floorIndex * floorHeight;
+
+                // Floor slab
+                const slabGeometry = new THREE.BoxGeometry(buildingWidth, 0.3, flatDepth);
+                const slabMaterial = new THREE.MeshStandardMaterial({
+                    color: 0x2d3561,
+                    roughness: 0.7,
+                    metalness: 0.3
+                });
+                const slab = new THREE.Mesh(slabGeometry, slabMaterial);
+                slab.position.y = yPosition;
+                slab.castShadow = true;
+                slab.receiveShadow = true;
+                buildingGroup.add(slab);
+
+                // Flats
+                floorData.flats.forEach((flat, flatIndex) => {
+                    const flatGroup = create3DFlat(flatWidth, floorHeight, flatDepth, flat);
+                    flatGroup.position.x = (flatIndex - flatsPerFloor / 2) * flatWidth + flatWidth / 2;
+                    flatGroup.position.y = yPosition;
+                    buildingGroup.add(flatGroup);
+                });
+            });
+
+            // Glass facade
+            createGlassFacade(buildingWidth, apartmentData.totalFloors * floorHeight, flatDepth);
+
+            scene.add(buildingGroup);
+            console.log('Building created successfully!');
+        }
+
+        function create3DFlat(width, height, depth, flatData) {
+            const flatGroup = new THREE.Group();
+            const isOccupied = flatData.isOccupied || false;
+            const wallColor = isOccupied ? 0xffeb3b : 0x3d4575;
+            const emissiveColor = isOccupied ? 0x665500 : 0x000000;
+
+            const wallGeometry = new THREE.BoxGeometry(width - 0.4, height - 0.6, 0.2);
+            const wallMaterial = new THREE.MeshStandardMaterial({
+                color: wallColor,
+                roughness: 0.6,
+                metalness: 0.2,
+                emissive: emissiveColor,
+                emissiveIntensity: isOccupied ? 0.4 : 0
+            });
+
+            const backWall = new THREE.Mesh(wallGeometry, wallMaterial);
+            backWall.position.z = -depth / 2 + 0.1;
+            backWall.castShadow = true;
+            flatGroup.add(backWall);
+
+            if (isOccupied) {
+                const windowGeometry = new THREE.BoxGeometry(width * 0.6, height * 0.4, 0.1);
+                const windowMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xffffdd,
+                    emissive: 0xffff88,
+                    emissiveIntensity: 0.9
+                });
+                const window = new THREE.Mesh(windowGeometry, windowMaterial);
+                window.position.z = -depth / 2 + 0.15;
+                flatGroup.add(window);
+            }
+
+            return flatGroup;
+        }
+
+        function createGlassFacade(width, height, depth) {
+            const glassMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0x88ccff,
+                transparent: true,
+                opacity: 0.15,
+                roughness: 0.1,
+                metalness: 0.9
+            });
+
+            const frontGeometry = new THREE.PlaneGeometry(width, height);
+            const frontGlass = new THREE.Mesh(frontGeometry, glassMaterial);
+            frontGlass.position.z = depth / 2;
+            frontGlass.position.y = height / 2;
+            buildingGroup.add(frontGlass);
+        }
+
+        function setupMouseControls() {
+            const canvas = renderer.domElement;
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMouse = { x: e.clientX, y: e.clientY };
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDragging && buildingGroup) {
+                    const deltaX = e.clientX - previousMouse.x;
+                    buildingGroup.rotation.y += deltaX * 0.005;
+                    previousMouse = { x: e.clientX, y: e.clientY };
+                }
+            });
+
+            canvas.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            canvas.addEventListener('mouseleave', () => {
+                isDragging = false;
+            });
+
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 1.1 : 0.9;
+                camera.position.multiplyScalar(delta);
+                const distance = camera.position.length();
+                if (distance < 20) camera.position.normalize().multiplyScalar(20);
+                if (distance > 100) camera.position.normalize().multiplyScalar(100);
+            });
+        }
+
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+
+            if (buildingGroup && !isDragging) {
+                buildingGroup.rotation.y += rotationSpeed;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function switchView(view) {
+            document.getElementById('btn3D').classList.remove('active');
+            document.getElementById('btn2D').classList.remove('active');
+            document.getElementById('controls3D').style.display = view === '3d' ? 'block' : 'none';
+
+            if (view === '3d') {
+                document.getElementById('canvas3D').style.display = 'block';
+                document.getElementById('canvas2D').style.display = 'none';
+                document.getElementById('btn3D').classList.add('active');
+                if (!animationId) animate();
+            } else {
+                document.getElementById('canvas3D').style.display = 'none';
+                document.getElementById('canvas2D').style.display = 'block';
+                document.getElementById('btn2D').classList.add('active');
+                render2DView();
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+            }
+        }
+
+        function render2DView() {
+            const container = document.getElementById('canvas2D');
+            container.innerHTML = '';
+
+            const building = document.createElement('div');
+            building.className = 'building-2d-fullscreen';
+
+            // Render floors from top to bottom (reverse order)
+            apartmentData.floors.slice().reverse().forEach(floor => {
+                const floorDiv = document.createElement('div');
+                floorDiv.className = 'floor-2d-fullscreen';
+
+                const label = document.createElement('div');
+                label.className = 'floor-label-fullscreen';
+                label.textContent = `Floor ${floor.floorNumber}`;
+                floorDiv.appendChild(label);
+
+                const flatsRow = document.createElement('div');
+                flatsRow.className = 'flats-row';
+
+                floor.flats.forEach(flat => {
+                    const flatBox = document.createElement('div');
+                    flatBox.className = `flat-box ${flat.isOccupied ? 'occupied' : ''}`;
+                    flatBox.innerHTML = `
+                        <div class="flat-number-display">${flat.flatNumber}</div>
+                        <div class="flat-status-display">
+                            <i class="fas fa-${flat.isOccupied ? 'user' : 'key'}"></i>
+                            ${flat.status}
+                        </div>
+                        ${flat.occupantName ? `<div class="flat-occupant">${flat.occupantName}</div>` : ''}
+                    `;
+                    flatsRow.appendChild(flatBox);
+                });
+
+                floorDiv.appendChild(flatsRow);
+                building.appendChild(floorDiv);
+            });
+
+            container.appendChild(building);
+        }
+
+        function updateStats() {
+            let total = 0;
+            let occupied = 0;
+
+            apartmentData.floors.forEach(floor => {
+                floor.flats.forEach(flat => {
+                    total++;
+                    if (flat.isOccupied) occupied++;
+                });
+            });
+
+            console.log(`Stats: Total=${total}, Occupied=${occupied}, Vacant=${total - occupied}`);
+
+            document.getElementById('totalFlats').textContent = total;
+            document.getElementById('occupiedFlats').textContent = occupied;
+            document.getElementById('vacantFlats').textContent = total - occupied;
+        }
+
+        function resetCamera() {
+            if (!camera || !buildingGroup) return;
+
+            const floorHeight = 3;
+            const buildingHeight = apartmentData.totalFloors * floorHeight;
+            const cameraDistance = Math.max(buildingHeight * 1.5, 35);
+
+            camera.position.set(cameraDistance, buildingHeight * 0.7, cameraDistance);
+            camera.lookAt(0, buildingHeight / 2, 0);
+            buildingGroup.rotation.set(0, 0, 0);
+        }
+
+        // Controls event listeners
+        document.getElementById('rotationSpeed').addEventListener('input', (e) => {
+            rotationSpeed = parseFloat(e.target.value);
+        });
+
+        document.getElementById('cameraZoom').addEventListener('input', (e) => {
+            const distance = parseFloat(e.target.value);
+            camera.position.normalize().multiplyScalar(distance);
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (renderer && camera) {
+                const aspect = window.innerWidth / (window.innerHeight - 70);
+                camera.aspect = aspect;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight - 70);
+            }
+        });
+    </script>
+</body>
+</html>
+*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
 @model ApartmentManagementSystem.Web.ViewModels.Apartment.ApartmentDiagramViewModel
 
 @{
@@ -791,7 +2684,7 @@
     </script>
 </body>
 </html>
-
+*@
 
 
 @*

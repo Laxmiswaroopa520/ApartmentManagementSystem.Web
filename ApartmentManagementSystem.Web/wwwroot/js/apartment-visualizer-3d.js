@@ -425,34 +425,36 @@ window.addEventListener('resize', () => {
 
 */
 
+//scene-->holds all 3D Objects ;;camera-->defines viewer's prespective
+//renderer-->converts 3d->pixels
 
 
+//uses three.js for creating 3D building..
 
-
-let scene, camera, renderer, controls;
-let buildingGroup;
-let animationId;
-
+let scene, camera, renderer, controls;          //global references for the 3D Environment..
+let buildingGroup;                              //buildingGroup-->group containing the entire building..                            
+let animationId;                                  //used to stop animation safely
+//entery point
 function render3DPreview() {
     const container = document.getElementById('preview3D');
     container.innerHTML = '';
 
-    initThreeJS(container);
-    createBuilding3D();
-    animate();
+    initThreeJS(container);                 //initializes Three.js
+    createBuilding3D();                     //builds the apartment structure
+    animate();                              //starts animation loop
 }
 
 function initThreeJS(container) {
     // Scene setup
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0e27);
-    scene.fog = new THREE.Fog(0x0a0e27, 50, 200);
+    scene = new THREE.Scene();                              //creates the 3d world  
+    scene.background = new THREE.Color(0x0a0e27);           //dark background for modern UI
+    scene.fog = new THREE.Fog(0x0a0e27, 50, 200);           //fog improves realism and depth,especially for tall buildings..
 
     // Camera
     const width = container.clientWidth;
     const height = 600;
     camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(40, 30, 40);
+    camera.position.set(40, 30, 40);                        //positioned diagonally to show full building
     camera.lookAt(0, 0, 0);
 
     // Renderer

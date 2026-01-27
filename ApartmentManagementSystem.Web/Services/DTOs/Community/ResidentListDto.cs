@@ -10,5 +10,6 @@
         public string? FlatNumber { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime RegisteredOn { get; set; }
+        public string DisplayText { get; set; } = string.Empty;  //new method for assigning manager..
     }
 }

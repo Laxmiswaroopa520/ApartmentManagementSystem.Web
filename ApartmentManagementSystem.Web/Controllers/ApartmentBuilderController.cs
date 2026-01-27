@@ -132,11 +132,13 @@ namespace ApartmentManagementSystem.Web.Controllers
 }
 */
 
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using ApartmentManagementSystem.Web.ViewModels.Apartment;
-using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.Mappers.Apartment;
+using ApartmentManagementSystem.Web.Services;
+using ApartmentManagementSystem.Web.Services.DTOs.Admin;
+using ApartmentManagementSystem.Web.ViewModels.Apartment;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using ApartmentManagementSystem.Web.Services.DTOs.Manager;
 
 namespace ApartmentManagementSystem.Web.Controllers
 {
@@ -144,10 +146,12 @@ namespace ApartmentManagementSystem.Web.Controllers
     public class ApartmentBuilderController : Controller
     {
         private readonly ApartmentApiService _apartmentApiService;
+        private readonly ManagerApiService _managerApiService;
 
-        public ApartmentBuilderController(ApartmentApiService apartmentApiService)
+        public ApartmentBuilderController(ApartmentApiService apartmentApiService, ManagerApiService managerApiService)
         {
             _apartmentApiService = apartmentApiService;
+            _managerApiService = managerApiService;
         }
 
         [HttpGet]
@@ -272,6 +276,83 @@ namespace ApartmentManagementSystem.Web.Controllers
                 Console.WriteLine($"Error: {ex.Message}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
 
+                return Json(new
+                {
+                    success = false,
+                    message = $"Error: {ex.Message}"
+                });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> AssignManager([FromBody] AssignManagerRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = "Invalid data provided" });
+                }
+
+                // Call your API service to assign manager
+                var response = await _managerApiService.AssignManagerToApartmentAsync(request);
+
+                if (response?.Success == true)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Manager assigned successfully!"
+                    });
+                }
+
+                return Json(new
+                {
+                    success = false,
+                    message = response?.Message ?? "Failed to assign manager"
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error assigning manager: {ex.Message}");
+                return Json(new
+                {
+                    success = false,
+                    message = $"Error: {ex.Message}"
+                });
+            }
+        }
+        // this is for remove manager
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveManager([FromBody] RemoveManagerRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = "Invalid data provided" });
+                }
+
+                var response = await _managerApiService.RemoveManagerFromApartmentAsync(request);
+
+                if (response?.Success == true)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Manager removed successfully!"
+                    });
+                }
+
+                return Json(new
+                {
+                    success = false,
+                    message = response?.Message ?? "Failed to remove manager"
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing manager: {ex.Message}");
                 return Json(new
                 {
                     success = false,

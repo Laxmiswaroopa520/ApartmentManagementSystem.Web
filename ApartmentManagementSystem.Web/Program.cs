@@ -33,7 +33,8 @@ builder.Services.AddScoped<CommunityMemberApiService>();
 builder.Services.AddScoped<StaffMemberApiService>();
 builder.Services.AddScoped<ResidentManagementApiService>();
 builder.Services.AddScoped<EnhancedDashboardApiService>();
-
+builder.Services.AddScoped<ManagerApiService>();
+// Make sure CommunityMemberApiService is also registered
 
 // COOKIE AUTHENTICATION (CRITICAL)
 

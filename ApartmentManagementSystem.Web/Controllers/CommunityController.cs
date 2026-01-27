@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.ViewModels.Community;
-
+//Delete this..
 namespace ApartmentManagementSystem.Web.Controllers
 {
     [Authorize(Roles = "SuperAdmin,Manager")]

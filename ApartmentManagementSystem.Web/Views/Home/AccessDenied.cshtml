@@ -1,6 +1,226 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@*
 <h2>Access Denied</h2>
 <p>You do not have permission to access this page.</p>
 <a href="/Login/Index">Go to Login</a>
+*@
+@{
+    ViewData["Title"] = "Access Denied - Skyline";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - Skyline</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #4f6d7a;
+            --primary-dark: #3d5561;
+            --bg-main: #f5f6f7;
+            --text-dark: #1f2933;
+            --text-muted: #6b7280;
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        body {
+            background: var(--bg-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem 1rem;
+        }
+
+        .access-denied-container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .access-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @@keyframes slideUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .access-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+            .access-header .icon {
+                width: 80px;
+                height: 80px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1.5rem;
+            }
+
+                .access-header .icon i {
+                    font-size: 2.5rem;
+                }
+
+            .access-header h2 {
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                font-size: 2rem;
+            }
+
+            .access-header p {
+                opacity: 0.95;
+                margin: 0;
+                font-size: 1.05rem;
+            }
+
+        .access-body {
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+            .access-body h5 {
+                color: var(--text-dark);
+                font-weight: 700;
+                margin-bottom: 1rem;
+            }
+
+            .access-body p {
+                color: var(--text-muted);
+                line-height: 1.6;
+                margin-bottom: 2rem;
+            }
+
+        .btn-primary-custom {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.85rem 2.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            .btn-primary-custom:hover {
+                background: var(--primary-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(79, 109, 122, 0.3);
+                color: white;
+            }
+
+        .info-box {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+            .info-box p {
+                margin: 0;
+                color: var(--text-dark);
+                font-size: 0.95rem;
+                text-align: left;
+            }
+
+            .info-box i {
+                color: var(--primary-color);
+                font-size: 1.2rem;
+                margin-right: 0.5rem;
+            }
+
+        @@media (max-width: 576px) {
+            .access-header
+
+        {
+            padding: 1.5rem;
+        }
+
+        .access-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .access-header .icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+            .access-header .icon i {
+                font-size: 2rem;
+            }
+
+        .access-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .btn-primary-custom {
+            padding: 0.75rem 2rem;
+            width: 100%;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="access-denied-container">
+        <div class="access-card">
+            <div class="access-header">
+                <div class="icon">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <h2>Access Denied</h2>
+                <p>You don't have permission to access this page</p>
+            </div>
+
+            <div class="access-body">
+                <h5>Restricted Area</h5>
+                <p>
+                    The page you're trying to access requires specific permissions that your current account doesn't have.
+                    Please contact your administrator if you believe this is an error.
+                </p>
+
+                <a href="/Login/Index" class="btn-primary-custom">
+                    <i class="bi bi-box-arrow-in-right"></i> Go to Login
+                </a>
+
+                <div class="info-box">
+                    <p>
+                        <i class="bi bi-info-circle-fill"></i>
+                        <strong>Need Help?</strong> Contact support@skylinecommunities.com
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

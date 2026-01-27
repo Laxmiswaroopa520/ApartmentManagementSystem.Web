@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Home";
 }
 <!DOCTYPE html>
@@ -204,73 +205,3 @@
 
 
 
-
-<!--
-<div class="text-center mt-5">
-    <div class="mb-4">
-        <h1 class="display-3 fw-bold">🏢</h1>
-        <h1 class="display-4">Apartment Management System</h1>
-        <p class="lead text-muted">Manage your apartment community with ease and efficiency</p>
-    </div>
-
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-body p-5">
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <h3 class="mb-3">Welcome Back!</h3>
-                        <p class="text-muted mb-4">You are already logged in</p>
-                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary btn-lg px-5">
-                            Go to Dashboard →
-                        </a>
-                    }
-                    else
-                    {
-                        <h3 class="mb-3">Get Started</h3>
-                        <p class="text-muted mb-4">Login to access your account or verify your invitation</p>
-                        <div class="d-grid gap-3">
-                            <a asp-controller="Login" asp-action="Index" class="btn btn-primary btn-lg">
-                                🔐 Login to Your Account
-                            </a>
-                            <a asp-controller="VerifyInvite" asp-action="Index" class="btn btn-outline-info btn-lg">
-                                📱 Verify Invitation (New Users)
-                            </a>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-5 text-start">
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-primary">🏘️</h3>
-                    <h5>Apartment Management</h5>
-                    <p class="text-muted">Manage flats, residents, and association members efficiently</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-success">📋</h3>
-                    <h5>Complaint Tracking</h5>
-                    <p class="text-muted">Raise, track, and resolve complaints with full accountability</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-info">💳</h3>
-                    <h5>Billing & Payments</h5>
-                    <p class="text-muted">Automated billing, payment tracking, and financial reports</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
--->

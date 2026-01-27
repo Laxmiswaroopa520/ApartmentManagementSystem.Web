@@ -7,6 +7,221 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
+    :root {
+        --primary-color: #4f6d7a;
+        --primary-dark: #3d5561;
+        --bg-main: #f5f6f7;
+        --bg-card: #ffffff;
+        --text-dark: #1f2933;
+        --text-muted: #6b7280;
+        --shadow-md: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    body {
+        background: var(--bg-main);
+    }
+
+    .login-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 1000px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        background: var(--bg-card);
+    }
+
+    /* LEFT IMAGE */
+    .login-image {
+        background: url("https://images.unsplash.com/photo-1501183638710-841dd1904471?w=1200") center/cover no-repeat;
+        position: relative;
+        min-height: 500px;
+    }
+
+        .login-image::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(31, 41, 51, 0.75);
+        }
+
+    .login-image-content {
+        position: relative;
+        z-index: 2;
+        color: #fff;
+        padding: 3rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .login-image-content h1 {
+            font-weight: 700;
+            font-size: 2.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-image-content p {
+            opacity: 0.9;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+    /* RIGHT FORM */
+    .login-form {
+        padding: 3rem;
+    }
+
+        .login-form h2 {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+    .form-label {
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+
+    .form-control {
+        height: 46px;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 109, 122, 0.1);
+        }
+
+    .btn-login {
+        background: var(--primary-color);
+        color: white;
+        border-radius: 10px;
+        height: 46px;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-login:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 109, 122, 0.3);
+        }
+
+    .link-muted {
+        color: var(--text-muted);
+        text-decoration: none;
+    }
+
+        .link-muted:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+    @@media(max - width: 768px)
+
+    {
+        .login-image
+
+    {
+        display: none;
+    }
+
+    .login-form {
+        padding: 2rem 1.5rem;
+    }
+
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-card row g-0">
+
+        <!-- LEFT IMAGE -->
+        <div class="col-md-6 login-image">
+            <div class="login-image-content">
+                <h1>Apartment Management</h1>
+                <p>
+                    Manage residents, billing, maintenance and community life
+                    from one peaceful, secure platform.
+                </p>
+            </div>
+        </div>
+
+        <!-- RIGHT FORM -->
+        <div class="col-md-6">
+            <div class="login-form">
+
+                <h2 class="mb-1">Welcome back</h2>
+                <p class="text-muted mb-4">Sign in to continue</p>
+
+                <form asp-action="Index" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label">Username</label>
+                        <input asp-for="Username" class="form-control" placeholder="Enter username" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-login">
+                            Sign In
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <a asp-controller="VerifyInvite"
+                       asp-action="Index"
+                       class="link-muted">
+                        Have an invitation?
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Auth.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_PublicLayout";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
     body {
         background: #f2f3f5;
     }
@@ -177,188 +392,7 @@
 
 
 
-
-
-
-
-
-
-
-
-@*
-
-@model ApartmentManagementSystem.Web.ViewModels.Auth.LoginViewModel
-@{
-    ViewData["Title"] = "Login";
-    Layout = "_Layout";
-}
-
-<style>
-    body {
-        background-color: #f4f6f8;
-    }
-
-    .login-container {
-        min-height: 100vh;
-        display: flex;
-    }
-
-    /* LEFT PANEL */
-    .login-brand {
-        flex: 1;
-        background-color: #0f2a44;
-        color: #ffffff;
-        padding: 4rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .login-brand h1 {
-        font-size: 2.2rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
-    .login-brand p {
-        font-size: 1.05rem;
-        opacity: 0.9;
-        max-width: 420px;
-    }
-
-    /* RIGHT PANEL */
-    .login-form-wrapper {
-        flex: 1;
-        background-color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .login-form {
-        width: 100%;
-        max-width: 380px;
-    }
-
-    .login-form h2 {
-        font-weight: 600;
-        margin-bottom: 0.25rem;
-    }
-
-    .login-form small {
-        color: #6c757d;
-    }
-
-    .form-control {
-        height: 46px;
-    }
-
-    .btn-login {
-        height: 46px;
-        font-weight: 600;
-    }
-
-    .footer-text {
-        font-size: 0.85rem;
-        color: #6c757d;
-        margin-top: 2rem;
-        text-align: center;
-    }
-</style>
-
-<div class="login-container">
-
-    <!-- LEFT BRAND PANEL -->
-    <div class="login-brand">
-        <h1>Apartment Management System</h1>
-        <p>
-            A centralized platform to manage residents, billing, maintenance,
-            visitors, and security operations efficiently.
-        </p>
-    </div>
-
-    <!-- RIGHT LOGIN PANEL -->
-    <div class="login-form-wrapper">
-        <div class="login-form">
-
-            <h2>Sign in</h2>
-            <small>Use your system credentials</small>
-
-            <form asp-action="Index" method="post" class="mt-4">
-                <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-                <!-- Username -->
-                <div class="mb-3">
-                    <label asp-for="Username" class="form-label">Username</label>
-                    <input asp-for="Username"
-                           class="form-control"
-                           placeholder="Enter username"
-                           autofocus />
-                    <span asp-validation-for="Username" class="text-danger small"></span>
-                </div>
-
-                <!-- Password -->
-                <div class="mb-3">
-                    <label asp-for="Password" class="form-label">Password</label>
-                    <input asp-for="Password"
-                           type="password"
-                           class="form-control"
-                           placeholder="Enter password" />
-                    <span asp-validation-for="Password" class="text-danger small"></span>
-                </div>
-
-                <!-- Remember me -->
-                <div class="form-check mb-4">
-                    <input asp-for="RememberMe" class="form-check-input" />
-                    <label asp-for="RememberMe" class="form-check-label">
-                        Remember me
-                    </label>
-                </div>
-
-                <!-- Submit -->
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-login">
-                        Sign In
-                    </button>
-                </div>
-            </form>
-
-            <div class="text-center mt-4">
-                <a asp-controller="VerifyInvite"
-                   asp-action="Index"
-                   class="text-decoration-none">
-                    Have an invitation?
-                </a>
-            </div>
-
-            <div class="footer-text">
-                Default Admin: <strong>admin / Admin@123</strong>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
 *@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

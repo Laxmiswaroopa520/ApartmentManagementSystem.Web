@@ -1,7 +1,7 @@
 ﻿// wwwroot/js/apartment-visualizer-3d.js
 // Fixed apartment-visualizer-3d.js
 // This fixes the black screen issue in 3D view
-
+/*
 let scene, camera, renderer, buildingGroup;
 let animationId;
 let rotationSpeed = 0.002;
@@ -423,12 +423,12 @@ window.addEventListener('resize', () => {
     }
 });
 
+*/
 
 
 
 
 
-/*
 let scene, camera, renderer, controls;
 let buildingGroup;
 let animationId;
@@ -728,4 +728,4 @@ window.addEventListener('resize', () => {
     }
 });
 
-        */
+        

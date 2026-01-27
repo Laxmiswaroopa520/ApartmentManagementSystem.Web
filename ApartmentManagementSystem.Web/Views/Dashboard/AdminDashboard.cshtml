@@ -3,6 +3,397 @@
 *@
 @model ApartmentManagementSystem.Web.ViewModels.Dashboard.AdminDashboardViewModel
 @{
+    ViewData["Title"] = "Dashboard - Skyline";
+    Layout = "_Layout";
+}
+
+<style>
+    :root {
+        --primary-color: #4f6d7a;
+        --primary-dark: #3d5561;
+        --accent-blue: #5b9aa9;
+        --accent-green: #6b9e78;
+        --accent-orange: #c97e5d;
+        --accent-purple: #8b7ba8;
+        --bg-card: #ffffff;
+        --text-dark: #1f2933;
+        --text-muted: #6b7280;
+        --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-header h2 {
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .role-badge {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+    .card-header {
+        border: none;
+        border-radius: 16px 16px 0 0 !important;
+        font-weight: 600;
+        background: var(--primary-color) !important;
+        color: white !important;
+    }
+
+    .stat-card {
+        border-radius: 16px;
+        padding: 2rem;
+        color: white;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card h3 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            margin: 0;
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .stat-card.stat-primary {
+            background: var(--primary-color);
+        }
+
+        .stat-card.stat-green {
+            background: var(--accent-green);
+        }
+
+        .stat-card.stat-blue {
+            background: var(--accent-blue);
+        }
+
+        .stat-card.stat-orange {
+            background: var(--accent-orange);
+        }
+
+    .module-card {
+        border-radius: 16px;
+        padding: 2rem;
+        color: white;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+        .module-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .module-card .display-1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .module-card h5 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .module-card hr {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+            height: 2px;
+            margin: 1.5rem 0;
+        }
+
+        .module-card.module-primary {
+            background: var(--primary-color);
+        }
+
+        .module-card.module-green {
+            background: var(--accent-green);
+        }
+
+        .module-card.module-blue {
+            background: var(--accent-blue);
+        }
+
+        .module-card.module-dark {
+            background: var(--text-dark);
+        }
+
+    .btn-action {
+        padding: 0.85rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        color: white;
+    }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+        .btn-action.btn-success {
+            background: var(--accent-green);
+        }
+
+            .btn-action.btn-success:hover {
+                background: #5a8a67;
+            }
+
+        .btn-action.btn-primary {
+            background: var(--primary-color);
+        }
+
+            .btn-action.btn-primary:hover {
+                background: var(--primary-dark);
+            }
+
+        .btn-action.btn-info {
+            background: var(--accent-blue);
+        }
+
+            .btn-action.btn-info:hover {
+                background: #4a8998;
+            }
+
+    .activity-item {
+        padding: 1rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 0.5rem;
+    }
+
+        .activity-item:hover {
+            background: #f9fafb;
+            border-color: var(--primary-color);
+        }
+
+    .activity-badge {
+        background: var(--accent-blue);
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    @@media (max-width: 768px) {
+        .stat-card h3
+
+    {
+        font-size: 2.2rem;
+    }
+
+    .module-card .display-1 {
+        font-size: 2.8rem;
+    }
+
+    .btn-action {
+        padding: 0.75rem 1.5rem;
+    }
+
+    }
+
+    @@media (max-width: 576px) {
+        .stat-card
+
+    {
+        padding: 1.5rem;
+    }
+
+    .stat-card h3 {
+        font-size: 2rem;
+    }
+
+    .module-card {
+        padding: 1.5rem;
+    }
+
+    }
+</style>
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="dashboard-header">
+                <h2 class="mb-2">Welcome, @Model.FullName! 👋</h2>
+                <p class="text-muted mb-0">
+                    Role: <span class="role-badge">@Model.Role</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Actions Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Admin Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="d-grid">
+                                <a asp-controller="Onboarding" asp-action="Create"
+                                   class="btn btn-action btn-success">
+                                    <i class="bi bi-person-plus"></i> Onboard New Resident
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="d-grid">
+                                <a href="#" class="btn btn-action btn-primary">
+                                    <i class="bi bi-people"></i> View All Residents
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="d-grid">
+                                <a href="#" class="btn btn-action btn-info">
+                                    <i class="bi bi-graph-up"></i> View Reports
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-primary">
+                <h3>@Model.Stats.TotalResidents</h3>
+                <p>Total Residents</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-green">
+                <h3>@Model.Stats.TotalFlats</h3>
+                <p>Total Flats</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-blue">
+                <h3>@Model.Stats.OccupiedFlats</h3>
+                <p>Occupied Flats</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-orange">
+                <h3>@Model.Stats.VacantFlats</h3>
+                <p>Vacant Flats</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Module Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="module-card module-primary">
+                <div class="display-1">📝</div>
+                <h5>Complaints</h5>
+                <h3>@Model.Stats.PendingComplaints</h3>
+                <p>Pending complaints</p>
+                <hr />
+                <small>Coming in Phase 5</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="module-card module-green">
+                <div class="display-1">💰</div>
+                <h5>Billing</h5>
+                <h3>@Model.Stats.PendingBills</h3>
+                <p>Pending bills</p>
+                <hr />
+                <small>Coming in Phase 6</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="module-card module-blue">
+                <div class="display-1">🚪</div>
+                <h5>Visitors</h5>
+                <h3>@Model.Stats.TodaysVisitors</h3>
+                <p>Today's visitors</p>
+                <hr />
+                <small>Coming in Phase 7</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="module-card module-dark">
+                <div class="display-1">📊</div>
+                <h5>Reports</h5>
+                <p class="mt-3">View analytics</p>
+                <hr />
+                <small>Coming in Phase 7</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    @if (Model.RecentActivities.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header" style="background: var(--text-dark) !important;">
+                        <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Activities</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var activity in Model.RecentActivities)
+                        {
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-semibold">@activity.Activity</span>
+                                    <span class="activity-badge">@activity.Timestamp.ToString("MMM dd, hh:mm tt")</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Dashboard.AdminDashboardViewModel
+@{
     ViewData["Title"] = "Admin Dashboard";
     Layout = "_Layout";
 }
@@ -170,3 +561,4 @@
         </div>
     }
 </div>
+*@

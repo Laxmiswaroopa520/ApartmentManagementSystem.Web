@@ -2,6 +2,394 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model ApartmentManagementSystem.Web.ViewModels.Dashboard.TenantDashboardViewModel
+@{
+    ViewData["Title"] = "My Dashboard - Skyline";
+    Layout = "_Layout";
+}
+
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --gradient-ocean: linear-gradient(135deg, #2ebf91 0%, #8360c3 100%);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+        background: #f5f7fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .dashboard-header {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1.5rem;
+    }
+
+        .dashboard-header h2 {
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+            font-size: 1.75rem;
+        }
+
+    .role-badge {
+        background: var(--gradient-info);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+        box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card.gradient-ocean {
+            --gradient: var(--gradient-ocean);
+        }
+
+        .stat-card.gradient-warning {
+            --gradient: var(--gradient-warning);
+        }
+
+        .stat-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card p {
+            color: #718096;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-card .status-text {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+    .section-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+        background: var(--gradient-info);
+        color: white;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+        .section-header i {
+            margin-right: 0.5rem;
+        }
+
+    .flat-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+    }
+
+        .flat-card:hover {
+            border-color: #4facfe;
+            box-shadow: var(--shadow-sm);
+            transform: translateY(-2px);
+        }
+
+        .flat-card h5 {
+            color: #1a202c;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .flat-card .info-row {
+            margin-bottom: 0.75rem;
+        }
+
+            .flat-card .info-row:last-child {
+                margin-bottom: 0;
+            }
+
+        .flat-card .label {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .flat-card .value {
+            font-size: 0.95rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+    .flat-badge {
+        padding: 0.35rem 0.85rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        background: var(--gradient-success);
+        color: white;
+        box-shadow: 0 2px 8px rgba(17, 153, 142, 0.3);
+    }
+
+    .btn-action {
+        padding: 0.75rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 600;
+        border: 2px solid transparent;
+        background: white;
+        color: #4a5568;
+        border-color: #e2e8f0;
+        opacity: 0.6;
+        cursor: not-allowed;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .alert-custom {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: start;
+        gap: 1rem;
+    }
+
+        .alert-custom.alert-warning {
+            background: #fff4e6;
+            border-left: 4px solid #fa709a;
+        }
+
+        .alert-custom.alert-info {
+            background: #e6f7ff;
+            border-left: 4px solid #4facfe;
+        }
+
+        .alert-custom i {
+            font-size: 1.5rem;
+        }
+
+        .alert-custom.alert-warning i {
+            color: #fa709a;
+        }
+
+        .alert-custom.alert-info i {
+            color: #4facfe;
+        }
+
+        .alert-custom strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #1a202c;
+        }
+
+        .alert-custom p {
+            margin: 0;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+    @@media (max-width: 768px) {
+        .dashboard-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .stat-card h3 {
+            font-size: 1.75rem;
+        }
+
+        .stat-card .icon {
+            font-size: 2rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .stat-card {
+            padding: 1.25rem;
+        }
+
+        .flat-card {
+            padding: 1rem;
+        }
+
+        .btn-action {
+            padding: 0.65rem 1rem;
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h2>Welcome, @Model.FullName! 👋</h2>
+        <p class="text-muted mb-0" style="margin-top: 0.5rem;">
+            Role: <span class="role-badge">Tenant</span>
+        </p>
+    </div>
+
+    <!-- My Flat Section -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="bi bi-house-door"></i> My Flat
+        </div>
+        <div class="card-body" style="padding: 1.5rem;">
+            @if (Model.MyFlat != null)
+            {
+                <div class="flat-card">
+                    <h5><i class="bi bi-building"></i> Flat @Model.MyFlat.FlatNumber</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="info-row">
+                                <div class="label">Building</div>
+                                <div class="value">@Model.MyFlat.ApartmentName</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-row">
+                                <div class="label">Owner</div>
+                                <div class="value">@Model.MyFlat.OwnerName</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-row">
+                                <div class="label">Status</div>
+                                <span class="flat-badge">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert-custom alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <div>
+                        <strong>No flat assigned yet</strong>
+                        <p>Please contact your owner or administrator to get your flat assignment.</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="stat-card gradient-warning">
+                <div class="icon">📝</div>
+                <h3>@Model.PendingComplaints</h3>
+                <p>Pending Complaints</p>
+                <div class="status-text">Coming in Phase 5</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stat-card gradient-ocean">
+                <div class="icon">💰</div>
+                <h3>₹@Model.PendingRent.ToString("N2")</h3>
+                <p>Pending Rent</p>
+                <div class="status-text">Coming in Phase 6</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-card">
+        <div class="section-header" style="background: var(--gradient-ocean);">
+            <i class="bi bi-lightning-charge"></i> Quick Actions
+        </div>
+        <div class="card-body" style="padding: 1.5rem;">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <button class="btn btn-action w-100" disabled>
+                        <i class="bi bi-file-text"></i> Raise Complaint (Phase 5)
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-action w-100" disabled>
+                        <i class="bi bi-credit-card"></i> Pay Rent (Phase 6)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Alert -->
+    <div class="alert-custom alert-info">
+        <i class="bi bi-info-circle-fill"></i>
+        <div>
+            <strong>Limited Access</strong>
+            <p>As a tenant, you have access to raise complaints and pay rent. For other services, please contact your flat owner.</p>
+        </div>
+    </div>
+</div>
+
+
+@*
+
 @model ApartmentManagementSystem.Web.ViewModels.Dashboard.TenantDashboardViewModel
 @{
     ViewData["Title"] = "My Dashboard - Skyline";
@@ -303,110 +691,4 @@
 </div>
 
 
-
-@*
-@model ApartmentManagementSystem.Web.ViewModels.Dashboard.TenantDashboardViewModel
-@{
-    ViewData["Title"] = "My Dashboard";
-    Layout = "_Layout";
-}
-
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="mb-1">Welcome, @Model.FullName! 👋</h2>
-            <p class="text-muted">
-                Role: <span class="badge bg-info fs-6">Tenant</span>
-            </p>
-        </div>
-    </div>
-
-    <!-- My Flat Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">🏠 My Flat</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.MyFlat != null)
-                    {
-                        <div class="card border-info">
-                            <div class="card-body">
-                                <h5 class="card-title">Flat @Model.MyFlat.FlatNumber</h5>
-                                <p class="card-text">
-                                    <strong>Building:</strong> @Model.MyFlat.ApartmentName<br />
-                                    <strong>Owner:</strong> @Model.MyFlat.OwnerName<br />
-                                    <strong>Status:</strong> <span class="badge bg-success">Active</span>
-                                </p>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-warning">
-                            <strong>⚠️ No flat assigned yet.</strong><br />
-                            Please contact your owner or administrator.
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card text-white bg-warning">
-                <div class="card-body text-center">
-                    <div class="display-4">📝</div>
-                    <h3>@Model.PendingComplaints</h3>
-                    <p class="mb-0">Pending Complaints</p>
-                    <hr class="bg-white" />
-                    <small>Coming in Phase 5</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card text-white bg-danger">
-                <div class="card-body text-center">
-                    <div class="display-4">💰</div>
-                    <h3>₹@Model.PendingRent.ToString("N2")</h3>
-                    <p class="mb-0">Pending Rent</p>
-                    <hr class="bg-white" />
-                    <small>Coming in Phase 6</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0">⚡ Quick Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-2">
-                            <button class="btn btn-outline-primary w-100 btn-lg" disabled>
-                                📝 Raise Complaint (Phase 5)
-                            </button>
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <button class="btn btn-outline-success w-100 btn-lg" disabled>
-                                💰 Pay Rent (Phase 6)
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="alert alert-info mt-4">
-        <strong>ℹ️ Limited Access:</strong> As a tenant, you have access to raise complaints and pay rent. For other services, please contact your flat owner.
-    </div>
-</div>
 *@

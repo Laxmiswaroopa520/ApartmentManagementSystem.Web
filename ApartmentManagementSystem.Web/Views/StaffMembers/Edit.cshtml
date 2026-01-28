@@ -7,6 +7,237 @@
     Layout = "_Layout";
 }
 
+<style>
+    :root {
+        --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+        background: #f5f7fa;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        margin: 2rem auto;
+        max-width: 900px;
+    }
+
+    .card-header-gradient {
+        background: var(--gradient-warning);
+        color: white;
+        padding: 1.25rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+
+        .card-header-gradient i {
+            margin-right: 0.5rem;
+        }
+
+    .form-section-header {
+        color: #fa709a;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #fff4e6;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .form-section-header i {
+            font-size: 1.25rem;
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+        .form-label .text-danger {
+            color: #fa709a !important;
+        }
+
+    .form-control, .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #fa709a;
+            box-shadow: 0 0 0 3px rgba(250, 112, 154, 0.1);
+        }
+
+    textarea.form-control {
+        resize: vertical;
+    }
+
+    .btn-submit {
+        background: var(--gradient-warning);
+        border: none;
+        color: white;
+        border-radius: 12px;
+        padding: 0.85rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 4px 12px rgba(250, 112, 154, 0.3);
+        transition: all 0.3s ease;
+    }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(250, 112, 154, 0.4);
+        }
+
+    .btn-cancel {
+        background: white;
+        border: 2px solid #e2e8f0;
+        color: #4a5568;
+        border-radius: 12px;
+        padding: 0.85rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-cancel:hover {
+            border-color: #cbd5e0;
+            background: #f7fafc;
+        }
+
+    .divider {
+        border: 0;
+        height: 2px;
+        background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+        margin: 2rem 0;
+    }
+
+    @@media (max-width: 768px) {
+        .form-card {
+            margin: 1rem;
+        }
+
+        .btn-submit, .btn-cancel {
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="form-card">
+        <div class="card-header-gradient">
+            <i class="bi bi-pencil-square"></i> Edit Staff Member
+        </div>
+        <div class="card-body" style="padding: 2rem;">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="StaffId" />
+
+                <!-- Basic Information -->
+                <h5 class="form-section-header">
+                    <i class="bi bi-info-circle"></i> Basic Information
+                </h5>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FullName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <input asp-for="FullName" class="form-control" required />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                        <input asp-for="Phone" class="form-control" required />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="IsActive" class="form-label">Status</label>
+                        <select asp-for="IsActive" class="form-select">
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                        <span asp-validation-for="IsActive" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Address" class="form-label">Address</label>
+                    <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <hr class="divider" />
+
+                <!-- Professional Details -->
+                <h5 class="form-section-header">
+                    <i class="bi bi-briefcase"></i> Professional Details
+                </h5>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Specialization" class="form-label">Specialization</label>
+                        <input asp-for="Specialization" class="form-control" />
+                        <span asp-validation-for="Specialization" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="HourlyRate" class="form-label">Hourly Rate (₹)</label>
+                        <input asp-for="HourlyRate" type="number" step="0.01" class="form-control" />
+                        <span asp-validation-for="HourlyRate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="border-radius: 12px;"></div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-cancel">
+                        <i class="bi bi-arrow-left"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-submit">
+                        <i class="bi bi-check-circle"></i> Update Staff Member
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
+
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Community.UpdateStaffMemberViewModel
+@{
+    ViewData["Title"] = "Edit Staff Member";
+    Layout = "_Layout";
+}
+
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -99,3 +330,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+*@

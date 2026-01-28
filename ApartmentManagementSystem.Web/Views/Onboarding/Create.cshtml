@@ -1,4 +1,181 @@
-﻿
+﻿@model ApartmentManagementSystem.Web.ViewModels.Onboarding.CreateInviteViewModel
+@{
+    ViewData["Title"] = "Onboard New Resident";
+}
+
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+        background: #f5f7fa;
+    }
+
+    .invite-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        max-width: 550px;
+        margin: 3rem auto;
+    }
+
+    .card-header-gradient {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 1.5rem 2rem;
+        text-align: center;
+    }
+
+        .card-header-gradient h4 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+            .card-header-gradient h4 i {
+                margin-right: 0.5rem;
+            }
+
+    .card-body-custom {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+    .btn-submit {
+        background: var(--gradient-primary);
+        border: none;
+        color: white;
+        border-radius: 12px;
+        padding: 0.85rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+    }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+    .btn-cancel {
+        background: white;
+        border: 2px solid #e2e8f0;
+        color: #4a5568;
+        border-radius: 12px;
+        padding: 0.85rem 2rem;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .btn-cancel:hover {
+            border-color: #cbd5e0;
+            background: #f7fafc;
+        }
+
+    @@media (max-width: 768px) {
+        .invite-card {
+            margin: 1rem;
+        }
+
+        .card-body-custom {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="invite-card">
+        <div class="card-header-gradient">
+            <h4>
+                <i class="bi bi-person-plus"></i> Onboard New Resident
+            </h4>
+        </div>
+        <div class="card-body-custom">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Full Name -->
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label">Full Name</label>
+                    <input asp-for="FullName" class="form-control" placeholder="Enter full name" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="mb-3">
+                    <label asp-for="PrimaryPhone" class="form-label">Phone Number</label>
+                    <input asp-for="PrimaryPhone" class="form-control" placeholder="Enter phone number" />
+                    <span asp-validation-for="PrimaryPhone" class="text-danger"></span>
+                </div>
+
+                <!-- Resident Type -->
+                <div class="mb-4">
+                    <label asp-for="ResidentType" class="form-label">Resident Type</label>
+                    <select asp-for="ResidentType" class="form-select">
+                        <option value="">-- Select Resident Type --</option>
+                        @foreach (var type in Model.ResidentTypes)
+                        {
+                            <option value="@type.Id">@type.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ResidentType" class="text-danger"></span>
+                </div>
+
+                <!-- Submit / Cancel buttons -->
+                <button type="submit" class="btn btn-submit mb-2">
+                    <i class="bi bi-check-circle"></i> Create Invite & Generate OTP
+                </button>
+                <a asp-controller="Dashboard" asp-action="Index" class="btn btn-cancel">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
 @model ApartmentManagementSystem.Web.ViewModels.Onboarding.CreateInviteViewModel
 
 @{
@@ -81,98 +258,5 @@
     <partial name="_ValidationScriptsPartial" />
 }
 
-
-
-@*
-@model ApartmentManagementSystem.Web.ViewModels.Onboarding.CreateInviteViewModel
-@{
-    ViewData["Title"] = "Onboard New Resident";
-    Layout = "_Layout";
-}
-
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center py-3">
-                    <h3 class="mb-0">👥 Onboard New Resident</h3>
-                    <small>Create invitation for new resident</small>
-                </div>
-                <div class="card-body p-4">
-                    <div class="alert alert-info" role="alert">
-                        <strong>ℹ️ Instructions:</strong>
-                        <ul class="mb-0 mt-2">
-                            <li>Fill in the new resident's details</li>
-                            <li>An OTP will be generated</li>
-                            <li>Share the OTP with the resident</li>
-                            <li>They can complete registration online</li>
-                        </ul>
-                    </div>
-
-                    <form asp-action="Create" method="post">
-                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-                        <div class="mb-3">
-                            <label asp-for="FullName" class="form-label fw-bold"></label>
-                            <div class="input-group">
-                                <span class="input-group-text">👤</span>
-                                <input asp-for="FullName"
-                                       class="form-control"
-                                       placeholder="e.g., Rajesh Kumar"
-                                       autofocus />
-                            </div>
-                            <span asp-validation-for="FullName" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="PrimaryPhone" class="form-label fw-bold"></label>
-                            <div class="input-group">
-                                <span class="input-group-text">📱</span>
-                                <input asp-for="PrimaryPhone"
-                                       class="form-control"
-                                       placeholder="9876543210"
-                                       maxlength="10" />
-                            </div>
-                            <span asp-validation-for="PrimaryPhone" class="text-danger small"></span>
-                            <small class="text-muted">Enter 10-digit mobile number</small>
-                        </div>
-
-                        <div class="mb-4">
-                            <label asp-for="RoleId" class="form-label fw-bold"></label>
-                            <div class="input-group">
-                                <span class="input-group-text">🏷️</span>
-                                <select asp-for="RoleId"
-                                        asp-items="@(new SelectList(Model.AvailableRoles, "Id", "Name"))"
-                                        class="form-select">
-                                    <option value="">-- Select Role --</option>
-                                </select>
-                            </div>
-                            <span asp-validation-for="RoleId" class="text-danger small"></span>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <strong>📤 Send Invitation</strong>
-                            </button>
-                            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
-                                ← Back to Dashboard
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-        // Auto-format phone number
-        document.querySelector('input[name="PrimaryPhone"]').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^0-9]/g, '');
-        });
-    </script>
-}
-
-                                *@
+*@
+                         

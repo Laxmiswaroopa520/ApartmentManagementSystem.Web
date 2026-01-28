@@ -1,6 +1,262 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ApartmentManagementSystem.Web.ViewModels.Onboarding.InviteSuccessViewModel
+@{
+    ViewData["Title"] = "Invite Created Successfully";
+}
+
+<style>
+    :root {
+        --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .success-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        max-width: 600px;
+        width: 100%;
+        margin: 2rem auto;
+        border: 3px solid transparent;
+        border-image: var(--gradient-success) 1;
+    }
+
+    .card-header-gradient {
+        background: var(--gradient-success);
+        color: white;
+        padding: 1.5rem 2rem;
+        text-align: center;
+    }
+
+        .card-header-gradient h4 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+            .card-header-gradient h4 i {
+                margin-right: 0.5rem;
+            }
+
+    .card-body-custom {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #e6f7f4 0%, #c8f0e6 100%);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        border-left: 4px solid #11998e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .alert-success-custom i {
+            font-size: 1.5rem;
+            color: #11998e;
+        }
+
+    .section-title {
+        color: #2d3748;
+        font-weight: 700;
+        font-size: 1.15rem;
+        margin-bottom: 1rem;
+    }
+
+    .info-table {
+        background: #f7fafc;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .info-table tr {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+            .info-table tr:last-child {
+                border-bottom: none;
+            }
+
+        .info-table th {
+            font-weight: 600;
+            color: #4a5568;
+            text-align: left;
+        }
+
+        .info-table td {
+            font-weight: 600;
+            color: #2d3748;
+            text-align: right;
+        }
+
+    .otp-display {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 1.5rem 0;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+        .otp-display h3 {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+    .otp-code-large {
+        font-size: 3rem;
+        font-weight: 900;
+        color: white;
+        letter-spacing: 12px;
+        font-family: 'Courier New', monospace;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .otp-note {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.85rem;
+        margin-top: 1rem;
+    }
+
+        .otp-note i {
+            margin-right: 0.35rem;
+        }
+
+    .btn-primary-gradient {
+        background: var(--gradient-success);
+        border: none;
+        color: white;
+        border-radius: 12px;
+        padding: 0.85rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
+        transition: all 0.3s ease;
+        margin-bottom: 0.75rem;
+    }
+
+        .btn-primary-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(17, 153, 142, 0.4);
+        }
+
+    .btn-secondary-gradient {
+        background: white;
+        border: 2px solid #e2e8f0;
+        color: #4a5568;
+        border-radius: 12px;
+        padding: 0.85rem 2rem;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .btn-secondary-gradient:hover {
+            border-color: #cbd5e0;
+            background: #f7fafc;
+        }
+
+    @@media (max-width: 768px) {
+        body {
+            padding: 1rem;
+        }
+
+        .success-card {
+            margin: 1rem;
+        }
+
+        .card-body-custom {
+            padding: 1.5rem;
+        }
+
+        .otp-code-large {
+            font-size: 2.25rem;
+            letter-spacing: 8px;
+        }
+
+        .otp-display {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="success-card">
+        <div class="card-header-gradient">
+            <h4>
+                <i class="bi bi-check-circle"></i> Invite Created Successfully
+            </h4>
+        </div>
+        <div class="card-body-custom">
+            <div class="alert-success-custom">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>@Model.Message</span>
+            </div>
+
+            <h5 class="section-title">Resident Details</h5>
+            <table class="info-table">
+                <tr>
+                    <th>Name:</th>
+                    <td>@Model.FullName</td>
+                </tr>
+                <tr>
+                    <th>Phone:</th>
+                    <td>@Model.PrimaryPhone</td>
+                </tr>
+                <tr>
+                    <th>Type:</th>
+                    <td>@Model.ResidentType</td>
+                </tr>
+            </table>
+
+            <div class="otp-display">
+                <h3>Generated OTP</h3>
+                <div class="otp-code-large">
+                    @Model.OtpCode
+                </div>
+                <p class="otp-note">
+                    <i class="bi bi-info-circle"></i> Share this OTP with the resident securely
+                </p>
+            </div>
+
+            <a asp-action="Create" class="btn btn-primary-gradient">
+                <i class="bi bi-person-plus"></i> Onboard Another Resident
+            </a>
+            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-secondary-gradient">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+
+@*
 @model ApartmentManagementSystem.Web.ViewModels.Onboarding.InviteSuccessViewModel
 
 @{
@@ -77,151 +333,20 @@ ViewData["Title"] = "Invite Created Successfully";
         font-family: 'Courier New', monospace;
     }
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@*
-
-@{
-    ViewData["Title"] = "Invitation Sent";
-    Layout = "_Layout";
-}
-
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-7">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-success text-white text-center py-3">
-                    <h3 class="mb-0">✅ Invitation Sent Successfully!</h3>
-                </div>
-                <div class="card-body p-4">
-                    <div class="alert alert-success text-center" role="alert">
-                        <h4 class="alert-heading">🎉 Resident Invited!</h4>
-                        <p class="mb-0">Share the following details with the new resident</p>
-                    </div>
-
-                    <div class="card bg-light mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary">📋 Invitation Details</h5>
-                            <hr />
-
-                            <div class="row mb-3">
-                                <div class="col-4 fw-bold">Full Name:</div>
-                                <div class="col-8">@Model.FullName</div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-4 fw-bold">Phone Number:</div>
-                                <div class="col-8">
-                                    <span class="badge bg-info fs-6">@Model.PhoneNumber</span>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-4 fw-bold">OTP Code:</div>
-                                <div class="col-8">
-                                    <span class="badge bg-warning text-dark fs-4"
-                                          style="letter-spacing: 0.3em; font-family: 'Courier New', monospace;">
-                                        @Model.OtpCode
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-4 fw-bold">Valid Until:</div>
-                                <div class="col-8 text-danger">
-                                    @Model.ExpiresAt.ToString("hh:mm tt") (10 minutes)
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="alert alert-warning" role="alert">
-                        <strong>⚠️ Important:</strong>
-                        <ul class="mb-0 mt-2">
-                            <li>This OTP is valid for <strong>10 minutes only</strong></li>
-                            <li>Share it securely with the resident</li>
-                            <li>They should visit: <code>http://localhost:5002/VerifyInvite</code></li>
-                            <li>After verification, they can complete registration</li>
-                        </ul>
-                    </div>
-
-                    <div class="card bg-info text-white mb-4">
-                        <div class="card-body">
-                            <h6 class="card-title">📱 Instructions for Resident</h6>
-                            <ol class="mb-0">
-                                <li>Open the apartment management portal</li>
-                                <li>Click "Verify Invitation"</li>
-                                <li>Enter Phone: <strong>@Model.PhoneNumber</strong></li>
-                                <li>Enter OTP: <strong>@Model.OtpCode</strong></li>
-                                <li>Complete the registration form</li>
-                                <li>Login with new credentials</li>
-                            </ol>
-                        </div>
-                    </div>
-
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" onclick="copyDetails()">
-                            📋 Copy Details to Clipboard
-                        </button>
-                        <a asp-action="Create" class="btn btn-success">
-                            ➕ Send Another Invitation
-                        </a>
-                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
-                            ← Back to Dashboard
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <script>
-                function copyDetails() {
-                    const details = `Apartment Management System - Invitation Details
-
-        Full Name: @Model.FullName
-        Phone Number: @Model.PhoneNumber
-        OTP Code: @Model.OtpCode
-
-        Instructions:
-        1. Visit: http://localhost:5002/VerifyInvite
-        2. Enter your phone number and OTP
-        3. Complete registration form
-        4. Login with your credentials
-
-        OTP valid until: @Model.ExpiresAt.ToString("hh:mm tt")`;
-
-                    navigator.clipboard.writeText(details).then(function() {
-                        alert('✅ Details copied to clipboard!');
-                    }, function(err) {
-                        alert('❌ Failed to copy: ' + err);
-                    });
-                }
-
-                // Auto-refresh warning after 9 minutes
-                setTimeout(function() {
-                    if (confirm('OTP is about to expire! Do you want to create a new invitation?')) {
-                        window.location.href = '@Url.Action("Create", "Onboarding")';
-                    }
-                }, 540000); // 9 minutes
-    </script>
-}
 *@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

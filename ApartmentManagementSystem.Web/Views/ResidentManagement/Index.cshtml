@@ -1,6 +1,509 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+
+
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<ApartmentManagementSystem.Web.ViewModels.Community.ResidentListViewModel>
+@{
+    ViewData["Title"] = "All Residents";
+    Layout = "_Layout";
+    var currentFilter = ViewBag.CurrentFilter as string;
+}
+
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+        background: #f5f7fa;
+    }
+
+    .page-header {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1.5rem;
+    }
+
+        .page-header h2 {
+            font-weight: 700;
+            color: #1a202c;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+        }
+
+            .page-header h2 i {
+                margin-right: 0.5rem;
+            }
+
+        .page-header p {
+            color: #718096;
+            margin: 0;
+        }
+
+        .page-header .btn {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+            .page-header .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+            }
+
+    .filter-tabs {
+        background: white;
+        padding: 1rem;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1.5rem;
+    }
+
+        .filter-tabs .btn {
+            border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            font-weight: 600;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-tabs .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .filter-tabs .btn-outline-primary {
+            background: white;
+            border-color: #e2e8f0;
+            color: #4a5568;
+        }
+
+            .filter-tabs .btn-outline-primary:hover {
+                border-color: #667eea;
+                color: #667eea;
+            }
+
+        .filter-tabs .btn-success {
+            background: var(--gradient-success);
+            border: none;
+            color: white;
+            box-shadow: 0 2px 8px rgba(17, 153, 142, 0.3);
+        }
+
+        .filter-tabs .btn-outline-success {
+            background: white;
+            border-color: #e2e8f0;
+            color: #4a5568;
+        }
+
+            .filter-tabs .btn-outline-success:hover {
+                border-color: #11998e;
+                color: #11998e;
+            }
+
+        .filter-tabs .btn-info {
+            background: var(--gradient-info);
+            border: none;
+            color: white;
+            box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
+        }
+
+        .filter-tabs .btn-outline-info {
+            background: white;
+            border-color: #e2e8f0;
+            color: #4a5568;
+        }
+
+            .filter-tabs .btn-outline-info:hover {
+                border-color: #4facfe;
+                color: #4facfe;
+            }
+
+    .data-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-header-gradient {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+        .card-header-gradient i {
+            margin-right: 0.5rem;
+        }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .modern-table {
+        margin: 0;
+    }
+
+        .modern-table thead {
+            background: #f7fafc;
+        }
+
+            .modern-table thead th {
+                padding: 1rem 1.25rem;
+                font-weight: 600;
+                color: #4a5568;
+                border: none;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+        .modern-table tbody tr {
+            border-bottom: 1px solid #f7fafc;
+            transition: all 0.2s ease;
+        }
+
+            .modern-table tbody tr:hover {
+                background: #f7fafc;
+            }
+
+        .modern-table tbody td {
+            padding: 1rem 1.25rem;
+            color: #2d3748;
+            vertical-align: middle;
+        }
+
+    .badge {
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .badge-gradient {
+        background: var(--gradient);
+        color: white;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+        .badge-gradient.success {
+            --gradient: var(--gradient-success);
+        }
+
+        .badge-gradient.info {
+            --gradient: var(--gradient-info);
+        }
+
+        .badge-gradient.warning {
+            --gradient: var(--gradient-warning);
+        }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card p {
+            color: #718096;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .stat-card.primary {
+            --gradient: var(--gradient-primary);
+        }
+
+        .stat-card.success {
+            --gradient: var(--gradient-success);
+        }
+
+        .stat-card.info {
+            --gradient: var(--gradient-info);
+        }
+
+        .stat-card.warning {
+            --gradient: var(--gradient-warning);
+        }
+
+    .btn-group .btn {
+        padding: 0.4rem 0.75rem;
+        border-radius: 8px;
+        margin-right: 0.25rem;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            text-align: center;
+        }
+
+        .filter-tabs .btn {
+            width: 100%;
+            margin-right: 0;
+        }
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="page-header">
+                <h2><i class="bi bi-people"></i> All Residents</h2>
+                <p>View and manage all resident owners and tenants</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="page-header text-end">
+                <a asp-controller="Onboarding" asp-action="Create" class="btn">
+                    <i class="bi bi-person-plus-fill"></i> Add New Resident
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 12px; border-left: 4px solid #11998e;">
+            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter Buttons -->
+    <div class="filter-tabs">
+        <a asp-action="Index" class="btn @(string.IsNullOrEmpty(currentFilter) ? "btn-primary" : "btn-outline-primary")">
+            <i class="bi bi-people-fill"></i> All Residents (@Model.Count)
+        </a>
+        <a asp-action="Index" asp-route-residentType="Owner"
+           class="btn @(currentFilter == "Owner" ? "btn-success" : "btn-outline-success")">
+            <i class="bi bi-house-fill"></i> Owners (@Model.Count(r => r.ResidentType == "Owner"))
+        </a>
+        <a asp-action="Index" asp-route-residentType="Tenant"
+           class="btn @(currentFilter == "Tenant" ? "btn-info" : "btn-outline-info")">
+            <i class="bi bi-person"></i> Tenants (@Model.Count(r => r.ResidentType == "Tenant"))
+        </a>
+    </div>
+
+    <!-- Residents Table -->
+    <div class="data-card">
+        <div class="card-header-gradient">
+            @if (string.IsNullOrEmpty(currentFilter))
+            {
+                <span>All Residents (@Model.Count)</span>
+            }
+            else
+            {
+                <span>@currentFilter Residents (@Model.Count)</span>
+            }
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Any())
+            {
+                <div class="table-container">
+                    <table class="modern-table table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Type</th>
+                                <th>Flat Number</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Registered On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var resident in Model)
+                            {
+                                <tr>
+                                    <td><strong>@resident.FullName</strong></td>
+                                    <td>
+                                        @if (resident.ResidentType == "Owner")
+                                        {
+                                            <span class="badge badge-gradient success">
+                                                <i class="bi bi-house-fill"></i> Owner
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-gradient info">
+                                                <i class="bi bi-person"></i> Tenant
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (string.IsNullOrEmpty(resident.FlatNumber))
+                                        {
+                                            <span class="badge badge-gradient warning">Not Assigned</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@resident.FlatNumber</span>
+                                        }
+                                    </td>
+                                    <td>@resident.Email</td>
+                                    <td>@resident.Phone</td>
+                                    <td>
+                                        @if (resident.Status == "Active")
+                                        {
+                                            <span class="badge badge-gradient success">Active</span>
+                                        }
+                                        else if (resident.Status == "Pending Assignment")
+                                        {
+                                            <span class="badge badge-gradient warning">Pending</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Inactive</span>
+                                        }
+                                    </td>
+                                    <td>@resident.RegisteredOn.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-userId="@resident.UserId"
+                                               class="btn btn-sm btn-outline-primary"
+                                               title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
+                                            {
+                                                @if (resident.Status == "Active")
+                                                {
+                                                    <form asp-action="Deactivate" method="post" class="d-inline"
+                                                          onsubmit="return confirm('Deactivate @resident.FullName?');">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="userId" value="@resident.UserId" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Deactivate">
+                                                            <i class="bi bi-x-circle"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <form asp-action="Activate" method="post" class="d-inline"
+                                                          onsubmit="return confirm('Activate @resident.FullName?');">
+                                                        <input type="hidden" name="userId" value="@resident.UserId" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Activate">
+                                                            <i class="bi bi-check-circle"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info m-3" style="border-radius: 12px;">
+                    <i class="bi bi-info-circle"></i> No residents found.
+                    <a asp-controller="Onboarding" asp-action="Create" class="alert-link fw-bold">
+                        Click here to add a new resident.
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row g-3">
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card primary">
+                <h3>@Model.Count</h3>
+                <p>Total Residents</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card success">
+                <h3>@Model.Count(r => r.ResidentType == "Owner")</h3>
+                <p>Owners</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card info">
+                <h3>@Model.Count(r => r.ResidentType == "Tenant")</h3>
+                <p>Tenants</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card warning">
+                <h3>@Model.Count(r => r.Status == "Pending Assignment")</h3>
+                <p>Pending Assignment</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+@*
 @model List<ApartmentManagementSystem.Web.ViewModels.Community.ResidentListViewModel>
 @{
     ViewData["Title"] = "All Residents";
@@ -216,3 +719,4 @@
         </div>
     </div>
 </div>
+*@

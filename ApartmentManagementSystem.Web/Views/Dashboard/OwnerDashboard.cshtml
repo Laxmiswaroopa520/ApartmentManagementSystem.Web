@@ -2,6 +2,409 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model ApartmentManagementSystem.Web.ViewModels.Dashboard.OwnerDashboardViewModel
+@{
+    ViewData["Title"] = "My Dashboard - Skyline";
+    Layout = "_Layout";
+}
+
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-success: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --gradient-dark: linear-gradient(135deg, #434343 0%, #000000 100%);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+        background: #f5f7fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .dashboard-header {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1.5rem;
+    }
+
+        .dashboard-header h2 {
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+            font-size: 1.75rem;
+        }
+
+    .role-badge {
+        background: var(--gradient-success);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+        box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card.gradient-primary {
+            --gradient: var(--gradient-primary);
+        }
+
+        .stat-card.gradient-warning {
+            --gradient: var(--gradient-warning);
+        }
+
+        .stat-card.gradient-info {
+            --gradient: var(--gradient-info);
+        }
+
+        .stat-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card p {
+            color: #718096;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-card .status-text {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+    .section-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+        .section-header i {
+            margin-right: 0.5rem;
+        }
+
+    .flat-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+        .flat-card:hover {
+            border-color: #667eea;
+            box-shadow: var(--shadow-sm);
+            transform: translateY(-2px);
+        }
+
+        .flat-card h5 {
+            color: #1a202c;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .flat-card .info-row {
+            margin-bottom: 0.75rem;
+        }
+
+            .flat-card .info-row:last-child {
+                margin-bottom: 0;
+            }
+
+        .flat-card .label {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .flat-card .value {
+            font-size: 0.95rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+    .flat-badge {
+        padding: 0.35rem 0.85rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+        .flat-badge.badge-tenant {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
+        }
+
+        .flat-badge.badge-vacant {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(250, 112, 154, 0.3);
+        }
+
+    .btn-action {
+        padding: 0.75rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 600;
+        border: 2px solid transparent;
+        background: white;
+        color: #4a5568;
+        border-color: #e2e8f0;
+        opacity: 0.6;
+        cursor: not-allowed;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .alert-custom {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.25rem;
+        background: #e6f7ff;
+        border-left: 4px solid #4facfe;
+        display: flex;
+        align-items: start;
+        gap: 1rem;
+    }
+
+        .alert-custom i {
+            font-size: 1.5rem;
+            color: #4facfe;
+        }
+
+        .alert-custom strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #1a202c;
+        }
+
+        .alert-custom p {
+            margin: 0;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+    @@media (max-width: 768px) {
+        .dashboard-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .stat-card h3 {
+            font-size: 1.75rem;
+        }
+
+        .stat-card .icon {
+            font-size: 2rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .stat-card {
+            padding: 1.25rem;
+        }
+
+        .flat-card {
+            padding: 1rem;
+        }
+
+        .btn-action {
+            padding: 0.65rem 1rem;
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h2>Welcome, @Model.FullName! 👋</h2>
+        <p class="text-muted mb-0" style="margin-top: 0.5rem;">
+            Role: <span class="role-badge">Resident Owner</span>
+        </p>
+    </div>
+
+    <!-- My Flats Section -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="bi bi-buildings"></i> My Flats
+        </div>
+        <div class="card-body" style="padding: 1.5rem;">
+            @if (Model.MyFlats.Any())
+            {
+                <div class="row g-3">
+                    @foreach (var flat in Model.MyFlats)
+                    {
+                        <div class="col-lg-6">
+                            <div class="flat-card">
+                                <h5>
+                                    <i class="bi bi-building"></i>
+                                    Flat @flat.FlatNumber
+                                </h5>
+                                <div class="info-row">
+                                    <div class="label">Building</div>
+                                    <div class="value">@flat.ApartmentName</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="label">Owner</div>
+                                    <div class="value">@flat.OwnerName</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="label">Status</div>
+                                    @if (!string.IsNullOrEmpty(flat.TenantName))
+                                    {
+                                        <span class="flat-badge badge-tenant">
+                                            <i class="bi bi-person-check"></i> @flat.TenantName
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="flat-badge badge-vacant">
+                                            <i class="bi bi-house"></i> Vacant
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert-custom">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <div>
+                        <strong>No flats assigned yet</strong>
+                        <p>Please contact the administrator to assign your flat ownership.</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="stat-card gradient-warning">
+                <div class="icon">📝</div>
+                <h3>@Model.PendingComplaints</h3>
+                <p>Pending Complaints</p>
+                <div class="status-text">Coming in Phase 5</div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="stat-card gradient-primary">
+                <div class="icon">💳</div>
+                <h3>@Model.PendingBills</h3>
+                <p>Pending Bills</p>
+                <div class="status-text">Coming in Phase 6</div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <div class="stat-card gradient-info">
+                <div class="icon">₹</div>
+                <h3>₹@Model.TotalOutstanding.ToString("N2")</h3>
+                <p>Total Outstanding</p>
+                <div class="status-text">Coming in Phase 6</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-card">
+        <div class="section-header" style="background: var(--gradient-success);">
+            <i class="bi bi-lightning-charge"></i> Quick Actions
+        </div>
+        <div class="card-body" style="padding: 1.5rem;">
+            <div class="row g-3">
+                <div class="col-lg-4 col-md-6">
+                    <button class="btn btn-action w-100" disabled>
+                        <i class="bi bi-file-text"></i> Raise Complaint (Phase 5)
+                    </button>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <button class="btn btn-action w-100" disabled>
+                        <i class="bi bi-credit-card"></i> Pay Bills (Phase 6)
+                    </button>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <button class="btn btn-action w-100" disabled>
+                        <i class="bi bi-door-open"></i> Manage Visitors (Phase 7)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*
+
 @model ApartmentManagementSystem.Web.ViewModels.Dashboard.OwnerDashboardViewModel
 @{
     ViewData["Title"] = "My Dashboard - Skyline";
@@ -346,136 +749,13 @@
         </div>
     </div>
 </div>
-
-@*
-@model ApartmentManagementSystem.Web.ViewModels.Dashboard.OwnerDashboardViewModel
-@{
-    ViewData["Title"] = "My Dashboard";
-    Layout = "_Layout";
-}
-
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="mb-1">Welcome, @Model.FullName! 👋</h2>
-            <p class="text-muted">
-                Role: <span class="badge bg-success fs-6">Resident Owner</span>
-            </p>
-        </div>
-    </div>
-
-    <!-- My Flats Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">🏢 My Flats</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.MyFlats.Any())
-                    {
-                        <div class="row">
-                            @foreach (var flat in Model.MyFlats)
-                            {
-                                <div class="col-md-6 mb-3">
-                                    <div class="card border-primary">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Flat @flat.FlatNumber</h5>
-                                            <p class="card-text">
-                                                <strong>Building:</strong> @flat.ApartmentName<br />
-                                                <strong>Owner:</strong> @flat.OwnerName<br />
-                                                @if (!string.IsNullOrEmpty(flat.TenantName))
-                                                {
-                                                    <strong>Tenant:</strong> <span class="badge bg-info">@flat.TenantName</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-warning">Vacant</span>
-                                                }
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-info">
-                            <strong>ℹ️ No flats assigned yet.</strong><br />
-                            Please contact the administrator to assign your flat.
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card text-white bg-warning">
-                <div class="card-body text-center">
-                    <div class="display-4">📝</div>
-                    <h3>@Model.PendingComplaints</h3>
-                    <p class="mb-0">Pending Complaints</p>
-                    <hr class="bg-white" />
-                    <small>Coming in Phase 5</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-danger">
-                <div class="card-body text-center">
-                    <div class="display-4">💳</div>
-                    <h3>@Model.PendingBills</h3>
-                    <p class="mb-0">Pending Bills</p>
-                    <hr class="bg-white" />
-                    <small>Coming in Phase 6</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-info">
-                <div class="card-body text-center">
-                    <div class="display-4">₹</div>
-                    <h3>₹@Model.TotalOutstanding.ToString("N2")</h3>
-                    <p class="mb-0">Total Outstanding</p>
-                    <hr class="bg-white" />
-                    <small>Coming in Phase 6</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0">⚡ Quick Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <button class="btn btn-outline-primary w-100" disabled>
-                                📝 Raise Complaint (Phase 5)
-                            </button>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <button class="btn btn-outline-success w-100" disabled>
-                                💰 Pay Bills (Phase 6)
-                            </button>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <button class="btn btn-outline-info w-100" disabled>
-                                🚪 Manage Visitors (Phase 7)
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 *@
+
+
+
+
+
+
+
+
+

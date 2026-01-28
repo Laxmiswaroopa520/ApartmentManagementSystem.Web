@@ -1,6 +1,495 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<ApartmentManagementSystem.Web.ViewModels.Community.StaffMemberViewModel>
+@{
+    ViewData["Title"] = "Staff Members";
+    Layout = "_Layout";
+    var currentFilter = ViewBag.CurrentFilter as string;
+}
+
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #434343 0%, #000000 100%);
+        --gradient-security: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-plumber: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --gradient-electrician: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+        background: #f5f7fa;
+    }
+
+    .page-header {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1.5rem;
+    }
+
+        .page-header h2 {
+            font-weight: 700;
+            color: #1a202c;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+        }
+
+            .page-header h2 i {
+                margin-right: 0.5rem;
+            }
+
+        .page-header p {
+            color: #718096;
+            margin: 0;
+        }
+
+        .page-header .btn {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(67, 67, 67, 0.3);
+            transition: all 0.3s ease;
+        }
+
+            .page-header .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(67, 67, 67, 0.4);
+            }
+
+    .filter-tabs {
+        background: white;
+        padding: 1rem;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1.5rem;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+        .filter-tabs .btn {
+            border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            font-weight: 600;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .filter-tabs .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            box-shadow: 0 2px 8px rgba(67, 67, 67, 0.3);
+        }
+
+        .filter-tabs .btn-outline-primary {
+            background: white;
+            border-color: #e2e8f0;
+            color: #4a5568;
+        }
+
+            .filter-tabs .btn-outline-primary:hover {
+                border-color: #434343;
+                color: #434343;
+            }
+
+    .data-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-header-gradient {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .modern-table {
+        margin: 0;
+    }
+
+        .modern-table thead {
+            background: #f7fafc;
+        }
+
+            .modern-table thead th {
+                padding: 1rem 1.25rem;
+                font-weight: 600;
+                color: #4a5568;
+                border: none;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+        .modern-table tbody tr {
+            border-bottom: 1px solid #f7fafc;
+            transition: all 0.2s ease;
+        }
+
+            .modern-table tbody tr:hover {
+                background: #f7fafc;
+            }
+
+            .modern-table tbody tr.table-secondary {
+                background: #f1f1f1;
+            }
+
+        .modern-table tbody td {
+            padding: 1rem 1.25rem;
+            color: #2d3748;
+            vertical-align: middle;
+        }
+
+    .badge {
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .badge-gradient {
+        background: var(--gradient);
+        color: white;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+        .badge-gradient.security {
+            --gradient: var(--gradient-security);
+        }
+
+        .badge-gradient.plumber {
+            --gradient: var(--gradient-plumber);
+        }
+
+        .badge-gradient.electrician {
+            --gradient: var(--gradient-electrician);
+        }
+
+        .badge-gradient.success {
+            --gradient: var(--gradient-success);
+        }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card p {
+            color: #718096;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .stat-card.primary {
+            --gradient: var(--gradient-primary);
+        }
+
+        .stat-card.success {
+            --gradient: var(--gradient-success);
+        }
+
+        .stat-card.plumber {
+            --gradient: var(--gradient-plumber);
+        }
+
+    .btn-group .btn {
+        padding: 0.4rem 0.75rem;
+        border-radius: 8px;
+        margin-right: 0.25rem;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            text-align: center;
+        }
+
+        .filter-tabs {
+            white-space: normal;
+        }
+
+            .filter-tabs .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="page-header">
+                <h2><i class="bi bi-person-badge"></i> Staff Members</h2>
+                <p>Manage security, maintenance, and support staff</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="page-header text-end">
+                <a asp-action="Create" class="btn">
+                    <i class="bi bi-person-plus-fill"></i> Add Staff Member
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 12px; border-left: 4px solid #11998e;">
+            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter Buttons -->
+    <div class="filter-tabs">
+        <a asp-action="Index" class="btn @(string.IsNullOrEmpty(currentFilter) ? "btn-primary" : "btn-outline-primary")">
+            <i class="bi bi-people-fill"></i> All Staff
+        </a>
+        <a asp-action="Index" asp-route-staffType="Security"
+           class="btn @(currentFilter == "Security" ? "btn-primary" : "btn-outline-primary")">
+            <i class="bi bi-shield-fill"></i> Security
+        </a>
+        <a asp-action="Index" asp-route-staffType="Plumber"
+           class="btn @(currentFilter == "Plumber" ? "btn-primary" : "btn-outline-primary")">
+            <i class="bi bi-wrench"></i> Plumber
+        </a>
+        <a asp-action="Index" asp-route-staffType="Electrician"
+           class="btn @(currentFilter == "Electrician" ? "btn-primary" : "btn-outline-primary")">
+            <i class="bi bi-lightning-fill"></i> Electrician
+        </a>
+        <a asp-action="Index" asp-route-staffType="Carpenter"
+           class="btn @(currentFilter == "Carpenter" ? "btn-primary" : "btn-outline-primary")">
+            <i class="bi bi-hammer"></i> Carpenter
+        </a>
+        <a asp-action="Index" asp-route-staffType="Sweeper"
+           class="btn @(currentFilter == "Sweeper" ? "btn-primary" : "btn-outline-primary")">
+            <i class="bi bi-broom"></i> Sweeper
+        </a>
+        <a asp-action="Index" asp-route-staffType="Gardener"
+           class="btn @(currentFilter == "Gardener" ? "btn-primary" : "btn-outline-primary")">
+            <i class="bi bi-tree-fill"></i> Gardener
+        </a>
+    </div>
+
+    <div class="data-card">
+        <div class="card-header-gradient">
+            @if (string.IsNullOrEmpty(currentFilter))
+            {
+                <span>All Staff Members (@Model.Count)</span>
+            }
+            else
+            {
+                <span>@currentFilter Staff (@Model.Count)</span>
+            }
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Any())
+            {
+                <div class="table-container">
+                    <table class="modern-table table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Specialization</th>
+                                <th>Hourly Rate</th>
+                                <th>Joined On</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var staff in Model)
+                            {
+                                <tr class="@(staff.IsActive ? "" : "table-secondary")">
+                                    <td><strong>@staff.FullName</strong></td>
+                                    <td>
+                                        @if (staff.StaffType == "Security")
+                                        {
+                                            <span class="badge badge-gradient security"><i class="bi bi-shield-fill"></i> Security</span>
+                                        }
+                                        else if (staff.StaffType == "Plumber")
+                                        {
+                                            <span class="badge badge-gradient plumber"><i class="bi bi-wrench"></i> Plumber</span>
+                                        }
+                                        else if (staff.StaffType == "Electrician")
+                                        {
+                                            <span class="badge badge-gradient electrician"><i class="bi bi-lightning-fill"></i> Electrician</span>
+                                        }
+                                        else if (staff.StaffType == "Carpenter")
+                                        {
+                                            <span class="badge bg-secondary"><i class="bi bi-hammer"></i> Carpenter</span>
+                                        }
+                                        else if (staff.StaffType == "Sweeper")
+                                        {
+                                            <span class="badge badge-gradient success"><i class="bi bi-broom"></i> Sweeper</span>
+                                        }
+                                        else if (staff.StaffType == "Gardener")
+                                        {
+                                            <span class="badge badge-gradient success"><i class="bi bi-tree-fill"></i> Gardener</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-dark">@staff.StaffType</span>
+                                        }
+                                    </td>
+                                    <td>@staff.Phone</td>
+                                    <td>@(staff.Email ?? "N/A")</td>
+                                    <td>@(staff.Specialization ?? "-")</td>
+                                    <td>
+                                        @if (staff.HourlyRate.HasValue)
+                                        {
+                                            <span style="color: #11998e; font-weight: 600;">₹@staff.HourlyRate.Value.ToString("N2")/hr</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>@staff.JoinedOn.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        @if (staff.IsActive)
+                                        {
+                                            <span class="badge badge-gradient success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Inactive</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Edit" asp-route-staffId="@staff.StaffId"
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            @if (staff.IsActive)
+                                            {
+                                                <form asp-action="Deactivate" method="post" class="d-inline"
+                                                      onsubmit="return confirm('Deactivate @staff.FullName?');">
+                                                    <input type="hidden" name="staffId" value="@staff.StaffId" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form asp-action="Activate" method="post" class="d-inline"
+                                                      onsubmit="return confirm('Activate @staff.FullName?');">
+                                                    <input type="hidden" name="staffId" value="@staff.StaffId" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                                        <i class="bi bi-check-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info m-3" style="border-radius: 12px;">
+                    <i class="bi bi-info-circle"></i> No staff members found.
+                    <a asp-action="Create" class="alert-link fw-bold">Click here to add a staff member.</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row g-3">
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card primary">
+                <h3>@Model.Count</h3>
+                <p>Total Staff</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card success">
+                <h3>@Model.Count(s => s.IsActive)</h3>
+                <p>Active</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card" style="--gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <h3>@Model.Count(s => !s.IsActive)</h3>
+                <p>Inactive</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card plumber">
+                <h3>@Model.Count(s => s.StaffType == "Security")</h3>
+                <p>Security Staff</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@*
 @model List<ApartmentManagementSystem.Web.ViewModels.Community.StaffMemberViewModel>
 @{
     ViewData["Title"] = "Staff Members";
@@ -238,3 +727,4 @@
         </div>
     </div>
 </div>
+*@

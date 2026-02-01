@@ -1,136 +1,4 @@
 ﻿/*
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using ApartmentManagementSystem.Web.ViewModels.Apartment;
-using ApartmentManagementSystem.Web.Services.DTOs;
-using ApartmentManagementSystem.Web.Services; // ⭐ Add this
-using System.Text.Json;
-
-namespace ApartmentManagementSystem.Web.Controllers
-{
-    [Authorize(Roles = "SuperAdmin")]
-    public class ApartmentBuilderController : Controller
-    {
-        private readonly ApiClient _apiClient; // ⭐ Changed to ApiClient
-        private readonly IConfiguration _configuration;
-
-        public ApartmentBuilderController(
-            ApiClient apiClient, // ⭐ Changed from IHttpClientFactory
-            IConfiguration configuration)
-        {
-            _apiClient = apiClient;
-            _configuration = configuration;
-        }
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> ManageApartments()
-        {
-            try
-            {
-                var response = await _apiClient.GetAsync<ApiResponse<List<ApartmentListViewModel>>>(
-                    "api/ApartmentManagement/all"
-                );
-
-                return View(response?.Data ?? new List<ApartmentListViewModel>());
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading apartments: {ex.Message}");
-                return View(new List<ApartmentListViewModel>());
-            }
-        }
-
-        public async Task<IActionResult> Details(Guid id)
-        {
-            try
-            {
-                var response = await _apiClient.GetAsync<ApiResponse<ApartmentDetailViewModel>>(
-                    $"api/ApartmentManagement/{id}"
-                );
-
-                if (response?.Data != null)
-                {
-                    return View(response.Data);
-                }
-
-                return RedirectToAction(nameof(ManageApartments));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading details: {ex.Message}");
-                return RedirectToAction(nameof(ManageApartments));
-            }
-        }
-
-        public async Task<IActionResult> Visualize(Guid id)
-        {
-            try
-            {
-                var response = await _apiClient.GetAsync<ApiResponse<ApartmentDiagramViewModel>>(
-                    $"api/ApartmentManagement/{id}/diagram"
-                );
-
-                if (response?.Data != null)
-                {
-                    return View(response.Data);
-                }
-
-                return RedirectToAction(nameof(ManageApartments));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading diagram: {ex.Message}");
-                return RedirectToAction(nameof(ManageApartments));
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentViewModel model)
-        {
-            try
-            {
-                Console.WriteLine("=== CreateApartment Called ===");
-                Console.WriteLine($"Model: Name={model.Name}, Floors={model.TotalFloors}, Flats={model.FlatsPerFloor}");
-
-                // ⭐ Use ApiClient which is already configured
-                var response = await _apiClient.PostAsync<CreateApartmentViewModel, ApiResponse<object>>(
-                    "api/ApartmentManagement/create",
-                    model
-                );
-
-                Console.WriteLine($"Response received: Success={response?.Success}");
-
-                if (response?.Success == true)
-                {
-                    return Json(new { success = true, message = "Apartment created successfully!" });
-                }
-
-                return Json(new
-                {
-                    success = false,
-                    message = response?.Message ?? "Failed to create apartment"
-                });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"=== ERROR in CreateApartment ===");
-                Console.WriteLine($"Error: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                return Json(new
-                {
-                    success = false,
-                    message = $"Error: {ex.Message}"
-                });
-            }
-        }
-    }
-}
-*/
 
 using ApartmentManagementSystem.Web.Mappers.Apartment;
 using ApartmentManagementSystem.Web.Services;
@@ -363,26 +231,13 @@ namespace ApartmentManagementSystem.Web.Controllers
     }
 }
 
+*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
+/* new one 
+using ApartmentManagementSystem.Web.Mappers.Apartment;
 using ApartmentManagementSystem.Web.Services;
-using ApartmentManagementSystem.Web.Services.DTOs;
-using ApartmentManagementSystem.Web.Services.DTOs.Apartment;
+using ApartmentManagementSystem.Web.Services.DTOs.Manager;
 using ApartmentManagementSystem.Web.ViewModels.Apartment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -392,108 +247,112 @@ namespace ApartmentManagementSystem.Web.Controllers
     [Authorize(Roles = "SuperAdmin")]
     public class ApartmentBuilderController : Controller
     {
-        private readonly ApiClient _apiClient;
-        private readonly IConfiguration _configuration;
+        private readonly ApartmentApiService _apartmentApiService;
+        private readonly ManagerApiService _managerApiService;
 
-        public ApartmentBuilderController(
-            ApiClient apiClient,
-            IConfiguration configuration)
+        public ApartmentBuilderController(ApartmentApiService apartmentApiService, ManagerApiService managerApiService)
         {
-            _apiClient = apiClient;
-            _configuration = configuration;
+            _apartmentApiService = apartmentApiService;
+            _managerApiService = managerApiService;
         }
 
+        // ─── CREATE ───────────────────────────────────────────────────────────────
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
+        // ─── MANAGE (list all apartments) ─────────────────────────────────────────
+        [HttpGet]
         public async Task<IActionResult> ManageApartments()
         {
             try
             {
-                var response = await _apiClient.GetAsync<ApiResponse<List<ApartmentListViewModel>>>(
-                    "api/ApartmentManagement/all"
-                );
+                var response = await _apartmentApiService.GetAllApartmentsAsync();
 
-                return View(response?.Data ?? new List<ApartmentListViewModel>());
+                var viewModel = response?.Success == true && response.Data != null
+                    ? ApartmentListMapper.From(response.Data)
+                    : new List<ApartmentListViewModel>();
+
+                return View(viewModel);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading apartments: {ex.Message}");
+                TempData["ErrorMessage"] = "Failed to load apartments";
                 return View(new List<ApartmentListViewModel>());
             }
         }
 
+        // ─── DETAILS ──────────────────────────────────────────────────────────────
+        [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
             try
             {
-                var response = await _apiClient.GetAsync<ApiResponse<ApartmentDetailViewModel>>(
-                    $"api/ApartmentManagement/{id}"
-                );
+                var response = await _apartmentApiService.GetApartmentDetailAsync(id);
 
-                if (response?.Data != null)
+                if (response?.Success == true && response.Data != null)
                 {
-                    return View(response.Data);
+                    var viewModel = ApartmentDetailMapper.From(response.Data);
+                    return View(viewModel);
                 }
 
+                TempData["ErrorMessage"] = response?.Message ?? "Apartment not found";
                 return RedirectToAction(nameof(ManageApartments));
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading details: {ex.Message}");
+                TempData["ErrorMessage"] = "Failed to load apartment details";
                 return RedirectToAction(nameof(ManageApartments));
             }
         }
 
+        // ─── VISUALIZE (3D/2D page) ───────────────────────────────────────────────
+        // This calls GET /api/ApartmentManagement/{id}/diagram
+        // The API must return Floors + Flats populated. If not, see FILE 4.
+        [HttpGet]
         public async Task<IActionResult> Visualize(Guid id)
         {
             try
             {
-                var response = await _apiClient.GetAsync<ApiResponse<ApartmentDiagramViewModel>>(
-                    $"api/ApartmentManagement/{id}/diagram"
-                );
+                var response = await _apartmentApiService.GetApartmentDiagramAsync(id);
 
-                if (response?.Data != null)
+                if (response?.Success == true && response.Data != null)
                 {
-                    return View(response.Data);
+                    var viewModel = ApartmentDiagramMapper.From(response.Data);
+                    return View(viewModel);
                 }
 
-                return RedirectToAction(nameof(ManageApartments));
+                TempData["ErrorMessage"] = response?.Message ?? "Diagram not found";
+                return RedirectToAction(nameof(Details), new { id });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading diagram: {ex.Message}");
-                return RedirectToAction(nameof(ManageApartments));
+                TempData["ErrorMessage"] = "Failed to load apartment diagram";
+                return RedirectToAction(nameof(Details), new { id });
             }
         }
 
+        // ─── CREATE APARTMENT (JSON POST from apartment-builder.js) ──────────────
         [HttpPost]
         public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentViewModel model)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = "Invalid data provided" });
+                }
+
                 Console.WriteLine("=== CreateApartment Called ===");
                 Console.WriteLine($"Model: Name={model.Name}, Floors={model.TotalFloors}, Flats={model.FlatsPerFloor}");
 
-                // Map ViewModel to DTO
-                var dto = new CreateApartmentDto
-                {
-                    Name = model.Name,
-                    Address = model.Address,
-                    City = model.City,
-                    State = model.State,
-                    PinCode = model.PinCode,
-                    TotalFloors = model.TotalFloors,
-                    FlatsPerFloor = model.FlatsPerFloor
-                };
-
-                // ⭐ Use the correct response type
-                var response = await _apiClient.PostAsync<CreateApartmentDto, ApiResponse<CreateApartmentResponseDto>>(
-                    "api/ApartmentManagement/create",
-                    dto
-                );
+                var dto = CreateApartmentMapper.ToDto(model);
+                var response = await _apartmentApiService.CreateApartmentAsync(dto);
 
                 Console.WriteLine($"Response received: Success={response?.Success}");
 
@@ -502,7 +361,218 @@ namespace ApartmentManagementSystem.Web.Controllers
                     return Json(new
                     {
                         success = true,
-                        message = "Apartment created successfully!",
+                        message = response.Message ?? "Apartment created successfully!",
+                        data = response.Data
+                    });
+                }
+
+                return Json(new { success = false, message = response?.Message ?? "Failed to create apartment" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"=== ERROR in CreateApartment === {ex.Message}");
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
+        }
+
+        // ─── ASSIGN MANAGER (JSON POST from apartment-details.js) ─────────────────
+        // JS sends: { apartmentId, userId, isExternalManager, externalManagerName,
+        //            externalManagerPhone, externalManagerEmail, livesInApartment }
+        // AssignManagerRequest (in Web/Services/DTOs/Manager/) has ALL these fields.
+        // This forwards the whole object to POST /api/Manager/assign via ManagerApiService.
+        [HttpPost]
+        public async Task<IActionResult> AssignManager([FromBody] AssignManagerRequest request)
+        {
+            try
+            {
+                Console.WriteLine($"=== AssignManager Called ===");
+                Console.WriteLine($"ApartmentId={request.ApartmentId}, UserId={request.UserId}, IsExternal={request.IsExternalManager}");
+
+                var response = await _managerApiService.AssignManagerToApartmentAsync(request);
+
+                if (response?.Success == true)
+                {
+                    return Json(new { success = true, message = "Manager assigned successfully!" });
+                }
+
+                return Json(new { success = false, message = response?.Message ?? "Failed to assign manager" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error assigning manager: {ex.Message}");
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
+        }
+
+        // ─── REMOVE MANAGER (JSON POST from apartment-details.js) ─────────────────
+        // JS sends: { apartmentId }
+        [HttpPost]
+        public async Task<IActionResult> RemoveManager([FromBody] RemoveManagerRequest request)
+        {
+            try
+            {
+                Console.WriteLine($"=== RemoveManager Called === ApartmentId={request.ApartmentId}");
+
+                var response = await _managerApiService.RemoveManagerFromApartmentAsync(request);
+
+                if (response?.Success == true)
+                {
+                    return Json(new { success = true, message = "Manager removed successfully!" });
+                }
+
+                return Json(new { success = false, message = response?.Message ?? "Failed to remove manager" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing manager: {ex.Message}");
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
+        }
+    }
+}
+*/
+// ============================================================
+// PLACE AT: Web/Controllers/ApartmentBuilderController.cs
+// ACTION:   REPLACE your existing file completely.
+//
+// NOTE: Your existing controller (doc 1) is actually correct.
+// The AssignManager and RemoveManager actions are wired up fine.
+// The real fix is in ManagerWebDTOs.cs (file 1) — the DTO was
+// missing fields so System.Text.Json silently dropped them.
+// This file is provided complete so you have one clean copy.
+// ============================================================
+
+using ApartmentManagementSystem.Web.Mappers.Apartment;
+using ApartmentManagementSystem.Web.Services;
+using ApartmentManagementSystem.Web.Services.DTOs.Manager;
+using ApartmentManagementSystem.Web.ViewModels.Apartment;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ApartmentManagementSystem.Web.Controllers
+{
+    [Authorize(Roles = "SuperAdmin")]
+    public class ApartmentBuilderController : Controller
+    {
+        private readonly ApartmentApiService _apartmentApiService;
+        private readonly ManagerApiService _managerApiService;
+
+        public ApartmentBuilderController(
+            ApartmentApiService apartmentApiService,
+            ManagerApiService managerApiService)
+        {
+            _apartmentApiService = apartmentApiService;
+            _managerApiService = managerApiService;
+        }
+
+        // ─── CREATE PAGE ──────────────────────────────────────────────────────
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // ─── MANAGE (list all apartments) ─────────────────────────────────────
+        [HttpGet]
+        public async Task<IActionResult> ManageApartments()
+        {
+            try
+            {
+                var response = await _apartmentApiService.GetAllApartmentsAsync();
+
+                var viewModel = response?.Success == true && response.Data != null
+                    ? ApartmentListMapper.From(response.Data)
+                    : new List<ApartmentListViewModel>();
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading apartments: {ex.Message}");
+                TempData["ErrorMessage"] = "Failed to load apartments";
+                return View(new List<ApartmentListViewModel>());
+            }
+        }
+
+        // ─── DETAILS ──────────────────────────────────────────────────────────
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            try
+            {
+                var response = await _apartmentApiService.GetApartmentDetailAsync(id);
+
+                if (response?.Success == true && response.Data != null)
+                {
+                    var viewModel = ApartmentDetailMapper.From(response.Data);
+                    return View(viewModel);
+                }
+
+                TempData["ErrorMessage"] = response?.Message ?? "Apartment not found";
+                return RedirectToAction(nameof(ManageApartments));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading details: {ex.Message}");
+                TempData["ErrorMessage"] = "Failed to load apartment details";
+                return RedirectToAction(nameof(ManageApartments));
+            }
+        }
+
+        // ─── VISUALIZE (3D/2D view) ───────────────────────────────────────────
+        // Calls GET /api/ApartmentManagement/{id}/diagram via ApartmentApiService.
+        // The API returns ApartmentDiagramDto which MUST have Floors populated.
+        // If Floors is empty, the bug is in GetApartmentDiagramAsync on the
+        // Application service side — see FILE 4.
+        [HttpGet]
+        public async Task<IActionResult> Visualize(Guid id)
+        {
+            try
+            {
+                var response = await _apartmentApiService.GetApartmentDiagramAsync(id);
+
+                if (response?.Success == true && response.Data != null)
+                {
+                    var viewModel = ApartmentDiagramMapper.From(response.Data);
+                    return View(viewModel);
+                }
+
+                TempData["ErrorMessage"] = response?.Message ?? "Diagram not found";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading diagram: {ex.Message}");
+                TempData["ErrorMessage"] = "Failed to load apartment diagram";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+        }
+
+        // ─── CREATE APARTMENT (JSON POST from apartment-builder.js) ──────────
+        [HttpPost]
+        public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = "Invalid data provided" });
+                }
+
+                Console.WriteLine("=== CreateApartment Called ===");
+                Console.WriteLine($"Model: Name={model.Name}, Floors={model.TotalFloors}, Flats={model.FlatsPerFloor}");
+
+                var dto = CreateApartmentMapper.ToDto(model);
+                var response = await _apartmentApiService.CreateApartmentAsync(dto);
+
+                Console.WriteLine($"Response received: Success={response?.Success}");
+
+                if (response?.Success == true)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = response.Message ?? "Apartment created successfully!",
                         data = response.Data
                     });
                 }
@@ -515,224 +585,80 @@ namespace ApartmentManagementSystem.Web.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"=== ERROR in CreateApartment ===");
-                Console.WriteLine($"Error: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                return Json(new
-                {
-                    success = false,
-                    message = $"Error: {ex.Message}"
-                });
+                Console.WriteLine($"=== ERROR in CreateApartment === {ex.Message}");
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
             }
         }
-    }
-}
 
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-using Microsoft.AspNetCore.Mvc;
-// Web/Controllers/ApartmentBuilderController.cs
-using Microsoft.AspNetCore.Authorization;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using ApartmentManagementSystem.Web.ViewModels.Apartment;
-using ApartmentManagementSystem.Web.Services.DTOs;
-
-namespace ApartmentManagementSystem.Web.Controllers
-{
-    [Authorize(Roles = "SuperAdmin")]
-    public class ApartmentBuilderController : Controller
-    {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
-
-        public ApartmentBuilderController(
-            IHttpClientFactory httpClientFactory,
-            IConfiguration configuration)
-        {
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
-        }
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> ManageApartments()
-        {
-            var client = CreateHttpClient();
-            var response = await client.GetAsync("api/ApartmentManagement/all");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var apartments = JsonSerializer.Deserialize<ApiResponse<List<ApartmentListViewModel>>>(
-                    content,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-                return View(apartments?.Data ?? new List<ApartmentListViewModel>());
-            }
-
-            return View(new List<ApartmentListViewModel>());
-        }
-
-        public async Task<IActionResult> Details(Guid id)
-        {
-            var client = CreateHttpClient();
-            var response = await client.GetAsync($"api/ApartmentManagement/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<ApiResponse<ApartmentDetailViewModel>>(
-                    content,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-                return View(result?.Data);
-            }
-
-            return RedirectToAction(nameof(ManageApartments));
-        }
-
-        public async Task<IActionResult> Visualize(Guid id)
-        {
-            var client = CreateHttpClient();
-            var response = await client.GetAsync($"api/ApartmentManagement/{id}/diagram");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<ApiResponse<ApartmentDiagramViewModel>>(
-                    content,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-                return View(result?.Data);
-            }
-
-            return RedirectToAction(nameof(ManageApartments));
-        }
-        /// updated code for knowing the exact error
+        // ─── ASSIGN MANAGER (JSON POST from apartment-details.js) ─────────────
+        // apartment-details.js POSTs to /ApartmentBuilder/AssignManager with:
+        //   { apartmentId, userId, isExternalManager, externalManagerName,
+        //     externalManagerPhone, externalManagerEmail, livesInApartment }
+        //
+        // AssignManagerRequest (file 1) has all 7 fields so nothing is dropped.
+        // This forwards the object directly to POST /api/Manager/assign.
         [HttpPost]
-        public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentViewModel model)
+        public async Task<IActionResult> AssignManager([FromBody] AssignManagerRequest request)
         {
             try
             {
-                Console.WriteLine("=== CreateApartment Called ===");
-                Console.WriteLine($"Model: Name={model.Name}, Floors={model.TotalFloors}, Flats={model.FlatsPerFloor}");
+                Console.WriteLine($"=== AssignManager Called ===");
+                Console.WriteLine($"ApartmentId={request.ApartmentId} | UserId={request.UserId} | IsExternal={request.IsExternalManager}");
 
-                var client = CreateHttpClient();
+                var response = await _managerApiService.AssignManagerToApartmentAsync(request);
 
-                Console.WriteLine($"API Base URL: {client.BaseAddress}");
-
-                var json = JsonSerializer.Serialize(model);
-                Console.WriteLine($"Sending JSON: {json}");
-
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await client.PostAsync("api/ApartmentManagement/create", content);
-
-                Console.WriteLine($"API Response Status: {response.StatusCode}");
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"API Response Content: {responseContent}");
-
-                if (response.IsSuccessStatusCode)
+                if (response?.Success == true)
                 {
-                    return Json(new { success = true, data = responseContent });
+                    return Json(new { success = true, message = "Manager assigned successfully!" });
                 }
-
-                return Json(new { success = false, message = responseContent });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"=== ERROR in CreateApartment ===");
-                Console.WriteLine($"Error: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
 
                 return Json(new
                 {
                     success = false,
-                    message = $"Error: {ex.Message}"
+                    message = response?.Message ?? "Failed to assign manager"
                 });
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error assigning manager: {ex.Message}");
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
         }
 
-        /*  [HttpPost]
-          public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentViewModel model)
-          {
-              var client = CreateHttpClient();
-              var json = JsonSerializer.Serialize(model);
-              var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-              var response = await client.PostAsync("api/ApartmentManagement/create", content);
-              var responseContent = await response.Content.ReadAsStringAsync();
-
-              if (response.IsSuccessStatusCode)
-              {
-                  return Json(new { success = true, data = responseContent });
-              }
-
-              return Json(new { success = false, message = responseContent });
-          }
-          ---------------
-
-// Web/Controllers/ApartmentBuilderController.cs
-
-private HttpClient CreateHttpClient()
+        // ─── REMOVE MANAGER (JSON POST from apartment-details.js) ─────────────
+        // apartment-details.js POSTs: { apartmentId }
+        // Forwards to POST /api/Manager/remove
+        [HttpPost]
+        public async Task<IActionResult> RemoveManager([FromBody] RemoveManagerRequest request)
         {
-            var client = _httpClientFactory.CreateClient();
-
-            // ⭐ FIX: Use correct API URL
-            var apiBaseUrl = _configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7093/";        //not in 7001
-            client.BaseAddress = new Uri(apiBaseUrl);
-
-            var token = HttpContext.Request.Cookies["AuthToken"];
-            if (!string.IsNullOrEmpty(token))
+            try
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
+                Console.WriteLine($"=== RemoveManager Called === ApartmentId={request.ApartmentId}");
 
-            return client;
+                var response = await _managerApiService.RemoveManagerFromApartmentAsync(request);
+
+                if (response?.Success == true)
+                {
+                    return Json(new { success = true, message = "Manager removed successfully!" });
+                }
+
+                return Json(new
+                {
+                    success = false,
+                    message = response?.Message ?? "Failed to remove manager"
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing manager: {ex.Message}");
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
         }
-      /*  private HttpClient CreateHttpClient()
-        {
-            var client = _httpClientFactory.CreateClient();
-            var apiBaseUrl = _configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7093";     //7001
-            client.BaseAddress = new Uri(apiBaseUrl);
-
-            var token = HttpContext.Request.Cookies["AuthToken"];
-            if (!string.IsNullOrEmpty(token))
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
-            return client;
-        }------------
     }
 }
 
 
 
-*/
 
 
 
@@ -746,127 +672,3 @@ private HttpClient CreateHttpClient()
 
 
 
-
-/*
-
-    // Web/Controllers/ApartmentBuilderController.cs
- using Microsoft.AspNetCore.Authorization;
- using System.Net.Http.Headers;
- using System.Text;
- using System.Text.Json;
-using ApartmentManagementSystem.Web.Services.DTOs;
-using ApartmentManagementSystem.Web.ViewModels.Apartment;
-namespace ApartmentManagementSystem.Web.Controllers
-{
-    [Authorize(Roles = "SuperAdmin")]
-    public class ApartmentBuilderController : Controller
-    {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
-
-        public ApartmentBuilderController(
-            IHttpClientFactory httpClientFactory,
-            IConfiguration configuration)
-        {
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
-        }
-
-        // GET: ApartmentBuilder/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // GET: ApartmentBuilder/ManageApartments
-        public async Task<IActionResult> ManageApartments()
-        {
-            var client = CreateHttpClient();
-            var response = await client.GetAsync("api/ApartmentManagement/all");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var apartments = JsonSerializer.Deserialize<ApiResponse<List<ApartmentListViewModel>>>(
-                    content,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-                return View(apartments?.Data ?? new List<ApartmentListViewModel>());
-            }
-
-            return View(new List<ApartmentListViewModel>());
-        }
-
-        // GET: ApartmentBuilder/Details/{id}
-        public async Task<IActionResult> Details(Guid id)
-        {
-            var client = CreateHttpClient();
-            var response = await client.GetAsync($"api/ApartmentManagement/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<ApiResponse<ApartmentDetailViewModel>>(
-                    content,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-                return View(result?.Data);
-            }
-
-            return RedirectToAction(nameof(ManageApartments));
-        }
-
-        // GET: ApartmentBuilder/Visualize/{id}
-        public async Task<IActionResult> Visualize(Guid id)
-        {
-            var client = CreateHttpClient();
-            var response = await client.GetAsync($"api/ApartmentManagement/{id}/diagram");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<ApiResponse<ApartmentDiagramViewModel>>(
-                    content,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-                return View(result?.Data);
-            }
-
-            return RedirectToAction(nameof(ManageApartments));
-        }
-
-        // POST: Create Apartment (called from JavaScript)
-        [HttpPost]
-        public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentViewModel model)
-        {
-            var client = CreateHttpClient();
-            var json = JsonSerializer.Serialize(model);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await client.PostAsync("api/ApartmentManagement/create", content);
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-                return Json(new { success = true, data = responseContent });
-            }
-
-            return Json(new { success = false, message = responseContent });
-        }
-
-        private HttpClient CreateHttpClient()
-        {
-            var client = _httpClientFactory.CreateClient();
-            var apiBaseUrl = _configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7001";
-            client.BaseAddress = new Uri(apiBaseUrl);
-
-            var token = HttpContext.Request.Cookies["AuthToken"];
-            if (!string.IsNullOrEmpty(token))
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
-            return client;
-        }
-    }
-}*/

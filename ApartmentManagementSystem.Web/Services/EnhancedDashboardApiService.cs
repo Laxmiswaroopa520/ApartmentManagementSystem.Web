@@ -47,7 +47,7 @@ public class EnhancedDashboardApiService
             "api/EnhancedDashboardApi/quick-actions"
         );
     }
-    //newly added for apartment
+    //newly aed for apartment
     // Application/Services/EnhancedDashboardService.cs - Add apartment stats method
 
    /* public async Task<EnhancedAdminDashboardDto> GetEnhancedAdminDashboardAsync(Guid userId)

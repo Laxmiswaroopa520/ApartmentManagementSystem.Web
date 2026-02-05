@@ -444,10 +444,12 @@ namespace ApartmentManagementSystem.Web.Controllers
 
 using ApartmentManagementSystem.Web.Mappers.Apartment;
 using ApartmentManagementSystem.Web.Services;
+using ApartmentManagementSystem.Web.Services.DTOs;
 using ApartmentManagementSystem.Web.Services.DTOs.Manager;
 using ApartmentManagementSystem.Web.ViewModels.Apartment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 
 namespace ApartmentManagementSystem.Web.Controllers
 {
@@ -654,6 +656,32 @@ namespace ApartmentManagementSystem.Web.Controllers
                 return Json(new { success = false, message = $"Error: {ex.Message}" });
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetApartmentResidents(Guid apartmentId)
+        {
+            try
+            {
+                var result = await _managerApiService
+                    .GetApartmentResidentsAsync(apartmentId);
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(ApiResponse<List<AvailableManagerDto>>
+                    .ErrorResponse(ex.Message));
+            }
+        }
+
+
+        //added this for getting resident owners from that specific apartment
+        /*  [HttpGet]
+          public async Task<IActionResult> GetApartmentResidents(Guid apartmentId)
+          {
+              var result = await _managerApiService.GetApartmentResidentsAsync(apartmentId);
+              return Json(result);
+          }*/
+
     }
 }
 

@@ -1,9 +1,569 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ApartmentManagementSystem.Web.ViewModels.Onboarding.CompleteRegistrationViewModel
+@{
+    ViewData["Title"] = "Complete Your Registration";
+    Layout = "_PublicLayout";
+}
+
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+        --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .registration-container {
+        max-width: 650px;
+        margin: 0 auto;
+    }
+
+    .registration-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card-header-gradient {
+        background: var(--gradient-success);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .card-header-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+    @@keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .card-header-gradient h3 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.75rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-header-gradient .subtitle {
+        margin-top: 0.5rem;
+        opacity: 0.95;
+        font-size: 0.95rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-body-custom {
+        padding: 2.5rem;
+    }
+
+    .section-divider {
+        display: flex;
+        align-items: center;
+        margin: 2rem 0 1.5rem 0;
+    }
+
+        .section-divider::before,
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        }
+
+        .section-divider span {
+            padding: 0 1rem;
+            color: #11998e;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+        .form-label .required {
+            color: #f56565;
+            font-size: 1.1rem;
+        }
+
+        .form-label i {
+            color: #11998e;
+            font-size: 0.85rem;
+        }
+
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0.85rem 1.1rem;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+        .form-control:focus {
+            border-color: #11998e;
+            box-shadow: 0 0 0 4px rgba(17, 153, 142, 0.1);
+            outline: none;
+        }
+
+        .form-control.is-invalid {
+            border-color: #f56565;
+            background-image: none;
+        }
+
+            .form-control.is-invalid:focus {
+                box-shadow: 0 0 0 4px rgba(245, 101, 101, 0.1);
+            }
+
+        .form-control.is-valid {
+            border-color: #48bb78;
+            background-image: none;
+        }
+
+            .form-control.is-valid:focus {
+                box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.1);
+            }
+
+    .input-icon {
+        position: relative;
+    }
+
+        .input-icon i {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            pointer-events: none;
+        }
+
+    .password-strength {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        background: #f7fafc;
+        border-radius: 8px;
+        display: none;
+    }
+
+        .password-strength.show {
+            display: block;
+        }
+
+        .password-strength .strength-bar {
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .password-strength .strength-fill {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+        }
+
+            .password-strength .strength-fill.weak {
+                width: 33%;
+                background: #f56565;
+            }
+
+            .password-strength .strength-fill.medium {
+                width: 66%;
+                background: #ed8936;
+            }
+
+            .password-strength .strength-fill.strong {
+                width: 100%;
+                background: #48bb78;
+            }
+
+        .password-strength .strength-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .password-strength .requirements {
+            font-size: 0.75rem;
+            color: #718096;
+            margin-top: 0.5rem;
+        }
+
+            .password-strength .requirements li {
+                margin-bottom: 0.25rem;
+            }
+
+                .password-strength .requirements li.met {
+                    color: #48bb78;
+                }
+
+                    .password-strength .requirements li.met i {
+                        color: #48bb78;
+                    }
+
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: #f56565;
+    }
+
+        .text-danger i {
+            font-size: 0.75rem;
+        }
+
+    .btn-submit {
+        background: var(--gradient-success);
+        border: none;
+        color: white;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1.05rem;
+        width: 100%;
+        box-shadow: 0 4px 14px rgba(17, 153, 142, 0.35);
+        transition: all 0.3s ease;
+        margin-top: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.45);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    .help-text {
+        font-size: 0.8rem;
+        color: #718096;
+        margin-top: 0.35rem;
+    }
+
+    @@media (max-width: 768px) {
+        body {
+            padding: 1rem 0;
+        }
+
+        .registration-container {
+            padding: 0 1rem;
+        }
+
+        .card-body-custom {
+            padding: 2rem 1.5rem;
+        }
+
+        .card-header-gradient h3 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="registration-container">
+    <div class="registration-card">
+        <div class="card-header-gradient">
+            <h3>
+                <i class="bi bi-person-check-fill"></i> Complete Your Registration
+            </h3>
+            <p class="subtitle mb-0">Just a few more details to get started!</p>
+        </div>
+
+        <div class="card-body-custom">
+            <form asp-action="CompleteRegistration" method="post" id="registrationForm">
+                @Html.AntiForgeryToken()
+
+                <!-- Personal Information -->
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label">
+                        <i class="bi bi-person-fill"></i> Full Name <span class="required">*</span>
+                    </label>
+                    <input asp-for="FullName" class="form-control" placeholder="Enter your full name" required />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">
+                        <i class="bi bi-envelope-fill"></i> Email Address
+                    </label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="your.email@example.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                    <div class="help-text">We'll use this for important notifications</div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SecondaryPhone" class="form-label">
+                        <i class="bi bi-telephone-fill"></i> Secondary Phone
+                    </label>
+                    <input asp-for="SecondaryPhone" type="tel" class="form-control" placeholder="Alternate contact number (optional)" />
+                    <span asp-validation-for="SecondaryPhone" class="text-danger"></span>
+                </div>
+
+                <!-- Credentials Section -->
+                <div class="section-divider">
+                    <span><i class="bi bi-shield-lock-fill"></i> Login Credentials</span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label">
+                        <i class="bi bi-person-badge-fill"></i> Username <span class="required">*</span>
+                    </label>
+                    <input asp-for="Username" class="form-control" placeholder="Choose a unique username" required />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                    <div class="help-text">Use only letters, numbers, and underscores</div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">
+                        <i class="bi bi-key-fill"></i> Password <span class="required">*</span>
+                    </label>
+                    <div class="input-icon">
+                        <input asp-for="Password" type="password" class="form-control" id="password"
+                               placeholder="Create a strong password" required />
+                        <i class="bi bi-eye-slash toggle-password" id="togglePassword" style="cursor: pointer;"></i>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <div class="strength-text" id="strengthText"></div>
+                        <ul class="requirements list-unstyled mb-0">
+                            <li id="req-length"><i class="bi bi-x-circle"></i> At least 8 characters</li>
+                            <li id="req-uppercase"><i class="bi bi-x-circle"></i> One uppercase letter</li>
+                            <li id="req-lowercase"><i class="bi bi-x-circle"></i> One lowercase letter</li>
+                            <li id="req-number"><i class="bi bi-x-circle"></i> One number</li>
+                            <li id="req-special"><i class="bi bi-x-circle"></i> One special character (!@@#$%^&*)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="ConfirmPassword" class="form-label">
+                        <i class="bi bi-check2-circle"></i> Confirm Password <span class="required">*</span>
+                    </label>
+                    <div class="input-icon">
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" id="confirmPassword"
+                               placeholder="Re-enter your password" required />
+                        <i class="bi bi-eye-slash toggle-password" id="toggleConfirmPassword" style="cursor: pointer;"></i>
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    <div class="text-danger" id="passwordMatchError" style="display: none;">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Passwords do not match
+                    </div>
+                    <div class="text-success" id="passwordMatchSuccess" style="display: none; font-size: 0.8rem; margin-top: 0.35rem;">
+                        <i class="bi bi-check-circle-fill"></i> Passwords match
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-submit" id="submitBtn">
+                    <i class="bi bi-check-circle-fill"></i> Complete Registration
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const passwordStrength = document.getElementById('passwordStrength');
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+            const submitBtn = document.getElementById('submitBtn');
+            const togglePassword = document.getElementById('togglePassword');
+            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+
+            // Password strength checker
+            password.addEventListener('input', function() {
+                const value = this.value;
+
+                if (value.length > 0) {
+                    passwordStrength.classList.add('show');
+                } else {
+                    passwordStrength.classList.remove('show');
+                    return;
+                }
+
+                // Check requirements
+                const requirements = {
+                    length: value.length >= 8,
+                    uppercase: /[A-Z]/.test(value),
+                    lowercase: /[a-z]/.test(value),
+                    number: /[0-9]/.test(value),
+                    special: /[!@@#$%^&*(),.?":{}|<>]/.test(value)
+                };
+
+                // Update requirement indicators
+                updateRequirement('req-length', requirements.length);
+                updateRequirement('req-uppercase', requirements.uppercase);
+                updateRequirement('req-lowercase', requirements.lowercase);
+                updateRequirement('req-number', requirements.number);
+                updateRequirement('req-special', requirements.special);
+
+                // Calculate strength
+                const metRequirements = Object.values(requirements).filter(Boolean).length;
+
+                strengthFill.className = 'strength-fill';
+                if (metRequirements <= 2) {
+                    strengthFill.classList.add('weak');
+                    strengthText.textContent = 'Weak password';
+                    strengthText.style.color = '#f56565';
+                } else if (metRequirements <= 4) {
+                    strengthFill.classList.add('medium');
+                    strengthText.textContent = 'Medium password';
+                    strengthText.style.color = '#ed8936';
+                } else {
+                    strengthFill.classList.add('strong');
+                    strengthText.textContent = 'Strong password';
+                    strengthText.style.color = '#48bb78';
+                }
+            });
+
+            function updateRequirement(id, met) {
+                const element = document.getElementById(id);
+                if (met) {
+                    element.classList.add('met');
+                    element.querySelector('i').className = 'bi bi-check-circle-fill';
+                } else {
+                    element.classList.remove('met');
+                    element.querySelector('i').className = 'bi bi-x-circle';
+                }
+            }
+
+            // Password match checker
+            function checkPasswordMatch() {
+                const matchError = document.getElementById('passwordMatchError');
+                const matchSuccess = document.getElementById('passwordMatchSuccess');
+
+                if (confirmPassword.value.length === 0) {
+                    matchError.style.display = 'none';
+                    matchSuccess.style.display = 'none';
+                    confirmPassword.classList.remove('is-invalid', 'is-valid');
+                    return;
+                }
+
+                if (password.value === confirmPassword.value) {
+                    matchError.style.display = 'none';
+                    matchSuccess.style.display = 'flex';
+                    matchSuccess.style.alignItems = 'center';
+                    matchSuccess.style.gap = '0.25rem';
+                    matchSuccess.style.color = '#48bb78';
+                    confirmPassword.classList.remove('is-invalid');
+                    confirmPassword.classList.add('is-valid');
+                } else {
+                    matchError.style.display = 'flex';
+                    matchSuccess.style.display = 'none';
+                    confirmPassword.classList.remove('is-valid');
+                    confirmPassword.classList.add('is-invalid');
+                }
+            }
+
+            password.addEventListener('input', checkPasswordMatch);
+            confirmPassword.addEventListener('input', checkPasswordMatch);
+
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = password.type === 'password' ? 'text' : 'password';
+                password.type = type;
+                this.className = type === 'password' ? 'bi bi-eye-slash toggle-password' : 'bi bi-eye toggle-password';
+            });
+
+            toggleConfirmPassword.addEventListener('click', function() {
+                const type = confirmPassword.type === 'password' ? 'text' : 'password';
+                confirmPassword.type = type;
+                this.className = type === 'password' ? 'bi bi-eye-slash toggle-password' : 'bi bi-eye toggle-password';
+            });
+
+            // Form validation
+            document.getElementById('registrationForm').addEventListener('submit', function(e) {
+                if (password.value !== confirmPassword.value) {
+                    e.preventDefault();
+                    confirmPassword.focus();
+                    return false;
+                }
+            });
+        });
+    </script>
+}
+
+
 @*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+
 @model ApartmentManagementSystem.Web.ViewModels.Onboarding.CompleteRegistrationViewModel
 @{
     ViewData["Title"] = "Complete Your Registration";
@@ -186,7 +746,7 @@
     <partial name="_ValidationScriptsPartial" />
 }
 
-
+*@
 
 
 

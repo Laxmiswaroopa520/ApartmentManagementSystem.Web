@@ -74,6 +74,8 @@ namespace ApartmentManagementSystem.Web.Services
 
 using ApartmentManagementSystem.Web.Services.DTOs;
 using ApartmentManagementSystem.Web.Services.DTOs.Manager;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 
 namespace ApartmentManagementSystem.Web.Services
 {
@@ -133,6 +135,15 @@ namespace ApartmentManagementSystem.Web.Services
                 request
             );
         }
+        //
+        public async Task<ApiResponse<List<AvailableManagerDto>>?> GetApartmentResidentsAsync(Guid apartmentId)
+        {
+            return await _apiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
+                $"api/Manager/apartment-residents/{apartmentId}"
+            );
+        }
+
+
     }
 }
 

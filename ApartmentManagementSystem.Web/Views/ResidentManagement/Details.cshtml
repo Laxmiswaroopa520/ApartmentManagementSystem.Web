@@ -6,6 +6,508 @@
 
 <style>
     :root {
+        --gradient-primary: linear-gradient(135deg, #5a6fd8 0%, #6b4299 100%);
+        --gradient-success: linear-gradient(135deg, #0e8f7d 0%, #2fd98e 100%);
+        --gradient-info: linear-gradient(135deg, #3d96ea 0%, #00c9e0 100%);
+        --gradient-warning: linear-gradient(135deg, #e8658a 0%, #f0c130 100%);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.10);
+    }
+
+    body {
+        background: #f0f2f5;
+    }
+
+    .page-header {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .page-header h2 {
+            font-weight: 700;
+            color: #1a202c;
+            margin: 0;
+            font-size: 1.75rem;
+        }
+
+            .page-header h2 i {
+                margin-right: 0.5rem;
+            }
+
+        .page-header .btn {
+            border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            font-weight: 600;
+        }
+
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .info-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+    .card-header-gradient {
+        background: var(--gradient);
+        color: white;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+        .card-header-gradient i {
+            margin-right: 0.5rem;
+        }
+
+    .info-table {
+        margin: 0;
+    }
+
+        .info-table tr {
+            border-bottom: 1px solid #f7fafc;
+        }
+
+            .info-table tr:last-child {
+                border-bottom: none;
+            }
+
+        .info-table th {
+            padding: 0.85rem 1.5rem;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.9rem;
+            width: 40%;
+        }
+
+        .info-table td {
+            padding: 0.85rem 1.5rem;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+    .badge {
+        padding: 0.4rem 0.85rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .badge-gradient {
+        background: var(--gradient);
+        color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+        .badge-gradient.success {
+            --gradient: var(--gradient-success);
+        }
+
+        .badge-gradient.info {
+            --gradient: var(--gradient-info);
+        }
+
+        .badge-gradient.warning {
+            --gradient: var(--gradient-warning);
+        }
+
+        .badge-gradient.primary {
+            --gradient: var(--gradient-primary);
+        }
+
+    .alert-custom {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.25rem;
+        background: #fff4e6;
+        border-left: 4px solid #e8658a;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+        .alert-custom i {
+            font-size: 1.25rem;
+            color: #e8658a;
+        }
+
+    .stat-box {
+        background: linear-gradient(135deg, #f0f2f5 0%, #d4dae3 100%);
+        padding: 1.25rem;
+        border-radius: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+        .stat-box:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-box h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-box small {
+            color: #4a5568;
+            font-size: 0.85rem;
+        }
+
+        .stat-box.primary h3 {
+            background: var(--gradient-info);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-box.danger h3 {
+            background: var(--gradient-warning);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+    .action-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        border: 2px solid #f0c130;
+    }
+
+        .action-card .card-header-gradient {
+            background: var(--gradient-warning);
+        }
+
+        .action-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .action-card .btn {
+            border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+    @@media (max-width: 768px) {
+        .page-header
+
+    {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .page-header .btn {
+        width: 100%;
+    }
+
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="page-header">
+        <h2><i class="bi bi-person-circle"></i> Resident Details</h2>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- Personal Information -->
+        <div class="col-md-6">
+            <div class="info-card">
+                <div class="card-header-gradient" style="--gradient: var(--gradient-primary);">
+                    <i class="bi bi-person-badge"></i> Personal Information
+                </div>
+                <table class="info-table table table-borderless mb-0">
+                    <tr>
+                        <th>Full Name:</th>
+                        <td><strong>@Model.FullName</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>@Model.Email</td>
+                    </tr>
+                    <tr>
+                        <th>Primary Phone:</th>
+                        <td>@Model.PrimaryPhone</td>
+                    </tr>
+                    @if (!string.IsNullOrEmpty(Model.SecondaryPhone))
+                    {
+                        <tr>
+                            <th>Secondary Phone:</th>
+                            <td>@Model.SecondaryPhone</td>
+                        </tr>
+                    }
+                    <tr>
+                        <th>Resident Type:</th>
+                        <td>
+                            @if (Model.ResidentType == "Owner")
+                            {
+                                <span class="badge badge-gradient success">
+                                    <i class="bi bi-house-fill"></i> Owner
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-gradient info">
+                                    <i class="bi bi-person"></i> Tenant
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Registered On:</th>
+                        <td>@Model.RegisteredOn.ToString("MMMM dd, yyyy")</td>
+                    </tr>
+                    <tr>
+                        <th>Status:</th>
+                        <td>
+                            @if (Model.Status == "Active")
+                            {
+                                <span class="badge badge-gradient success">Active</span>
+                            }
+                            else if (Model.Status == "Pending Assignment")
+                            {
+                                <span class="badge badge-gradient warning">Pending Assignment</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactive</span>
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Property Information -->
+        <div class="col-md-6">
+            <div class="info-card">
+                <div class="card-header-gradient" style="--gradient: var(--gradient-success);">
+                    <i class="bi bi-building"></i> Property Information
+                </div>
+                <table class="info-table table table-borderless mb-0">
+                    <tr>
+                        <th>Flat Number:</th>
+                        <td>
+                            @if (string.IsNullOrEmpty(Model.FlatNumber))
+                            {
+                                <span class="badge badge-gradient warning">Not Assigned</span>
+                            }
+                            else
+                            {
+                                <strong style="font-size: 1.25rem; color: #2d3748;">@Model.FlatNumber</strong>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Apartment/Building:</th>
+                        <td>@(Model.ApartmentName ?? "N/A")</td>
+                    </tr>
+                </table>
+
+                @if (string.IsNullOrEmpty(Model.FlatNumber))
+                {
+                    <div class="alert-custom" style="margin: 1rem 1.5rem 1.5rem;">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <div style="flex: 1;">
+                            This resident has not been assigned a flat yet.
+                            <a asp-controller="AdminResidents" asp-action="AssignFlat"
+                               asp-route-userId="@Model.UserId"
+                               asp-route-userName="@Model.FullName"
+                               class="alert-link fw-bold">
+                                Assign flat now
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Roles & Permissions -->
+        <div class="col-md-6">
+            <div class="info-card">
+                <div class="card-header-gradient" style="--gradient: var(--gradient-info);">
+                    <i class="bi bi-shield-check"></i> Roles & Permissions
+                </div>
+                <div class="card-body" style="padding: 1.5rem;">
+                    @if (Model.Roles.Any())
+                    {
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var role in Model.Roles)
+                            {
+                                @if (role == "President")
+                                {
+                                    <span class="badge bg-danger" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                        <i class="bi bi-star-fill"></i> President
+                                    </span>
+                                }
+                                else if (role == "Secretary")
+                                {
+                                    <span class="badge badge-gradient primary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                        <i class="bi bi-file-earmark-text"></i> Secretary
+                                    </span>
+                                }
+                                else if (role == "Treasurer")
+                                {
+                                    <span class="badge badge-gradient success" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                        <i class="bi bi-cash-coin"></i> Treasurer
+                                    </span>
+                                }
+                                else if (role == "ResidentOwner")
+                                {
+                                    <span class="badge badge-gradient success" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                        <i class="bi bi-house-fill"></i> Resident Owner
+                                    </span>
+                                }
+                                else if (role == "Tenant")
+                                {
+                                    <span class="badge badge-gradient info" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                        <i class="bi bi-person"></i> Tenant
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">@role</span>
+                                }
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No special roles assigned</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Statistics -->
+        <div class="col-md-6">
+            <div class="info-card">
+                <div class="card-header-gradient" style="--gradient: var(--gradient-warning);">
+                    <i class="bi bi-graph-up"></i> Activity Statistics
+                </div>
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div class="row text-center g-3 mb-3">
+                        <div class="col-6">
+                            <div class="stat-box primary">
+                                <h3>@Model.TotalComplaints</h3>
+                                <small>Total Complaints</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-box danger">
+                                <h3>₹@Model.OutstandingBills.ToString("N2")</h3>
+                                <small>Outstanding Bills</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mb-0" style="border-radius: 10px;">
+                        <small><i class="bi bi-info-circle"></i> Detailed statistics coming in Phase 5-6</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions (Admin Only) -->
+    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="action-card">
+                    <div class="card-header-gradient">
+                        <i class="bi bi-tools"></i> Admin Actions
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap">
+                            @if (string.IsNullOrEmpty(Model.FlatNumber))
+                            {
+                                <a asp-controller="AdminResidents" asp-action="AssignFlat"
+                                   asp-route-userId="@Model.UserId"
+                                   asp-route-userName="@Model.FullName"
+                                   class="btn btn-primary">
+                                    <i class="bi bi-house-add"></i> Assign Flat
+                                </a>
+                            }
+
+                            @if (Model.Status == "Active")
+                            {
+                                <form asp-controller="ResidentManagement" asp-action="Deactivate" method="post" class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to deactivate @Model.FullName?');">
+                                    <input type="hidden" name="userId" value="@Model.UserId" />
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-x-circle"></i> Deactivate Account
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-controller="ResidentManagement" asp-action="Activate" method="post" class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to activate @Model.FullName?');">
+                                    <input type="hidden" name="userId" value="@Model.UserId" />
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle"></i> Activate Account
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Community.ResidentDetailViewModel
+@{
+    ViewData["Title"] = "Resident Details";
+    Layout = "_Layout";
+}
+
+<style>
+    :root {
         --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         --gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
@@ -480,287 +982,15 @@
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-@*
-@model ApartmentManagementSystem.Web.ViewModels.Community.ResidentDetailViewModel
-@{
-    ViewData["Title"] = "Resident Details";
-    Layout = "_Layout";
-}
-
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2><i class="bi bi-person-circle"></i> Resident Details</h2>
-                <a asp-action="Index" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to List
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Personal Information -->
-        <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-person-badge"></i> Personal Information</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th width="40%">Full Name:</th>
-                            <td><strong>@Model.FullName</strong></td>
-                        </tr>
-                        <tr>
-                            <th>Email:</th>
-                            <td>@Model.Email</td>
-                        </tr>
-                        <tr>
-                            <th>Primary Phone:</th>
-                            <td>@Model.PrimaryPhone</td>
-                        </tr>
-                        @if (!string.IsNullOrEmpty(Model.SecondaryPhone))
-                        {
-                            <tr>
-                                <th>Secondary Phone:</th>
-                                <td>@Model.SecondaryPhone</td>
-                            </tr>
-                        }
-                        <tr>
-                            <th>Resident Type:</th>
-                            <td>
-                                @if (Model.ResidentType == "Owner")
-                                {
-                                    <span class="badge bg-success fs-6">
-                                        <i class="bi bi-house-fill"></i> Owner
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-info fs-6">
-                                        <i class="bi bi-person"></i> Tenant
-                                    </span>
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Registered On:</th>
-                            <td>@Model.RegisteredOn.ToString("MMMM dd, yyyy")</td>
-                        </tr>
-                        <tr>
-                            <th>Status:</th>
-                            <td>
-                                @if (Model.Status == "Active")
-                                {
-                                    <span class="badge bg-success fs-6">Active</span>
-                                }
-                                else if (Model.Status == "Pending Assignment")
-                                {
-                                    <span class="badge bg-warning text-dark fs-6">Pending Assignment</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger fs-6">Inactive</span>
-                                }
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Property Information -->
-        <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-building"></i> Property Information</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th width="40%">Flat Number:</th>
-                            <td>
-                                @if (string.IsNullOrEmpty(Model.FlatNumber))
-                                {
-                                    <span class="badge bg-warning text-dark">Not Assigned</span>
-                                }
-                                else
-                                {
-                                    <strong class="fs-5">@Model.FlatNumber</strong>
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Apartment/Building:</th>
-                            <td>@(Model.ApartmentName ?? "N/A")</td>
-                        </tr>
-                    </table>
-
-                    @if (string.IsNullOrEmpty(Model.FlatNumber))
-                    {
-                        <div class="alert alert-warning mt-3">
-                            <i class="bi bi-exclamation-triangle"></i>
-                            This resident has not been assigned a flat yet.
-                            <a asp-controller="AdminResidents" asp-action="AssignFlat"
-                               asp-route-userId="@Model.UserId"
-                               asp-route-userName="@Model.FullName"
-                               class="alert-link">
-                                Assign flat now
-                            </a>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Roles & Permissions -->
-        <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-shield-check"></i> Roles & Permissions</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.Roles.Any())
-                    {
-                        <div class="d-flex flex-wrap gap-2">
-                            @foreach (var role in Model.Roles)
-                            {
-                                @if (role == "President")
-                                {
-                                    <span class="badge bg-danger fs-6">
-                                        <i class="bi bi-star-fill"></i> President
-                                    </span>
-                                }
-                                else if (role == "Secretary")
-                                {
-                                    <span class="badge bg-primary fs-6">
-                                        <i class="bi bi-file-earmark-text"></i> Secretary
-                                    </span>
-                                }
-                                else if (role == "Treasurer")
-                                {
-                                    <span class="badge bg-success fs-6">
-                                        <i class="bi bi-cash-coin"></i> Treasurer
-                                    </span>
-                                }
-                                else if (role == "ResidentOwner")
-                                {
-                                    <span class="badge bg-success fs-6">
-                                        <i class="bi bi-house-fill"></i> Resident Owner
-                                    </span>
-                                }
-                                else if (role == "Tenant")
-                                {
-                                    <span class="badge bg-info fs-6">
-                                        <i class="bi bi-person"></i> Tenant
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary fs-6">@role</span>
-                                }
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted mb-0">No special roles assigned</p>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <!-- Activity Statistics -->
-        <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Activity Statistics</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-6 mb-3">
-                            <div class="p-3 bg-light rounded">
-                                <h3 class="text-primary">@Model.TotalComplaints</h3>
-                                <small class="text-muted">Total Complaints</small>
-                            </div>
-                        </div>
-                        <div class="col-6 mb-3">
-                            <div class="p-3 bg-light rounded">
-                                <h3 class="text-danger">₹@Model.OutstandingBills.ToString("N2")</h3>
-                                <small class="text-muted">Outstanding Bills</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="alert alert-info mb-0">
-                        <small><i class="bi bi-info-circle"></i> Detailed statistics coming in Phase 5-6</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Actions (Admin Only) -->
-    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
-    {
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow border-warning">
-                    <div class="card-header bg-warning text-dark">
-                        <h5 class="mb-0"><i class="bi bi-tools"></i> Admin Actions</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex gap-2">
-                            @if (string.IsNullOrEmpty(Model.FlatNumber))
-                            {
-                                <a asp-controller="AdminResidents" asp-action="AssignFlat"
-                                   asp-route-userId="@Model.UserId"
-                                   asp-route-userName="@Model.FullName"
-                                   class="btn btn-primary">
-                                    <i class="bi bi-house-add"></i> Assign Flat
-                                </a>
-                            }
-
-                            @if (Model.Status == "Active")
-                            {
-                                <form asp-controller="ResidentManagement" asp-action="Deactivate" method="post" class="d-inline"
-                                      onsubmit="return confirm('Are you sure you want to deactivate @Model.FullName?');">
-                                    <input type="hidden" name="userId" value="@Model.UserId" />
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class="bi bi-x-circle"></i> Deactivate Account
-                                    </button>
-                                </form>
-                            }
-                            else
-                            {
-                                <form asp-controller="ResidentManagement" asp-action="Activate" method="post" class="d-inline"
-                                      onsubmit="return confirm('Are you sure you want to activate @Model.FullName?');">
-                                    <input type="hidden" name="userId" value="@Model.UserId" />
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="bi bi-check-circle"></i> Activate Account
-                                    </button>
-                                </form>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-</div>
 *@
+
+
+
+
+
+
+
+
+
+
+

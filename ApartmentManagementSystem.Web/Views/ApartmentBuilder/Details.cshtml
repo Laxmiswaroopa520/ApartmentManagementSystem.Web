@@ -733,7 +733,9 @@
             const select = document.getElementById('selectResident');
 
             try {
-                const response = await fetch(`/api/Manager/apartment-residents/${APARTMENT_ID}`);
+              //  const response = await fetch(`/api/Manager/apartment-residents/${APARTMENT_ID}`);
+               const response=await fetch(`/ApartmentBuilder/GetApartmentResidents?apartmentId=${APARTMENT_ID}`);
+
                 const data = await response.json();
 
                 if (data && data.success && data.data && data.data.length > 0) {
@@ -755,6 +757,46 @@
                 showError('Failed to load residents. Use "Any Person" tab.');
             }
         }
+          /*      async function loadResidentsList() {
+            const select = document.getElementById('selectResident');
+
+            try {
+                const token = localStorage.getItem('access_token'); // or sessionStorage
+
+                const response = await fetch(
+                    `/api/Manager/apartment-residents/${APARTMENT_ID}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data?.success && data.data?.length > 0) {
+                    select.innerHTML = '<option value="">-- Select Resident --</option>';
+
+                    data.data.forEach(r => {
+                        const opt = document.createElement('option');
+                        opt.value = r.userId;
+                        opt.textContent = `${r.fullName} - Flat ${r.flatNumber}`;
+                        select.appendChild(opt);
+                    });
+                } else {
+                    select.innerHTML = '<option value="">No residents found</option>';
+                }
+            } catch (err) {
+                console.error('Load residents failed:', err);
+                select.innerHTML = '<option value="">Unauthorized</option>';
+                showError('You are not authorized to view residents.');
+            }
+        }
+        */
 
         async function handleAssignManager() {
             const isTab1 = document.getElementById('tab1').classList.contains('active');

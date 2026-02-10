@@ -1,6 +1,6 @@
-﻿namespace ApartmentManagementSystem.Web.Services.DTOs.Admin
+﻿namespace ApartmentManagementSystem.Web.ViewModels.Dashboard
 {
-    public class PendingResidentDto
+    public class PendingResidentViewModel
     {
         public Guid UserId { get; set; }
         public string FullName { get; set; } = string.Empty;

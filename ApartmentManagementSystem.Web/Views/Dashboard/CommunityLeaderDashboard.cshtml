@@ -1,0 +1,514 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+@model ApartmentManagementSystem.Web.ViewModels.Dashboard.CommunityLeaderDashboardViewModel
+
+@{
+    ViewData["Title"] = Model.Role + " Dashboard - " + Model.ApartmentName;
+    Layout = "_Layout";
+}
+
+<style>
+    /* Reuse same styles as Manager Dashboard */
+    :root {
+        --primary-color: #4f6d7a;
+        --gradient-primary: linear-gradient(135deg, #5a6fd8 0%, #6b4299 100%);
+        --gradient-blue: linear-gradient(135deg, #3d96ea 0%, #00c9e0 100%);
+        --gradient-green: linear-gradient(135deg, #38c96b 0%, #2dd9b8 100%);
+        --gradient-orange: linear-gradient(135deg, #e8658a 0%, #f0c130 100%);
+        --gradient-purple: linear-gradient(135deg, #8fa8e8 0%, #3a2685 100%);
+        --gradient-teal: linear-gradient(135deg, #0a9254 0%, #35a882 100%);
+        --gradient-sunset: linear-gradient(135deg, #e85d5d 0%, #ebb749 100%);
+        --bg-main: #f0f2f5;
+        --bg-card: #ffffff;
+        --text-dark: #1f2933;
+        --text-muted: #6b7280;
+        --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+        --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+        --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        --shadow-hover: 0 12px 32px rgba(0,0,0,0.15);
+    }
+
+    body {
+        background: var(--bg-main);
+    }
+
+    .dashboard-header h2 {
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 1.8rem;
+    }
+
+    .role-badge {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 0.35rem 0.9rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-right: 0.4rem;
+        box-shadow: 0 2px 8px rgba(90, 111, 216, 0.25);
+    }
+
+    .card {
+        border: none;
+        border-radius: 16px;
+        background: var(--bg-card);
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+    .card-header {
+        border: none;
+        border-radius: 16px 16px 0 0 !important;
+        padding: 1rem 1.25rem;
+        font-weight: 600;
+        background: var(--primary-color) !important;
+        color: white !important;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    .stat-card {
+        border-radius: 14px;
+        padding: 1.25rem;
+        color: white;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            transition: transform 0.6s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: translate(10%, 10%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-card .stat-icon {
+            font-size: 2rem;
+            opacity: 0.20;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .stat-card h6 {
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            opacity: 0.85;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-card small {
+            opacity: 0.85;
+            font-size: 0.8rem;
+        }
+
+        .stat-card.stat-primary {
+            background: var(--gradient-primary);
+        }
+
+        .stat-card.stat-blue {
+            background: var(--gradient-blue);
+        }
+
+        .stat-card.stat-green {
+            background: var(--gradient-green);
+        }
+
+        .stat-card.stat-orange {
+            background: var(--gradient-orange);
+        }
+
+        .stat-card.stat-purple {
+            background: var(--gradient-purple);
+        }
+
+        .stat-card.stat-teal {
+            background: var(--gradient-teal);
+        }
+
+        .stat-card.stat-sunset {
+            background: var(--gradient-sunset);
+        }
+
+    .btn-action {
+        padding: 0.7rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        color: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+            color: white;
+        }
+
+        .btn-action.btn-primary {
+            background: var(--gradient-primary);
+        }
+
+        .btn-action.btn-success {
+            background: var(--gradient-green);
+        }
+
+        .btn-action.btn-info {
+            background: var(--gradient-blue);
+        }
+
+        .btn-action.btn-warning {
+            background: var(--gradient-orange);
+        }
+
+    .notice-card {
+        border-left: 4px solid;
+        margin-bottom: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+        .notice-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .notice-card.priority-urgent {
+            border-color: #e85d5d;
+        }
+
+        .notice-card.priority-high {
+            border-color: #f0c130;
+        }
+
+        .notice-card.priority-medium {
+            border-color: #3d96ea;
+        }
+
+        .notice-card.priority-low {
+            border-color: #38c96b;
+        }
+
+    .apartment-badge {
+        background: var(--gradient-teal);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-block;
+        box-shadow: 0 2px 8px rgba(10, 146, 84, 0.25);
+    }
+
+    .financial-card {
+        background: linear-gradient(135deg, #5a6fd8 0%, #6b4299 100%);
+        border-radius: 16px;
+        color: white;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .financial-stat {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+    }
+
+        .financial-stat h6 {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .financial-stat h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+</style>
+
+<div class="container-fluid mt-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="dashboard-header">
+                <h2 class="mb-2">
+                    <i class="bi bi-award"></i> Welcome, @Model.FullName! 👋
+                </h2>
+                <p class="text-muted mb-0">
+                    <span class="role-badge">@Model.Role</span>
+                    <span class="apartment-badge">
+                        <i class="bi bi-building"></i> @Model.ApartmentName
+                    </span>
+                    <span class="badge bg-secondary">
+                        <i class="bi bi-house-door"></i> Flat @Model.FlatNumber
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        @if (Model.Role == "President" || Model.Role == "Secretary")
+                        {
+                            <div class="col-lg-3 col-md-6">
+                                <a href="/NoticeBoard/Index" class="btn btn-action btn-primary w-100">
+                                    <i class="bi bi-megaphone"></i> Notice Board
+                                </a>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <a asp-controller="ResidentManagement" asp-action="Index" class="btn btn-action btn-info w-100">
+                                    <i class="bi bi-people"></i> View Residents
+                                </a>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <a asp-controller="StaffMembers" asp-action="Index" class="btn btn-action btn-warning w-100">
+                                    <i class="bi bi-person-badge"></i> Staff Members
+                                </a>
+                            </div>
+                        }
+
+                        @if (Model.Role == "Treasurer")
+                        {
+                            <div class="col-lg-3 col-md-6">
+                                <a href="/Finance/Reports" class="btn btn-action btn-success w-100">
+                                    <i class="bi bi-graph-up"></i> Financial Reports
+                                </a>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <a asp-controller="ResidentManagement" asp-action="Index" class="btn btn-action btn-info w-100">
+                                    <i class="bi bi-people"></i> View Residents
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-primary">
+                <div class="position-relative">
+                    <h6>Total Residents</h6>
+                    <h2>@Model.Stats.TotalResidents</h2>
+                    <small>Active in apartment</small>
+                </div>
+                <i class="bi bi-people-fill stat-icon"></i>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-green">
+                <div class="position-relative">
+                    <h6>Total Flats</h6>
+                    <h2>@Model.Stats.TotalFlats</h2>
+                    <small>@Model.Stats.OccupiedFlats Occupied</small>
+                </div>
+                <i class="bi bi-building stat-icon"></i>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-blue">
+                <div class="position-relative">
+                    <h6>Vacant Flats</h6>
+                    <h2>@Model.Stats.VacantFlats</h2>
+                    <small>Available</small>
+                </div>
+                <i class="bi bi-house stat-icon"></i>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card stat-sunset">
+                <div class="position-relative">
+                    <h6>Pending Complaints</h6>
+                    <h2>@Model.Stats.PendingComplaints</h2>
+                    <small>@Model.Stats.ResolvedComplaintsThisMonth Resolved</small>
+                </div>
+                <i class="bi bi-exclamation-triangle-fill stat-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Summary (Treasurer Only) -->
+    @if (Model.Role == "Treasurer" && Model.FinancialSummary != null)
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="financial-card">
+                    <h5 class="mb-3"><i class="bi bi-currency-rupee"></i> Financial Summary</h5>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="financial-stat">
+                                <h6>Total Outstanding</h6>
+                                <h3>₹@Model.FinancialSummary.TotalOutstanding.ToString("N2")</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="financial-stat">
+                                <h6>Collection This Month</h6>
+                                <h3>₹@Model.FinancialSummary.CollectedThisMonth.ToString("N2")</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="financial-stat">
+                                <h6>Maintenance Pending</h6>
+                                <h3>₹@Model.FinancialSummary.PendingMaintenanceFees.ToString("N2")</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="financial-stat d-flex align-items-center justify-content-center">
+                                <a href="/Finance/Reports" class="btn btn-light" style="border-radius: 10px; font-weight: 600;">
+                                    <i class="bi bi-graph-up"></i> View Reports
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Notice Board -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-megaphone"></i> Notice Board</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.NoticeBoard.Any())
+                    {
+                        @foreach (var notice in Model.NoticeBoard)
+                        {
+                            <div class="card notice-card priority-@notice.Priority.ToLower()">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                @notice.Title
+                                                @if (notice.Priority == "Urgent")
+                                                {
+                                                    <span class="badge bg-danger ms-2">Urgent</span>
+                                                }
+                                                else if (notice.Priority == "High")
+                                                {
+                                                    <span class="badge bg-warning ms-2">High</span>
+                                                }
+                                            </h6>
+                                            <p class="mb-2 small text-muted">@notice.Message</p>
+                                            <small class="text-muted">
+                                                <i class="bi bi-person"></i> @notice.PostedBy (@notice.FlatNumber) •
+                                                <i class="bi bi-clock"></i> @notice.PostedAt.ToString("MMM dd, hh:mm tt")
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-info">@notice.Category</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-inbox" style="font-size: 3rem; color: #ddd;"></i>
+                            <p class="text-muted mt-2">No notices at the moment</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    @if (Model.RecentActivities != null && Model.RecentActivities.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Activities</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Activity</th>
+                                        <th>Type</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var activity in Model.RecentActivities.Take(10))
+                                    {
+                                        <tr>
+                                            <td>@activity.Activity</td>
+                                            <td>
+                                                <span class="role-badge" style="font-size: 0.75rem; padding: 0.25rem 0.65rem;">@activity.Type</span>
+                                            </td>
+                                            <td class="text-muted small">@activity.Timestamp.ToString("MMM dd, yyyy hh:mm tt")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

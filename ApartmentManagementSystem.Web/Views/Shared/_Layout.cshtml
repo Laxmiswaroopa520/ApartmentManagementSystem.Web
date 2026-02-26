@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@*
+    Main authenticated layout
+    Views/Shared/_Layout.cshtml
+    Used for: Dashboard, Management, ApartmentBuilder, etc.
+*@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,6 +11,320 @@
     <title>@ViewData["Title"] - Skyline Communities</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            background: #f5f6f7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1f2933;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background: #1a2744 !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+            padding-top: 0;
+            padding-bottom: 0;
+            min-height: 54px;
+        }
+
+        /* Brand — IDENTICAL to _PublicLayout: bi-buildings icon + bold white text */
+        .skyline-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 800;
+            font-size: 1.22rem;
+            color: #ffffff !important;
+            text-decoration: none;
+            letter-spacing: -0.3px;
+            padding: 0.7rem 0;
+            line-height: 1;
+        }
+
+            .skyline-brand i {
+                font-size: 1.4rem;
+                color: #7dd3fc; /* same light-blue accent as public layout */
+            }
+
+            .skyline-brand:hover {
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+
+        /* Nav links */
+        .navbar .nav-link {
+            color: #cbd5e1 !important;
+            font-weight: 500;
+            font-size: 0.93rem;
+            padding: 1rem 0.85rem !important;
+            transition: color 0.2s, background 0.2s;
+            border-radius: 6px;
+        }
+
+            .navbar .nav-link:hover {
+                color: #ffffff !important;
+                background: rgba(255,255,255,0.07);
+            }
+
+            .navbar .nav-link i,
+            .navbar .nav-link .bi {
+                margin-right: 4px;
+            }
+
+        /* Dropdown */
+        .dropdown-menu {
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.13);
+            border: 1px solid rgba(0,0,0,0.08);
+            padding: 0.4rem;
+            min-width: 220px;
+            background: #ffffff;
+        }
+
+        .dropdown-item {
+            padding: 0.55rem 1rem;
+            border-radius: 6px;
+            transition: all 0.18s;
+            font-size: 0.9rem;
+            color: #374151;
+        }
+
+            .dropdown-item:hover {
+                background: #eff3ff;
+                color: #3b5bdb;
+            }
+
+            .dropdown-item .bi,
+            .dropdown-item i {
+                width: 18px;
+                margin-right: 8px;
+                color: #6366f1;
+            }
+
+        .dropdown-divider {
+            margin: 0.3rem 0.5rem;
+            border-color: #e5e7eb;
+        }
+
+        /* User pill — right side */
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            padding: 0.32rem 0.95rem 0.32rem 0.55rem;
+            color: #ffffff !important;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+            .user-pill:hover {
+                background: rgba(255,255,255,0.18) !important;
+            }
+
+            .user-pill .bi {
+                font-size: 1.1rem;
+                color: #7dd3fc;
+            }
+
+        /* Footer */
+        footer {
+            background: #1a2744;
+            color: #94a3b8;
+        }
+
+        /* Mobile toggler */
+        .navbar-toggler {
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        @@media (max-width: 991px) {
+            .navbar-collapse {
+                background: #243258;
+                margin-top: 0.5rem;
+                padding: 0.75rem 1rem;
+                border-radius: 10px;
+                border: 1px solid rgba(255,255,255,0.08);
+            }
+
+            .navbar-nav .dropdown-menu {
+                background: #1a2744;
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .navbar-nav .dropdown-item {
+                color: #cbd5e1;
+            }
+
+                .navbar-nav .dropdown-item:hover {
+                    background: rgba(255,255,255,0.1);
+                    color: #ffffff;
+                }
+
+                .navbar-nav .dropdown-item .bi,
+                .navbar-nav .dropdown-item i {
+                    color: #a5b4fc;
+                }
+        }
+    </style>
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid px-4">
+
+            @* Brand: bi-buildings + "Skyline" — identical to _PublicLayout *@
+            <a class="skyline-brand" href="/">
+                <i class="bi bi-buildings"></i>
+                Skyline
+            </a>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <button class="navbar-toggler ms-auto me-2" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto ms-3">
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button"
+                                   data-bs-toggle="dropdown">
+                                    <i class="bi bi-gear"></i> Management
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Onboarding" asp-action="Create">
+                                            <i class="bi bi-person-plus"></i> Onboard Resident
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="AdminResidents" asp-action="Pending">
+                                            <i class="bi bi-hourglass-split"></i> Pending Registrations
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="CommunityMembers" asp-action="Index">
+                                            <i class="bi bi-award"></i> Community Members
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="StaffMembers" asp-action="Index">
+                                            <i class="bi bi-person-badge"></i> Staff Members
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="ResidentManagement" asp-action="Index">
+                                            <i class="bi bi-people"></i> All Residents
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="ApartmentBuilder" asp-action="ManageApartments">
+                                            <i class="bi bi-buildings"></i> My Apartments
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("President") || User.IsInRole("Secretary") || User.IsInRole("Treasurer"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="StaffMembers" asp-action="Index">
+                                    <i class="bi bi-person-badge"></i> Staff
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="ResidentManagement" asp-action="Index">
+                                    <i class="bi bi-people"></i> Residents
+                                </a>
+                            </li>
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle user-pill" href="#"
+                               id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i>
+                                @User.Identity.Name
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <form asp-controller="Login" asp-action="Logout" method="post">
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="bi bi-box-arrow-right"></i> Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            }
+        </div>
+    </nav>
+
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top py-3 mt-5">
+        <div class="container text-center small">
+            &copy; 2026 Skyline Communities. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Skyline Communities</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
         :root {
@@ -78,7 +397,6 @@
             color: #cbd5e1;
         }
 
-        /* Navbar toggler for mobile */
         .navbar-toggler {
             border-color: rgba(255, 255, 255, 0.3);
         }
@@ -87,33 +405,32 @@
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
 
-        /* Mobile responsive */
         @@media (max-width: 991px) {
-            .navbar-collapse
-
-        {
-            background: #2d3748;
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-        }
-
-        .navbar-nav .dropdown-menu {
-            background: #1f2933;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .navbar-nav .dropdown-item {
-            color: var(--navbar-text);
-        }
-
-            .navbar-nav .dropdown-item:hover {
-                background: rgba(255, 255, 255, 0.1);
-                color: #ffffff;
+            .navbar-collapse {
+                background: #2d3748;
+                margin-top: 1rem;
+                padding: 1rem;
+                border-radius: 8px;
             }
 
+            .navbar-nav .dropdown-menu {
+                background: #1f2933;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .navbar-nav .dropdown-item {
+                color: var(--navbar-text);
+            }
+
+                .navbar-nav .dropdown-item:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    color: #ffffff;
+                }
         }
     </style>
+
+    @* ✅ PAGE-SPECIFIC CSS GOES HERE — inside <head>, after Bootstrap 
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -129,14 +446,12 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
-                        <!-- Dashboard (Everyone) -->
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
                                 <i class="bi bi-speedometer2"></i> Dashboard
                             </a>
                         </li>
 
-                        <!-- ADMIN / MANAGER -->
                         @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
                         {
                             <li class="nav-item dropdown">
@@ -155,9 +470,7 @@
                                             <i class="bi bi-hourglass-split"></i> Pending Registrations
                                         </a>
                                     </li>
-
                                     <li><hr class="dropdown-divider"></li>
-
                                     <li>
                                         <a class="dropdown-item" asp-controller="CommunityMembers" asp-action="Index">
                                             <i class="bi bi-award"></i> Community Members
@@ -177,7 +490,6 @@
                             </li>
                         }
 
-                        <!-- COMMUNITY LEADERS -->
                         @if (User.IsInRole("President") || User.IsInRole("Secretary") || User.IsInRole("Treasurer"))
                         {
                             <li class="nav-item">
@@ -227,172 +539,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @*  PAGE-SPECIFIC JS GOES HERE — after Bootstrap JS 
     @await RenderSectionAsync("Scripts", required: false)
-    @RenderSection("Styles", required: false)
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@*
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Apartment Management System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <style>
-        .navbar .nav-link {
-            color: #e5e7eb !important;
-        }
-
-            .navbar .nav-link:hover {
-                color: #ffffff !important;
-            }
-
-        .navbar-brand {
-            font-weight: 600;
-        }
-    </style>
-
-</head>
-<body>
-   <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-primary">-->
-    <nav class="navbar navbar-expand-lg" style="background:#1f2933;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <i class="bi bi-building"></i> Apartment Management
-            </a>
-
-            @if (User.Identity?.IsAuthenticated == true)
-            {
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
-                        <!-- Dashboard (Everyone) -->
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
-                                <i class="bi bi-speedometer2"></i> Dashboard
-                            </a>
-                        </li>
-
-                        <!-- ADMIN / MANAGER -->
-                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button"
-                                   data-bs-toggle="dropdown">
-                                    <i class="bi bi-gear"></i> Management
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Onboarding" asp-action="Create">
-                                            <i class="bi bi-person-plus"></i> Onboard Resident
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="AdminResidents" asp-action="Pending">
-                                            <i class="bi bi-hourglass-split"></i> Pending Registrations
-                                        </a>
-                                    </li>
-
-                                    <li><hr class="dropdown-divider"></li>
-
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="CommunityMembers" asp-action="Index">
-                                            <i class="bi bi-award"></i> Community Members
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="StaffMembers" asp-action="Index">
-                                            <i class="bi bi-person-badge"></i> Staff Members
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="ResidentManagement" asp-action="Index">
-                                            <i class="bi bi-people"></i> All Residents
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        }
-
-                        <!-- COMMUNITY LEADERS -->
-                        @if (User.IsInRole("President") || User.IsInRole("Secretary") || User.IsInRole("Treasurer"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="StaffMembers" asp-action="Index">
-                                    <i class="bi bi-person-badge"></i> Staff
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="ResidentManagement" asp-action="Index">
-                                    <i class="bi bi-people"></i> Residents
-                                </a>
-                            </li>
-                        }
-                    </ul>
-
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                               data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle"></i> @User.Identity.Name
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <form asp-controller="Login" asp-action="Logout" method="post">
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="bi bi-box-arrow-right"></i> Logout
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            }
-        </div>
-    </nav>
-
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-
-    <footer class="border-top footer text-muted py-3 mt-5">
-        <div class="container text-center">
-            &copy; 2025 - Apartment Management System
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-    @RenderSection("Styles", required: false)
-
 </body>
 </html>
 *@
+
+
+
+
+
+
+
+
+
+

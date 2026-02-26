@@ -3,7 +3,6 @@ using ApartmentManagementSystem.Web.Services.DTOs.Dashboard;
 
 namespace ApartmentManagementSystem.Web.Services
 {
-
     public class DashboardApiService
     {
         private readonly ApiClient ApiClient;
@@ -33,13 +32,6 @@ namespace ApartmentManagementSystem.Web.Services
                 "api/DashboardApi/tenant"
             );
         }
-
-      /*  public async Task<ApiResponse<DashboardStatsResponse>?> GetDashboardStatsAsync()
-        {
-            return await _apiClient.GetAsync<ApiResponse<DashboardStatsResponse>>(
-                "api/DashboardApi/stats"
-            );
-        }*/
         public async Task<ApiResponse<DashboardStatsDto>?> GetDashboardStatsAsync()
         {
             return await ApiClient.GetAsync<ApiResponse<DashboardStatsDto>>(

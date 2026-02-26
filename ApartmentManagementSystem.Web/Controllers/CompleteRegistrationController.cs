@@ -1,10 +1,4 @@
-﻿using ApartmentManagementSystem.Web.Services;
-using ApartmentManagementSystem.Web.Services.DTOs.Onboarding;
-using ApartmentManagementSystem.Web.ViewModels.Onboarding;
-using Microsoft.AspNetCore.Mvc;
-namespace ApartmentManagementSystem.Web.Controllers;
-
-
+﻿namespace ApartmentManagementSystem.Web.Controllers;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.Services.DTOs.Onboarding;
 using ApartmentManagementSystem.Web.ViewModels.Onboarding;
@@ -13,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 public class CompleteRegistrationController : Controller
 {
-    private readonly OnboardingApiService _onboardingApiService;
+    private readonly OnboardingApiService OnboardingApiService;
 
     public CompleteRegistrationController(OnboardingApiService onboardingApiService)
     {
-        _onboardingApiService = onboardingApiService;
+        OnboardingApiService = onboardingApiService;
     }
 
     [HttpGet]
@@ -65,7 +59,7 @@ public class CompleteRegistrationController : Controller
                 Password = model.Password
             };
 
-            var response = await _onboardingApiService.CompleteRegistrationAsync(request);
+            var response = await OnboardingApiService.CompleteRegistrationAsync(request);
 
             if (response?.Success == true && response.Data != null)
             {

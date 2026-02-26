@@ -10,17 +10,17 @@ namespace ApartmentManagementSystem.Web.Controllers
     [Authorize(Roles = "SuperAdmin,Manager")]
     public class AdminResidentsController : Controller
     {
-        private readonly AdminResidentApiService _adminApiService;
+        private readonly AdminResidentApiService AdminApiService;
 
         public AdminResidentsController(AdminResidentApiService adminApiService)
         {
-            _adminApiService = adminApiService;
+            AdminApiService = adminApiService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Pending()
         {
-            var response = await _adminApiService.GetPendingResidentsAsync();
+            var response = await AdminApiService.GetPendingResidentsAsync();
             var viewModel = response?.Success == true && response.Data != null
                 ? PendingResidentViewModelMapper.From(response.Data)
                 : new List<PendingResidentViewModel>();
@@ -30,8 +30,8 @@ namespace ApartmentManagementSystem.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> AssignFlat(Guid userId, string userName)
         {
-            // ⭐ Get apartments for current user (filtered by role)
-            var apartmentsResponse = await _adminApiService.GetApartmentsAsync();
+            // Get apartments for current user (filtered by role)
+            var apartmentsResponse = await AdminApiService.GetApartmentsAsync();
 
             var model = new AssignFlatViewModel
             {
@@ -65,7 +65,7 @@ namespace ApartmentManagementSystem.Web.Controllers
                 return View(model);
             }
 
-            var response = await _adminApiService.AssignFlatAsync(new AssignFlatRequest
+            var response = await AdminApiService.AssignFlatAsync(new AssignFlatRequest
             {
                 UserId = model.UserId,
                 FlatId = model.FlatId.Value
@@ -82,11 +82,11 @@ namespace ApartmentManagementSystem.Web.Controllers
             return View(model);
         }
 
-        // ⭐ NEW: Get floors by apartment (AJAX)
+        // Get floors by apartment (AJAX)
         [HttpGet]
         public async Task<JsonResult> GetFloorsByApartment(Guid apartmentId)
         {
-            var response = await _adminApiService.GetFloorsByApartmentAsync(apartmentId);
+            var response = await AdminApiService.GetFloorsByApartmentAsync(apartmentId);
             var floors = response?.Success == true && response.Data != null
                 ? FloorDropdownMapper.From(response.Data)
                 : new List<FloorDropdownViewModel>();
@@ -96,7 +96,7 @@ namespace ApartmentManagementSystem.Web.Controllers
         [HttpGet]
         public async Task<JsonResult> GetFlatsByFloor(Guid floorId)
         {
-            var response = await _adminApiService.GetVacantFlatsByFloorAsync(floorId);
+            var response = await AdminApiService.GetVacantFlatsByFloorAsync(floorId);
             var flats = response?.Success == true && response.Data != null
                 ? FlatOptionMapper.From(response.Data)
                 : new List<FlatOption>();
@@ -104,7 +104,7 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
         private async Task PopulateDropdownsAsync(AssignFlatViewModel model)
         {
-            var apartmentsResponse = await _adminApiService.GetApartmentsAsync();
+            var apartmentsResponse = await AdminApiService.GetApartmentsAsync();
             model.Apartments = apartmentsResponse?.Success == true && apartmentsResponse.Data != null
                 ? ApartmentDropdownMapper.From(apartmentsResponse.Data)
                 : new List<ApartmentDropdownViewModel>();
@@ -112,7 +112,7 @@ namespace ApartmentManagementSystem.Web.Controllers
             // If apartment is selected, load its floors
             if (model.ApartmentId.HasValue)
             {
-                var floorsResponse = await _adminApiService.GetFloorsByApartmentAsync(model.ApartmentId.Value);
+                var floorsResponse = await AdminApiService.GetFloorsByApartmentAsync(model.ApartmentId.Value);
                 model.Floors = floorsResponse?.Success == true && floorsResponse.Data != null
                     ? FloorDropdownMapper.From(floorsResponse.Data)
                     : new List<FloorDropdownViewModel>();

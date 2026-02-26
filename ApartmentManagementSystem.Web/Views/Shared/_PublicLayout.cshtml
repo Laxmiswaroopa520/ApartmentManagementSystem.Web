@@ -1,76 +1,407 @@
 ﻿@*
-Used for:Home,Login,VerifyInvite,Forgot Password (future)
+    Used for: Home, Login, VerifyInvite, Forgot Password
+    Views/Shared/_PublicLayout.cshtml
 *@
 
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>@ViewData["Title"] - Skyline Communities</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+@*
+    Used for: Home, Login, VerifyInvite, Forgot Password
+    Views/Shared/_PublicLayout.cshtml
+*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Skyline Communities</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        body {
+            background: #f5f6f7;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+        }
 
-        <style>
-            body {
-                background: #f5f6f7;
-                font-family: 'Segoe UI', sans-serif;
+        /* ── NAVBAR ── */
+        .pub-nav {
+            background: #1a2744;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+        }
+
+            .pub-nav .inner {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0.7rem 1.5rem;
             }
 
-            .navbar-public {
-                background: #1f2933;
+        /* Brand — left-aligned, bold, always white */
+        .skyline-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 800;
+            font-size: 1.22rem;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: -0.3px;
+            line-height: 1;
+        }
+
+            .skyline-brand i {
+                font-size: 1.4rem;
+                color: #7dd3fc; /* light sky blue accent — same in both layouts */
             }
 
-                .navbar-public .navbar-brand,
-                .navbar-public .nav-link {
-                    color: #e5e7eb;
-                }
+            .skyline-brand:hover {
+                color: #ffffff;
+                text-decoration: none;
+            }
 
-                    .navbar-public .nav-link:hover {
-                        color: #ffffff;
-                    }
+        /* Right nav */
+        .pub-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
 
-            footer {
-                background: #1f2933;
+        .pub-nav-link {
+            color: #cbd5e1;
+            font-size: 0.93rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: color 0.2s, background 0.2s;
+        }
+
+            .pub-nav-link:hover {
+                color: #fff;
+                background: rgba(255,255,255,0.08);
+            }
+
+        .pub-nav-btn {
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            border: 1.5px solid rgba(255,255,255,0.28);
+            border-radius: 8px;
+            padding: 0.4rem 1.1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+            .pub-nav-btn:hover {
+                background: rgba(255,255,255,0.2);
+                border-color: rgba(255,255,255,0.5);
+                color: #ffffff;
+            }
+
+        /* ── FOOTER ── */
+        .pub-footer {
+            background: #1a2744;
+            color: #94a3b8;
+            margin-top: auto;
+        }
+
+        .pub-footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 1.25rem;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr;
+            gap: 2.5rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: #ffffff;
+            text-decoration: none;
+            margin-bottom: 0.75rem;
+        }
+
+            .footer-brand i {
+                color: #7dd3fc;
+                font-size: 1.3rem;
+            }
+
+        .footer-tagline {
+            font-size: 0.84rem;
+            color: #64748b;
+            line-height: 1.65;
+            max-width: 220px;
+        }
+
+        .footer-col h6 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            margin-bottom: 0.85rem;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 0.86rem;
+            color: #64748b;
+            text-decoration: none;
+            margin-bottom: 0.45rem;
+            transition: color 0.18s;
+        }
+
+            .footer-col a:hover {
                 color: #cbd5e1;
             }
-        </style>
-    </head>
 
-    <body>
+        .footer-col p {
+            font-size: 0.86rem;
+            color: #64748b;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
 
-        <!-- PUBLIC NAVBAR -->
-        <nav class="navbar navbar-expand-lg navbar-public">
-            <div class="container">
-                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+            .footer-col p i {
+                color: #7dd3fc;
+                font-size: 0.85rem;
+            }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #475569;
+        }
+
+        @@media (max-width: 768px) {
+            .pub-footer-inner {
+                grid-template-columns: 1fr;
+                gap: 1.75rem;
+                padding-bottom: 1.75rem;
+            }
+
+            .footer-tagline {
+                max-width: 100%;
+            }
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <div class="pub-nav">
+        <div class="inner">
+            <a class="skyline-brand" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-buildings"></i>
+                Skyline
+            </a>
+            <div class="pub-nav-right">
+                <a asp-controller="Home" asp-action="Index" class="pub-nav-link">Home</a>
+                <a asp-controller="Login" asp-action="Index" class="pub-nav-btn">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="pub-footer">
+        <div class="pub-footer-inner">
+            <!-- Brand col -->
+            <div>
+                <a href="/" class="footer-brand">
                     <i class="bi bi-buildings"></i> Skyline
                 </a>
-
-                <div class="ms-auto">
-                    <a asp-controller="Home" asp-action="Index" class="nav-link d-inline me-3">
-                        Home
-                    </a>
-                    <a asp-controller="Login" asp-action="Index" class="btn btn-outline-light btn-sm">
-                        Login
-                    </a>
-                </div>
+                <p class="footer-tagline">
+                    Modern apartment living with smart, connected community management.
+                    Built for residents, run by communities.
+                </p>
             </div>
-        </nav>
 
-        <main>
-            @RenderBody()
-        </main>
-
-        <footer class="py-4 mt-5">
-            <div class="container text-center small">
-                &copy; 2026 Skyline Communities. All rights reserved.
+            <!-- Quick links -->
+            <div class="footer-col">
+                <h6>Quick Links</h6>
+                <a asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-controller="Login" asp-action="Index">Resident Login</a>
+                <a asp-controller="VerifyInvite" asp-action="Index">New User</a>
             </div>
-        </footer>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        @await RenderSectionAsync("Scripts", required: false)
-    </body>
-    </html>
+            <!-- Contact -->
+            <div class="footer-col">
+                <h6>Contact</h6>
+                <p><i class="bi bi-envelope-fill"></i> support@@skylinecommunities.com</p>
+                <p><i class="bi bi-telephone-fill"></i> +1 555 234 6789</p>
+                <p><i class="bi bi-geo-alt-fill"></i> 42 Skyline Avenue, Metro City</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>&copy; 2026 Skyline Communities. All rights reserved.</span>
+            <span>Built with care for modern communities</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
 
 
+
+@*
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Skyline Communities</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        body {
+            background: #f5f6f7;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+        }
+
+        /* ── NAVBAR ── */
+        .pub-nav {
+            background: #1a2744;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+        }
+
+            .pub-nav .inner {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0.7rem 1.5rem;
+            }
+
+        /* Brand — left-aligned, bold, always white */
+        .skyline-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 800;
+            font-size: 1.22rem;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: -0.3px;
+            line-height: 1;
+        }
+
+            .skyline-brand i {
+                font-size: 1.4rem;
+                color: #7dd3fc; /* light sky blue accent — same in both layouts */
+            }
+
+            .skyline-brand:hover {
+                color: #ffffff;
+                text-decoration: none;
+            }
+
+        /* Right nav */
+        .pub-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .pub-nav-link {
+            color: #cbd5e1;
+            font-size: 0.93rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: color 0.2s, background 0.2s;
+        }
+
+            .pub-nav-link:hover {
+                color: #fff;
+                background: rgba(255,255,255,0.08);
+            }
+
+        .pub-nav-btn {
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            border: 1.5px solid rgba(255,255,255,0.28);
+            border-radius: 8px;
+            padding: 0.4rem 1.1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+            .pub-nav-btn:hover {
+                background: rgba(255,255,255,0.2);
+                border-color: rgba(255,255,255,0.5);
+                color: #ffffff;
+            }
+
+        /* Footer */
+        .pub-footer {
+            background: #1a2744;
+            color: #94a3b8;
+            padding: 1.2rem 0;
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <div class="pub-nav">
+        <div class="inner">
+            <a class="skyline-brand" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-buildings"></i>
+                Skyline
+            </a>
+            <div class="pub-nav-right">
+                <a asp-controller="Home" asp-action="Index" class="pub-nav-link">Home</a>
+                <a asp-controller="Login" asp-action="Index" class="pub-nav-btn">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <div class="pub-footer">
+        &copy; 2026 Skyline Communities. All rights reserved.
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+
+
+
+
+*@

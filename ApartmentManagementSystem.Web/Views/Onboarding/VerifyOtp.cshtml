@@ -1,9 +1,354 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model ApartmentManagementSystem.Web.ViewModels.Onboarding.VerifyOtpViewModel
+@{
+    ViewData["Title"] = "Verify OTP - New User";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+
+<style>
+    .otp-page {
+        min-height: calc(100vh - 56px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1rem;
+        background: #f0f4f8;
+    }
+
+    .otp-wrapper {
+        width: 100%;
+        max-width: 460px;
+    }
+
+    /* ── CARD ── */
+    .otp-card {
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 8px 40px rgba(26,39,68,0.13);
+        overflow: hidden;
+        animation: cardIn 0.45s ease-out both;
+    }
+
+    @@keyframes cardIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ── HEADER ── */
+    .otp-header {
+        background: linear-gradient(135deg, #1a2744 0%, #2d3f7c 60%, #4f46e5 100%);
+        padding: 2.1rem 2.25rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .otp-header::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -15%;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            pointer-events: none;
+        }
+
+        .otp-header::after {
+            content: '';
+            position: absolute;
+            bottom: -55%;
+            left: -8%;
+            width: 190px;
+            height: 190px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            pointer-events: none;
+        }
+
+    .otp-header-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 13px;
+        background: rgba(255,255,255,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.9rem;
+        position: relative;
+        z-index: 1;
+    }
+
+        .otp-header-icon i {
+            font-size: 1.45rem;
+            color: #ffffff;
+        }
+
+    .otp-header h2 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0 0 0.25rem;
+        position: relative;
+        z-index: 1;
+        letter-spacing: -0.3px;
+    }
+
+    .otp-header p {
+        color: rgba(255,255,255,0.63);
+        font-size: 0.86rem;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ── BODY ── */
+    .otp-body {
+        padding: 2rem 2.25rem 1.75rem;
+    }
+
+    /* ── FIELDS ── */
+    .field-group {
+        margin-bottom: 1.3rem;
+    }
+
+    .field-label {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 0.45rem;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+        .field-label i {
+            font-size: 0.82rem;
+            color: #4f46e5;
+        }
+
+    .field-input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 0.94rem;
+        color: #1f2937;
+        background: #fafafa;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        outline: none;
+        font-family: inherit;
+    }
+
+        .field-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .field-input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+            background: #ffffff;
+        }
+
+    /* ── OTP INPUT — big, centred, no weird letter-spacing ── */
+    .otp-input {
+        text-align: center;
+        font-size: 1.9rem;
+        font-weight: 800;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.5rem;
+        padding: 0.85rem 1rem;
+        color: #1a2744;
+        background: #f5f7ff;
+        border-color: #c7d2fe;
+    }
+
+        .otp-input:focus {
+            border-color: #4f46e5;
+            background: #eef2ff;
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.12);
+        }
+
+    .field-hint {
+        font-size: 0.76rem;
+        color: #9ca3af;
+        margin-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+        .field-hint i {
+            font-size: 0.72rem;
+            color: #a5b4fc;
+        }
+
+    .field-error {
+        font-size: 0.77rem;
+        color: #ef4444;
+        margin-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-verify {
+        width: 100%;
+        padding: 0.9rem;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #1a2744, #4f46e5);
+        color: #fff;
+        font-size: 0.97rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s;
+        box-shadow: 0 4px 16px rgba(79,70,229,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-family: inherit;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 0.65rem;
+    }
+
+        .btn-verify::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .btn-verify:hover::after {
+            transform: translateX(100%);
+        }
+
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79,70,229,0.4);
+        }
+
+        .btn-verify:active {
+            transform: translateY(0);
+        }
+
+    .btn-back {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 12px;
+        background: transparent;
+        color: #6b7280;
+        font-size: 0.92rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: inherit;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+
+        .btn-back:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
+    @@media (max-width: 500px) {
+        .otp-header, .otp-body {
+            padding-left: 1.4rem;
+            padding-right: 1.4rem;
+        }
+
+        .otp-input {
+            font-size: 1.5rem;
+            letter-spacing: 0.35rem;
+        }
+    }
+</style>
+
+<div class="otp-page">
+    <div class="otp-wrapper">
+        <div class="otp-card">
+
+            <!-- Header -->
+            <div class="otp-header">
+                <div class="otp-header-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h2>Verify Your OTP</h2>
+                <p>Enter the phone number and OTP provided by your admin</p>
+            </div>
+
+            <!-- Body -->
+            <div class="otp-body">
+                <form asp-action="Index" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Phone -->
+                    <div class="field-group">
+                        <label asp-for="PrimaryPhone" class="field-label">
+                            <i class="bi bi-telephone-fill"></i> Phone Number
+                        </label>
+                        <input asp-for="PrimaryPhone" class="field-input"
+                               placeholder="Enter your registered phone number" />
+                        <span asp-validation-for="PrimaryPhone" class="field-error"></span>
+                    </div>
+
+                    <!-- OTP -->
+                    <div class="field-group">
+                        <label asp-for="OtpCode" class="field-label">
+                            <i class="bi bi-key-fill"></i> OTP Code
+                        </label>
+                        <input asp-for="OtpCode" class="field-input otp-input"
+                               placeholder="······" maxlength="6"
+                               autocomplete="one-time-code" inputmode="numeric" />
+                        <div class="field-hint">
+                            <i class="bi bi-info-circle"></i> 6-digit code sent by your administrator
+                        </div>
+                        <span asp-validation-for="OtpCode" class="field-error"></span>
+                    </div>
+
+                    <!-- Buttons -->
+                    <button type="submit" class="btn-verify">
+                        <i class="bi bi-check-circle-fill"></i> Verify OTP
+                    </button>
+
+                    <a asp-controller="Login" asp-action="Index" class="btn-back">
+                        <i class="bi bi-arrow-left"></i> Back to Login
+                    </a>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
 @*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @model ApartmentManagementSystem.Web.ViewModels.Onboarding.VerifyOtpViewModel
 @{
     ViewData["Title"] = "Verify OTP - New User";
@@ -181,3 +526,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+*@

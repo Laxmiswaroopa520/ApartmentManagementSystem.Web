@@ -6,16 +6,16 @@ namespace ApartmentManagementSystem.Web.Services
 {
     public class ApartmentApiService
     {
-        private readonly ApiClient _apiClient;
+        private readonly ApiClient ApiClient;
 
         public ApartmentApiService(ApiClient apiClient)
         {
-            _apiClient = apiClient;
+            ApiClient = apiClient;
         }
 
         public async Task<ApiResponse<CreateApartmentResponseDto>?> CreateApartmentAsync(CreateApartmentDto dto)
         {
-            return await _apiClient.PostAsync<CreateApartmentDto, ApiResponse<CreateApartmentResponseDto>>(
+            return await ApiClient.PostAsync<CreateApartmentDto, ApiResponse<CreateApartmentResponseDto>>(
                 "api/ApartmentManagement/create",
                 dto
             );
@@ -23,21 +23,21 @@ namespace ApartmentManagementSystem.Web.Services
 
         public async Task<ApiResponse<List<ApartmentListDto>>?> GetAllApartmentsAsync()
         {
-            return await _apiClient.GetAsync<ApiResponse<List<ApartmentListDto>>>(
+            return await ApiClient.GetAsync<ApiResponse<List<ApartmentListDto>>>(
                 "api/ApartmentManagement/all"
             );
         }
 
         public async Task<ApiResponse<ApartmentDetailDto>?> GetApartmentDetailAsync(Guid apartmentId)
         {
-            return await _apiClient.GetAsync<ApiResponse<ApartmentDetailDto>>(
+            return await ApiClient.GetAsync<ApiResponse<ApartmentDetailDto>>(
                 $"api/ApartmentManagement/{apartmentId}"
             );
         }
 
         public async Task<ApiResponse<ApartmentDiagramDto>?> GetApartmentDiagramAsync(Guid apartmentId)
         {
-            return await _apiClient.GetAsync<ApiResponse<ApartmentDiagramDto>>(
+            return await ApiClient.GetAsync<ApiResponse<ApartmentDiagramDto>>(
                 $"api/ApartmentManagement/{apartmentId}/diagram"
             );
         }

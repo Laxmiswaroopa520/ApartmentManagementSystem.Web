@@ -15,11 +15,6 @@ namespace ApartmentManagementSystem.Web.ViewModels.Onboarding
 
         public List<ResidentTypeOption> ResidentTypes { get; set; } = new();
 
-
-      //  [Range(1, 3, ErrorMessage = "Please select a resident type")]
-//        public int ResidentType { get; set; }
-
-      //  public List<ResidentTypeOption> ResidentTypes { get; set; } = new();
     }
 
 

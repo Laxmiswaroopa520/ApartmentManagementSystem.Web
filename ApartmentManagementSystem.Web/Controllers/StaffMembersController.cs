@@ -16,7 +16,7 @@ public class StaffMembersController : Controller
         StaffApiService = staffApiService;
     }
 
-    // GET: List All Staff Members
+    // List All Staff Members
     [HttpGet]
     public async Task<IActionResult> Index(string? staffType = null)
     {
@@ -44,14 +44,14 @@ public class StaffMembersController : Controller
         return View(viewModel);
     }
 
-    // GET: Create Staff Member
+    // Create Staff Member
     [HttpGet]
     public IActionResult Create()
     {
         return View(new CreateStaffMemberViewModel());
     }
 
-    // POST: Create Staff Member
+    // Create Staff Member
     [HttpPost]
     public async Task<IActionResult> Create(CreateStaffMemberViewModel model)
     {
@@ -84,7 +84,7 @@ public class StaffMembersController : Controller
         return View(model);
     }
 
-    // GET: Edit Staff Member
+    // Edit Staff Member
     [HttpGet]
     public async Task<IActionResult> Edit(Guid staffId)
     {
@@ -111,7 +111,7 @@ public class StaffMembersController : Controller
         return View(viewModel);
     }
 
-    // POST: Edit Staff Member
+    //  Edit Staff Member
     [HttpPost]
     public async Task<IActionResult> Edit(UpdateStaffMemberViewModel model)
     {
@@ -144,7 +144,7 @@ public class StaffMembersController : Controller
         return View(model);
     }
 
-    // POST: Deactivate Staff Member
+    // Deactivate Staff Member
     [HttpPost]
     public async Task<IActionResult> Deactivate(Guid staffId)
     {
@@ -162,7 +162,7 @@ public class StaffMembersController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // POST: Activate Staff Member
+    // Activate Staff Member
     [HttpPost]
     public async Task<IActionResult> Activate(Guid staffId)
     {

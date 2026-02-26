@@ -1,5 +1,4 @@
 ﻿// Web/Services/CommunityMemberApiService.cs
-// COMPLETE REPLACEMENT — passes apartmentId for multi-apartment scoping
 using ApartmentManagementSystem.Web.Services.DTOs;
 using ApartmentManagementSystem.Web.Services.DTOs.Community;
 
@@ -7,52 +6,44 @@ namespace ApartmentManagementSystem.Web.Services
 {
     public class CommunityMemberApiService
     {
-        private readonly ApiClient _apiClient;
+        private readonly ApiClient ApiClient;
 
         public CommunityMemberApiService(ApiClient apiClient)
         {
-            _apiClient = apiClient;
+            ApiClient = apiClient;
         }
 
-        /// <summary>
-        /// Get all community members (optionally filtered by apartment)
-        /// </summary>
+        // Get all community members (optionally filtered by apartment)
         public async Task<ApiResponse<List<CommunityMemberDto>>?> GetAllCommunityMembersAsync(Guid? apartmentId = null)
         {
             var endpoint = apartmentId.HasValue
                 ? $"api/CommunityMembers?apartmentId={apartmentId.Value}"
                 : "api/CommunityMembers";
 
-            return await _apiClient.GetAsync<ApiResponse<List<CommunityMemberDto>>>(endpoint);
+            return await ApiClient.GetAsync<ApiResponse<List<CommunityMemberDto>>>(endpoint);
         }
 
-        /// <summary>
-        /// Get eligible resident owners from a specific apartment
-        /// </summary>
+        // Get eligible resident owners from a specific apartment
         public async Task<ApiResponse<List<ResidentListDto>>?> GetEligibleResidentsAsync(Guid apartmentId)
         {
-            return await _apiClient.GetAsync<ApiResponse<List<ResidentListDto>>>(
+            return await ApiClient.GetAsync<ApiResponse<List<ResidentListDto>>>(
                 $"api/CommunityMembers/eligible-residents/{apartmentId}"
             );
         }
 
-        /// <summary>
-        /// Assign community role
-        /// </summary>
+        // Assign community role
         public async Task<ApiResponse<CommunityMemberDto>?> AssignCommunityRoleAsync(AssignCommunityRoleRequest request)
         {
-            return await _apiClient.PostAsync<AssignCommunityRoleRequest, ApiResponse<CommunityMemberDto>>(
+            return await ApiClient.PostAsync<AssignCommunityRoleRequest, ApiResponse<CommunityMemberDto>>(
                 "api/CommunityMembers/assign-role",
                 request
             );
         }
 
-        /// <summary>
-        /// Remove community role
-        /// </summary>
+        // Remove community role
         public async Task<ApiResponse<bool>?> RemoveCommunityRoleAsync(RemoveCommunityRoleRequest request)
         {
-            return await _apiClient.PostAsync<RemoveCommunityRoleRequest, ApiResponse<bool>>(
+            return await ApiClient.PostAsync<RemoveCommunityRoleRequest, ApiResponse<bool>>(
                 "api/CommunityMembers/remove-role",
                 request
             );

@@ -5,6 +5,638 @@
 }
 
 <style>
+    .reg-page {
+        min-height: calc(100vh - 56px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1rem;
+        background: #f0f4f8;
+    }
+
+    .reg-wrapper {
+        width: 100%;
+        max-width: 620px;
+    }
+
+    /* ── CARD ── */
+    .reg-card {
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 8px 40px rgba(26,39,68,0.13);
+        overflow: hidden;
+        animation: cardIn 0.5s ease-out both;
+    }
+
+    @@keyframes cardIn {
+        from {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ── HEADER ── */
+    .reg-header {
+        background: linear-gradient(135deg, #1a2744 0%, #2d3f7c 60%, #4f46e5 100%);
+        padding: 2.25rem 2.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .reg-header::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -15%;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            pointer-events: none;
+        }
+
+        .reg-header::after {
+            content: '';
+            position: absolute;
+            bottom: -55%;
+            left: -8%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            pointer-events: none;
+        }
+
+    .reg-header-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+        .reg-header-icon i {
+            font-size: 1.5rem;
+            color: #ffffff;
+        }
+
+    .reg-header h2 {
+        font-size: 1.45rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0 0 0.3rem;
+        position: relative;
+        z-index: 1;
+        letter-spacing: -0.3px;
+    }
+
+    .reg-header p {
+        color: rgba(255,255,255,0.65);
+        font-size: 0.88rem;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ── BODY ── */
+    .reg-body {
+        padding: 2.25rem 2.5rem 2rem;
+    }
+
+    /* ── FIELDS ── */
+    .field-group {
+        margin-bottom: 1.3rem;
+    }
+
+    .field-label {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 0.45rem;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+        .field-label i {
+            font-size: 0.85rem;
+            color: #4f46e5;
+        }
+
+    .required-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #ef4444;
+        display: inline-block;
+        margin-left: 2px;
+        vertical-align: middle;
+    }
+
+    .field-input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 0.94rem;
+        color: #1f2937;
+        background: #fafafa;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        outline: none;
+        font-family: inherit;
+    }
+
+        .field-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .field-input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+            background: #ffffff;
+        }
+
+        .field-input.is-invalid {
+            border-color: #ef4444;
+            background: #fff8f8;
+        }
+
+            .field-input.is-invalid:focus {
+                box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+            }
+
+        .field-input.is-valid {
+            border-color: #22c55e;
+            background: #f0fdf4;
+        }
+
+            .field-input.is-valid:focus {
+                box-shadow: 0 0 0 3px rgba(34,197,94,0.1);
+            }
+
+    /* eye toggle wrapper */
+    .input-eye {
+        position: relative;
+    }
+
+        .input-eye .field-input {
+            padding-right: 2.8rem;
+        }
+
+    .eye-btn {
+        position: absolute;
+        right: 0.9rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 0;
+        font-size: 1rem;
+        transition: color 0.2s;
+    }
+
+        .eye-btn:hover {
+            color: #4f46e5;
+        }
+
+    .field-hint {
+        font-size: 0.77rem;
+        color: #9ca3af;
+        margin-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+        .field-hint i {
+            font-size: 0.72rem;
+            color: #a5b4fc;
+        }
+
+    .field-error {
+        font-size: 0.77rem;
+        color: #ef4444;
+        margin-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .field-success {
+        font-size: 0.77rem;
+        color: #22c55e;
+        margin-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    /* ── PASSWORD STRENGTH ── */
+    .pw-strength {
+        margin-top: 0.6rem;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
+        display: none;
+    }
+
+        .pw-strength.show {
+            display: block;
+        }
+
+    .pw-bar-track {
+        height: 5px;
+        background: #e5e7eb;
+        border-radius: 99px;
+        overflow: hidden;
+        margin-bottom: 0.4rem;
+    }
+
+    .pw-bar-fill {
+        height: 100%;
+        border-radius: 99px;
+        width: 0;
+        transition: width 0.3s, background 0.3s;
+    }
+
+        .pw-bar-fill.weak {
+            width: 33%;
+            background: #ef4444;
+        }
+
+        .pw-bar-fill.medium {
+            width: 66%;
+            background: #f97316;
+        }
+
+        .pw-bar-fill.strong {
+            width: 100%;
+            background: #22c55e;
+        }
+
+    .pw-strength-text {
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .pw-reqs {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .pw-reqs li {
+            font-size: 0.76rem;
+            color: #9ca3af;
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: color 0.2s;
+        }
+
+            .pw-reqs li.met {
+                color: #22c55e;
+            }
+
+            .pw-reqs li i {
+                font-size: 0.7rem;
+            }
+
+    /* ── SECTION DIVIDER ── */
+    .sec-sep {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 1.75rem 0 1.5rem;
+    }
+
+        .sec-sep::before,
+        .sec-sep::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .sec-sep span {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #4f46e5;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+    /* ── SUBMIT BUTTON ── */
+    .btn-submit {
+        width: 100%;
+        padding: 0.9rem;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #1a2744, #4f46e5);
+        color: #fff;
+        font-size: 0.97rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s;
+        box-shadow: 0 4px 16px rgba(79,70,229,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        font-family: inherit;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .btn-submit:hover::after {
+            transform: translateX(100%);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79,70,229,0.42);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    @@media (max-width: 600px) {
+        .reg-header, .reg-body {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+    }
+</style>
+
+<div class="reg-page">
+    <div class="reg-wrapper">
+        <div class="reg-card">
+
+            <!-- Header -->
+            <div class="reg-header">
+                <div class="reg-header-icon">
+                    <i class="bi bi-person-check-fill"></i>
+                </div>
+                <h2>Complete Your Registration</h2>
+                <p>Just a few more details to get you started</p>
+            </div>
+
+            <!-- Body -->
+            <div class="reg-body">
+                <form asp-action="CompleteRegistration" method="post" id="registrationForm">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Full Name -->
+                    <div class="field-group">
+                        <label asp-for="FullName" class="field-label">
+                            <i class="bi bi-person-fill"></i> Full Name <span class="required-dot"></span>
+                        </label>
+                        <input asp-for="FullName" class="field-input" placeholder="Enter your full name" required />
+                        <span asp-validation-for="FullName" class="field-error"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="field-group">
+                        <label asp-for="Email" class="field-label">
+                            <i class="bi bi-envelope-fill"></i> Email Address
+                        </label>
+                        <input asp-for="Email" type="email" class="field-input" placeholder="your.email@example.com" />
+                        <div class="field-hint">
+                            <i class="bi bi-info-circle"></i> We'll use this for important notifications
+                        </div>
+                        <span asp-validation-for="Email" class="field-error"></span>
+                    </div>
+
+                    <!-- Secondary Phone -->
+                    <div class="field-group">
+                        <label asp-for="SecondaryPhone" class="field-label">
+                            <i class="bi bi-telephone-fill"></i> Secondary Phone
+                        </label>
+                        <input asp-for="SecondaryPhone" type="tel" class="field-input" placeholder="Alternate contact number (optional)" />
+                        <span asp-validation-for="SecondaryPhone" class="field-error"></span>
+                    </div>
+
+                    <!-- Credentials divider -->
+                    <div class="sec-sep">
+                        <span><i class="bi bi-shield-lock-fill"></i> Login Credentials</span>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="field-group">
+                        <label asp-for="Username" class="field-label">
+                            <i class="bi bi-person-badge-fill"></i> Username <span class="required-dot"></span>
+                        </label>
+                        <input asp-for="Username" class="field-input" placeholder="Choose a unique username" required />
+                        <div class="field-hint">
+                            <i class="bi bi-info-circle"></i> Letters, numbers, and underscores only
+                        </div>
+                        <span asp-validation-for="Username" class="field-error"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="field-group">
+                        <label asp-for="Password" class="field-label">
+                            <i class="bi bi-key-fill"></i> Password <span class="required-dot"></span>
+                        </label>
+                        <div class="input-eye">
+                            <input asp-for="Password" type="password" class="field-input" id="password"
+                                   placeholder="Create a strong password" required />
+                            <button type="button" class="eye-btn" id="togglePassword">
+                                <i class="bi bi-eye-slash" id="togglePasswordIcon"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="field-error"></span>
+
+                        <!-- Strength meter -->
+                        <div class="pw-strength" id="passwordStrength">
+                            <div class="pw-bar-track">
+                                <div class="pw-bar-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="pw-strength-text" id="strengthText"></div>
+                            <ul class="pw-reqs">
+                                <li id="req-length"><i class="bi bi-x-circle"></i> At least 8 characters</li>
+                                <li id="req-upper"><i class="bi bi-x-circle"></i> One uppercase letter</li>
+                                <li id="req-lower"><i class="bi bi-x-circle"></i> One lowercase letter</li>
+                                <li id="req-number"><i class="bi bi-x-circle"></i> One number</li>
+                                <li id="req-special"><i class="bi bi-x-circle"></i> One special character (!@@#$%^&*)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="field-group">
+                        <label asp-for="ConfirmPassword" class="field-label">
+                            <i class="bi bi-check2-circle"></i> Confirm Password <span class="required-dot"></span>
+                        </label>
+                        <div class="input-eye">
+                            <input asp-for="ConfirmPassword" type="password" class="field-input" id="confirmPassword"
+                                   placeholder="Re-enter your password" required />
+                            <button type="button" class="eye-btn" id="toggleConfirm">
+                                <i class="bi bi-eye-slash" id="toggleConfirmIcon"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+                        <div class="field-error" id="pwMatchError" style="display:none">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Passwords do not match
+                        </div>
+                        <div class="field-success" id="pwMatchOk" style="display:none">
+                            <i class="bi bi-check-circle-fill"></i> Passwords match
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="bi bi-check-circle-fill"></i> Complete Registration
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const pw = document.getElementById('password');
+            const cpw = document.getElementById('confirmPassword');
+
+            // ── Password strength ──
+            pw.addEventListener('input', function () {
+                const v = this.value;
+                const strength = document.getElementById('passwordStrength');
+                strength.classList.toggle('show', v.length > 0);
+                if (!v.length) return;
+
+                const chk = {
+                    length:  v.length >= 8,
+                    upper:   /[A-Z]/.test(v),
+                    lower:   /[a-z]/.test(v),
+                    number:  /[0-9]/.test(v),
+                    special: /[!@@#$%^&*(),.?":{}|<>]/.test(v)
+                };
+
+                ['length','upper','lower','number','special'].forEach(k => {
+                    const li = document.getElementById('req-' + k);
+                    li.classList.toggle('met', chk[k]);
+                    li.querySelector('i').className = chk[k]
+                        ? 'bi bi-check-circle-fill'
+                        : 'bi bi-x-circle';
+                });
+
+                const score = Object.values(chk).filter(Boolean).length;
+                const fill = document.getElementById('strengthFill');
+                const text = document.getElementById('strengthText');
+                fill.className = 'pw-bar-fill';
+                if (score <= 2) {
+                    fill.classList.add('weak');
+                    text.textContent = 'Weak password';
+                    text.style.color = '#ef4444';
+                } else if (score <= 4) {
+                    fill.classList.add('medium');
+                    text.textContent = 'Medium password';
+                    text.style.color = '#f97316';
+                } else {
+                    fill.classList.add('strong');
+                    text.textContent = 'Strong password';
+                    text.style.color = '#22c55e';
+                }
+
+                checkMatch();
+            });
+
+            // ── Password match ──
+            cpw.addEventListener('input', checkMatch);
+
+            function checkMatch() {
+                const err = document.getElementById('pwMatchError');
+                const ok  = document.getElementById('pwMatchOk');
+                if (!cpw.value.length) {
+                    err.style.display = 'none';
+                    ok.style.display  = 'none';
+                    cpw.classList.remove('is-invalid','is-valid');
+                    return;
+                }
+                const match = pw.value === cpw.value;
+                err.style.display = match ? 'none' : 'flex';
+                ok.style.display  = match ? 'flex' : 'none';
+                cpw.classList.toggle('is-invalid', !match);
+                cpw.classList.toggle('is-valid', match);
+            }
+
+            // ── Eye toggles ──
+            function setupEye(btnId, iconId, inputEl) {
+                document.getElementById(btnId).addEventListener('click', function () {
+                    const isText = inputEl.type === 'text';
+                    inputEl.type = isText ? 'password' : 'text';
+                    document.getElementById(iconId).className = isText
+                        ? 'bi bi-eye-slash'
+                        : 'bi bi-eye';
+                });
+            }
+
+            setupEye('togglePassword', 'togglePasswordIcon', pw);
+            setupEye('toggleConfirm',  'toggleConfirmIcon',  cpw);
+
+            // ── Submit guard ──
+            document.getElementById('registrationForm').addEventListener('submit', function (e) {
+                if (pw.value !== cpw.value) {
+                    e.preventDefault();
+                    cpw.focus();
+                }
+            });
+        });
+    </script>
+}
+
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Onboarding.CompleteRegistrationViewModel
+@{
+    ViewData["Title"] = "Complete Your Registration";
+    Layout = "_PublicLayout";
+}
+
+<style>
     :root {
         --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
@@ -562,273 +1194,4 @@
 }
 
 
-@*
-
-@model ApartmentManagementSystem.Web.ViewModels.Onboarding.CompleteRegistrationViewModel
-@{
-    ViewData["Title"] = "Complete Your Registration";
-}
-
-<style>
-    :root {
-        --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
-    }
-
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .registration-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: var(--shadow-lg);
-        overflow: hidden;
-        max-width: 600px;
-        width: 100%;
-        margin: 2rem auto;
-    }
-
-    .card-header-gradient {
-        background: var(--gradient-success);
-        color: white;
-        padding: 1.5rem 2rem;
-        text-align: center;
-    }
-
-        .card-header-gradient h4 {
-            margin: 0;
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-
-            .card-header-gradient h4 i {
-                margin-right: 0.5rem;
-            }
-
-    .card-body-custom {
-        padding: 2rem;
-    }
-
-    .section-title {
-        color: #11998e;
-        font-weight: 700;
-        font-size: 1.1rem;
-        margin: 1.5rem 0 1rem 0;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #e6f7f4;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #4a5568;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-        .form-label .text-danger {
-            color: #fa709a !important;
-        }
-
-    .form-control {
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-    }
-
-        .form-control:focus {
-            border-color: #11998e;
-            box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
-        }
-
-    .btn-submit {
-        background: var(--gradient-success);
-        border: none;
-        color: white;
-        border-radius: 12px;
-        padding: 0.85rem 2rem;
-        font-weight: 600;
-        font-size: 1rem;
-        width: 100%;
-        box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
-        transition: all 0.3s ease;
-    }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(17, 153, 142, 0.4);
-        }
-
-    @@media (max-width: 768px) {
-        body {
-            padding: 1rem;
-        }
-
-        .registration-card {
-            margin: 1rem;
-        }
-
-        .card-body-custom {
-            padding: 1.5rem;
-        }
-    }
-</style>
-
-<div class="container">
-    <div class="registration-card">
-        <div class="card-header-gradient">
-            <h4>
-                <i class="bi bi-person-check"></i> Complete Your Registration
-            </h4>
-        </div>
-        <div class="card-body-custom">
-            <form asp-action="CompleteRegistration" method="post">
-                @Html.AntiForgeryToken()
-
-                <!-- Full Name -->
-                <div class="mb-3">
-                    <label asp-for="FullName" class="form-label">Full Name <span class="text-danger">*</span></label>
-                    <input asp-for="FullName" class="form-control" placeholder="Enter your full name" />
-                    <span asp-validation-for="FullName" class="text-danger"></span>
-                </div>
-
-                <!-- Email -->
-                <div class="mb-3">
-                    <label asp-for="Email" class="form-label">Email</label>
-                    <input asp-for="Email" class="form-control" placeholder="Enter your email address" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-
-                <!-- Secondary Phone -->
-                <div class="mb-3">
-                    <label asp-for="SecondaryPhone" class="form-label">Secondary Phone</label>
-                    <input asp-for="SecondaryPhone" class="form-control" placeholder="Enter secondary phone number" />
-                    <span asp-validation-for="SecondaryPhone" class="text-danger"></span>
-                </div>
-
-                <h5 class="section-title">Login Credentials</h5>
-
-                <!-- Username -->
-                <div class="mb-3">
-                    <label asp-for="Username" class="form-label">Username <span class="text-danger">*</span></label>
-                    <input asp-for="Username" class="form-control" placeholder="Choose a username" />
-                    <span asp-validation-for="Username" class="text-danger"></span>
-                </div>
-
-                <!-- Password -->
-                <div class="mb-3">
-                    <label asp-for="Password" class="form-label">Password <span class="text-danger">*</span></label>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="Create a password" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-
-                <!-- Confirm Password -->
-                <div class="mb-3">
-                    <label asp-for="ConfirmPassword" class="form-label">Confirm Password <span class="text-danger">*</span></label>
-                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password" />
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                </div>
-
-                <button type="submit" class="btn btn-submit mt-3">
-                    <i class="bi bi-check-circle"></i> Complete Registration
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
-
-*@
-
-
-
-
-
-@*
-@model ApartmentManagementSystem.Web.ViewModels.Onboarding.CompleteRegistrationViewModel
-
-@{
-    ViewData["Title"] = "Complete Your Registration";
-}
-
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-7">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">
-                        <i class="bi bi-person-check"></i> Complete Your Registration
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <form asp-action="CompleteRegistration" method="post">
-                        @Html.AntiForgeryToken()
-
-                        <!-- Full Name -->
-                        <div class="mb-3">
-                            <label asp-for="FullName" class="form-label">Full Name *</label>
-                            <input asp-for="FullName" class="form-control" />
-                            <span asp-validation-for="FullName" class="text-danger"></span>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label">Email</label>
-                            <input asp-for="Email" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-
-                        <!-- Secondary Phone -->
-                        <div class="mb-3">
-                            <label asp-for="SecondaryPhone" class="form-label">Secondary Phone</label>
-                            <input asp-for="SecondaryPhone" class="form-control" />
-                            <span asp-validation-for="SecondaryPhone" class="text-danger"></span>
-                        </div>
-
-                        <h5 class="mt-4">Login Credentials</h5>
-
-                        <!-- Username -->
-                        <div class="mb-3">
-                            <label asp-for="Username" class="form-label">Username *</label>
-                            <input asp-for="Username" class="form-control" />
-                            <span asp-validation-for="Username" class="text-danger"></span>
-                        </div>
-
-                        <!-- Password -->
-                        <div class="mb-3">
-                            <label asp-for="Password" class="form-label">Password *</label>
-                            <input asp-for="Password" type="password" class="form-control" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-
-                        <!-- Confirm Password -->
-                        <div class="mb-3">
-                            <label asp-for="ConfirmPassword" class="form-label">Confirm Password *</label>
-                            <input asp-for="ConfirmPassword" type="password" class="form-control" />
-                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                        </div>
-
-                        <div class="d-grid gap-2 mt-3">
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="bi bi-check-circle"></i> Complete Registration
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
 *@

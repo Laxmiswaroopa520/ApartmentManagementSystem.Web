@@ -1,207 +1,629 @@
 ﻿
+@*
+    Views/Home/Index.cshtml
+     This view uses _PublicLayout.cshtml — do NOT add a navbar here.
+    Set layout at the top of this file or via _ViewStart for public pages.
+*@
 @{
     ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skyline Communities</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
+@section Styles {
     <style>
-        :root {
-            --bg-main: #f5f6f7;
-            --bg-card: #ffffff;
-            --text-dark: #1f2933;
-            --text-muted: #6b7280;
-            --accent: #4f6d7a;
-        }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--bg-main);
-            color: var(--text-dark);
-        }
-
-        /* Navbar */
-        .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--accent);
-        }
-
         /* Hero */
         .hero {
-            background: url("https://images.unsplash.com/photo-1501183638710-841dd1904471?w=1600") center/cover no-repeat;
-            height: 90vh;
+            background: url("https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600") center/cover no-repeat;
+            min-height: 88vh;
             position: relative;
+            display: flex;
+            align-items: center;
         }
 
             .hero::after {
                 content: "";
                 position: absolute;
                 inset: 0;
-                background: rgba(0,0,0,0.45);
+                background: linear-gradient(135deg, rgba(26,39,68,0.75) 0%, rgba(0,0,0,0.4) 100%);
             }
 
         .hero-content {
             position: relative;
             z-index: 2;
             color: white;
-            height: 100%;
-            display: flex;
-            align-items: center;
+            padding: 3rem 0;
         }
 
-        .hero h1 {
-            font-size: 3.2rem;
-            font-weight: 700;
-        }
+            .hero-content h1 {
+                font-size: clamp(2rem, 4.5vw, 3.4rem);
+                font-weight: 800;
+                line-height: 1.15;
+                margin-bottom: 1rem;
+            }
 
-        .hero p {
-            font-size: 1.2rem;
-            color: #e5e7eb;
-        }
+            .hero-content p {
+                font-size: 1.15rem;
+                color: #d1d5db;
+                max-width: 480px;
+            }
 
-        /* Buttons */
-        .btn-main {
-            background: var(--accent);
-            color: white;
-            border-radius: 50px;
-            padding: 0.7rem 2rem;
+        .btn-hero-primary {
+            background: #1a2744;
+            color: #fff;
             border: none;
+            border-radius: 50px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.25s;
+            display: inline-block;
         }
 
-        .btn-outline-main {
-            border: 2px solid white;
-            color: white;
+            .btn-hero-primary:hover {
+                background: #243258;
+                color: #fff;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(26,39,68,0.4);
+            }
+
+        .btn-hero-outline {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.65);
             border-radius: 50px;
-            padding: 0.7rem 2rem;
+            padding: 0.73rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.25s;
+            display: inline-block;
         }
+
+            .btn-hero-outline:hover {
+                background: rgba(255,255,255,0.15);
+                border-color: #fff;
+                color: #fff;
+            }
 
         /* Section */
         .section {
-            padding: 80px 0;
+            padding: 72px 0;
         }
 
         .section-title {
-            font-weight: 600;
-            margin-bottom: 40px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2933;
+            margin-bottom: 2.5rem;
         }
 
         /* Gallery */
         .gallery img {
             border-radius: 16px;
             width: 100%;
-            height: 250px;
+            height: 240px;
             object-fit: cover;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
         }
 
-        /* Card */
+            .gallery img:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 32px rgba(0,0,0,0.13);
+            }
+
+        /* Info card */
         .info-card {
-            background: var(--bg-card);
+            background: #ffffff;
             border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            border: 1px solid #e5e7eb;
         }
 
-        /* Footer */
-        footer {
-            background: #1f2933;
-            color: #cbd5e1;
-            padding: 40px 0;
-        }
+            .info-card h3 {
+                font-weight: 700;
+                color: #1f2933;
+            }
+
+            .info-card .bi {
+                color: #7dd3fc;
+                font-size: 1.2rem;
+                margin-right: 0.4rem;
+            }
     </style>
-</head>
+}
 
-<body>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="#"><i class="fas fa-building"></i> Skyline</a>
-            <div class="ms-auto">
-                <a href="/Login/Index" class="btn btn-main me-2">Login</a>
-                <a href="/VerifyInvite/Index" class="btn btn-outline-secondary">New User</a>
+<!-- Hero — full width, no extra navbar -->
+<section class="hero">
+    <div class="container hero-content">
+        <div class="col-md-7">
+            <h1>Modern Living,<br>Connected Communities</h1>
+            <p class="mb-4">Experience peaceful apartment living with smart community management.</p>
+            <div class="d-flex gap-3 flex-wrap">
+                <a href="/Login/Index" class="btn-hero-primary">Resident Login</a>
+                <a href="/VerifyInvite/Index" class="btn-hero-outline">New User</a>
             </div>
         </div>
-    </nav>
+    </div>
+</section>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="container hero-content">
-            <div class="col-md-7">
-                <h1>Modern Living, Connected Communities</h1>
-                <p>Experience peaceful apartment living with smart community management.</p>
-                <div class="mt-4">
-                    <a href="/Login/Index" class="btn btn-main me-3">Resident Login</a>
-                    <a href="/VerifyInvite/Index" class="btn btn-outline-main">New User</a>
+<!-- Gallery -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title text-center">Life at Skyline</h2>
+        <div class="row g-4 gallery">
+            <div class="col-md-4">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800" alt="Skyline interior">
+            </div>
+            <div class="col-md-4">
+                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800" alt="Skyline living room">
+            </div>
+            <div class="col-md-4">
+                <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800" alt="Skyline building">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About -->
+<section class="section" style="padding-top:0">
+    <div class="container">
+        <h2 class="section-title text-center">About Skyline</h2>
+
+        <div class="about-intro text-center mb-5" style="max-width:640px;margin:0 auto">
+            <p class="text-muted" style="font-size:1.05rem;line-height:1.75">
+                Skyline is built for modern apartment communities — bringing residents, staff,
+                and management together on one calm, powerful platform. We handle the
+                complexity so your community can simply thrive.
+            </p>
+        </div>
+
+        <!-- Feature cards row -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <div class="feat-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h5>Community First</h5>
+                    <p>Connect residents, staff, and leadership in one shared space. Foster a sense of belonging across every floor.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <div class="feat-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h5>Secure & Trusted</h5>
+                    <p>Role-based access, invite-only onboarding, and audit-ready records keep your community safe and accountable.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <div class="feat-icon">
+                        <i class="bi bi-bar-chart-line-fill"></i>
+                    </div>
+                    <h5>Smart Management</h5>
+                    <p>From flat occupancy to visitor logs, get a real-time dashboard that gives you clarity at a glance — every day.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <div class="feat-icon">
+                        <i class="bi bi-tools"></i>
+                    </div>
+                    <h5>Maintenance Tracking</h5>
+                    <p>Residents raise complaints, staff resolve them. Every issue is logged, tracked, and closed — nothing falls through.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <div class="feat-icon">
+                        <i class="bi bi-building-check"></i>
+                    </div>
+                    <h5>Multi-Building Ready</h5>
+                    <p>Manage multiple apartment buildings under one account. Create, visualise, and organise properties with ease.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <div class="feat-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <h5>Staff & Roles</h5>
+                    <p>Assign presidents, secretaries, treasurers, and security — each with the right access and nothing more.</p>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Gallery -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title text-center">Life at Skyline</h2>
-            <div class="row g-4 gallery">
-                <div class="col-md-4">
-                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800">
+        <!-- Stats strip -->
+        <div class="stats-strip">
+            <div class="stat-item">
+                <span class="stat-num">500+</span>
+                <span class="stat-desc">Flats Managed</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-num">12+</span>
+                <span class="stat-desc">Communities</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-num">98%</span>
+                <span class="stat-desc">Resident Satisfaction</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-num">24/7</span>
+                <span class="stat-desc">Platform Uptime</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact -->
+<section class="section" style="padding-top: 0; padding-bottom: 80px">
+    <div class="container">
+        <h2 class="section-title text-center">Get in Touch</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
+                    <h6>Email Us</h6>
+                    <p>support@@skylinecommunities.com</p>
                 </div>
-                <div class="col-md-4">
-                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800">
+            </div>
+            <div class="col-md-4">
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
+                    <h6>Call Us</h6>
+                    <p>+1 555 234 6789</p>
                 </div>
-                <div class="col-md-4">
-                    <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800">
+            </div>
+            <div class="col-md-4">
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                    <h6>Head Office</h6>
+                    <p>42 Skyline Avenue, Metro City</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- About -->
-    <section class="section">
-        <div class="container">
-            <div class="info-card text-center">
-                <h3>About Skyline</h3>
-                <p class="text-muted mt-3">
-                    Skyline is designed to bring residents together with clarity, comfort, and trust.
-                    Our platform supports communities while keeping the experience calm and human.
-                </p>
+<style>
+    /* Feature cards */
+    .feat-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 2rem 1.75rem;
+        height: 100%;
+        transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    }
+
+        .feat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(26,39,68,0.1);
+            border-color: #bfdbfe;
+        }
+
+    .feat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #eff6ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.1rem;
+    }
+
+        .feat-icon i {
+            font-size: 1.4rem;
+            color: #1a2744;
+        }
+
+    .feat-card h5 {
+        font-weight: 700;
+        color: #1f2933;
+        margin-bottom: 0.6rem;
+        font-size: 1rem;
+    }
+
+    .feat-card p {
+        color: #6b7280;
+        font-size: 0.9rem;
+        line-height: 1.65;
+        margin: 0;
+    }
+
+    /* Stats strip */
+    .stats-strip {
+        background: #1a2744;
+        border-radius: 20px;
+        padding: 2.25rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .stat-num {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #7dd3fc;
+        line-height: 1;
+    }
+
+    .stat-desc {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    .stat-divider {
+        width: 1px;
+        height: 48px;
+        background: rgba(255,255,255,0.12);
+    }
+
+    /* Contact cards */
+    .contact-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+        .contact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(26,39,68,0.09);
+        }
+
+    .contact-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #eff6ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+        .contact-icon i {
+            font-size: 1.35rem;
+            color: #1a2744;
+        }
+
+    .contact-card h6 {
+        font-weight: 700;
+        color: #1f2933;
+        margin-bottom: 0.4rem;
+    }
+
+    .contact-card p {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    @@media (max-width: 768px) {
+        .stat-divider {
+            display: none;
+        }
+
+        .stats-strip {
+            justify-content: center;
+            gap: 2rem;
+        }
+    }
+</style>
+
+
+@*
+@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+        /* Hero */
+        .hero {
+            background: url("https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600") center/cover no-repeat;
+            min-height: 88vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+            .hero::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg, rgba(26,39,68,0.75) 0%, rgba(0,0,0,0.4) 100%);
+            }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            padding: 3rem 0;
+        }
+
+            .hero-content h1 {
+                font-size: clamp(2rem, 4.5vw, 3.4rem);
+                font-weight: 800;
+                line-height: 1.15;
+                margin-bottom: 1rem;
+            }
+
+            .hero-content p {
+                font-size: 1.15rem;
+                color: #d1d5db;
+                max-width: 480px;
+            }
+
+        .btn-hero-primary {
+            background: #1a2744;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.25s;
+            display: inline-block;
+        }
+
+            .btn-hero-primary:hover {
+                background: #243258;
+                color: #fff;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(26,39,68,0.4);
+            }
+
+        .btn-hero-outline {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.65);
+            border-radius: 50px;
+            padding: 0.73rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.25s;
+            display: inline-block;
+        }
+
+            .btn-hero-outline:hover {
+                background: rgba(255,255,255,0.15);
+                border-color: #fff;
+                color: #fff;
+            }
+
+        /* Section */
+        .section {
+            padding: 72px 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2933;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Gallery */
+        .gallery img {
+            border-radius: 16px;
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+            .gallery img:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 32px rgba(0,0,0,0.13);
+            }
+
+        /* Info card */
+        .info-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+            .info-card h3 {
+                font-weight: 700;
+                color: #1f2933;
+            }
+
+            .info-card .bi {
+                color: #7dd3fc;
+                font-size: 1.2rem;
+                margin-right: 0.4rem;
+            }
+    </style>
+}
+
+<!-- Hero — full width, no extra navbar -->
+<section class="hero">
+    <div class="container hero-content">
+        <div class="col-md-7">
+            <h1>Modern Living,<br>Connected Communities</h1>
+            <p class="mb-4">Experience peaceful apartment living with smart community management.</p>
+            <div class="d-flex gap-3 flex-wrap">
+                <a href="/Login/Index" class="btn-hero-primary">Resident Login</a>
+                <a href="/VerifyInvite/Index" class="btn-hero-outline">New User</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Contact -->
-    <section class="section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6 info-card text-center">
-                    <h4>Contact Us</h4>
-                    <p class="mt-3"><i class="fas fa-envelope"></i> support@skylinecommunities.com</p>
-                    <p><i class="fas fa-phone"></i> +1 555 234 6789</p>
-                </div>
+<!-- Gallery -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title text-center">Life at Skyline</h2>
+        <div class="row g-4 gallery">
+            <div class="col-md-4">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800" alt="Skyline interior">
+            </div>
+            <div class="col-md-4">
+                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800" alt="Skyline living room">
+            </div>
+            <div class="col-md-4">
+                <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800" alt="Skyline building">
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container text-center">
-            <p>&copy; 2026 Skyline Communities. All rights reserved.</p>
+<!-- About -->
+<section class="section" style="padding-top:0">
+    <div class="container">
+        <div class="info-card text-center" style="max-width:680px;margin:0 auto">
+            <h3><i class="bi bi-buildings"></i>About Skyline</h3>
+            <p class="text-muted mt-3 mb-0">
+                Skyline is designed to bring residents together with clarity, comfort, and trust.
+                Our platform supports communities while keeping the experience calm and human.
+            </p>
         </div>
-    </footer>
+    </div>
+</section>
 
-</body>
-</html>
+<!-- Contact -->
+<section class="section" style="padding-top:0">
+    <div class="container">
+        <div class="info-card text-center" style="max-width:440px;margin:0 auto">
+            <h4 class="fw-700 mb-3">Contact Us</h4>
+            <p class="text-muted mb-2">
+                <i class="bi bi-envelope"></i> support@@skylinecommunities.com
+            </p>
+            <p class="text-muted mb-0">
+                <i class="bi bi-telephone"></i> +1 555 234 6789
+            </p>
+        </div>
+    </div>
+</section>
 
 
 
+*@

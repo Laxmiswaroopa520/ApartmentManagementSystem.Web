@@ -2,7 +2,6 @@
 
 namespace ApartmentManagementSystem.Web.Mappers.Dashboard
 {
-    
         public static class TenantDashboardViewModelMapper
         {
             public static TenantDashboardViewModel From(dynamic dto)

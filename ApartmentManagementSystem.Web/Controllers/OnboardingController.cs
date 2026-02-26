@@ -71,15 +71,6 @@ public class OnboardingController : Controller
             ? ResidentTypeViewModelMapper.From(response.Data)
             : new List<ResidentTypeOption>();
     }
-
-  /*  private async Task LoadResidentTypesAsync(CreateInviteViewModel model)
-    {
-        var response = await OnboardingApiService.GetResidentTypesAsync();
-
-        model.ResidentTypes = response?.Success == true && response.Data != null
-            ? ResidentTypeViewModelMapper.From(response.Data)
-            : new List<ResidentTypeOption>();
-    }*/
 }
     
 

@@ -9,11 +9,11 @@ namespace ApartmentManagementSystem.Web.Controllers
     [Authorize(Roles = "SuperAdmin,Manager")]
     public class CommunityMembersController : Controller
     {
-        private readonly CommunityMemberApiService _communityService;
+        private readonly CommunityMemberApiService CommunityService;
 
         public CommunityMembersController(CommunityMemberApiService communityService)
         {
-            _communityService = communityService;
+            CommunityService = communityService;
         }
 
         [HttpGet]
@@ -21,7 +21,7 @@ namespace ApartmentManagementSystem.Web.Controllers
         {
             try
             {
-                var response = await _communityService.GetAllCommunityMembersAsync();
+                var response = await CommunityService.GetAllCommunityMembersAsync();
 
                 var viewModel = response?.Success == true && response.Data != null
                     ? response.Data.Select(dto => new CommunityMemberViewModel
@@ -59,7 +59,7 @@ namespace ApartmentManagementSystem.Web.Controllers
 
             try
             {
-                var response = await _communityService.GetEligibleResidentsAsync(apartmentId.Value);
+                var response = await CommunityService.GetEligibleResidentsAsync(apartmentId.Value);
 
                 ViewBag.EligibleResidents = response?.Success == true && response.Data != null
                     ? response.Data
@@ -94,7 +94,7 @@ namespace ApartmentManagementSystem.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                var response = await _communityService.GetEligibleResidentsAsync(model.ApartmentId.Value);
+                var response = await CommunityService.GetEligibleResidentsAsync(model.ApartmentId.Value);
                 ViewBag.EligibleResidents = response?.Success == true && response.Data != null
                     ? response.Data
                     : new List<Services.DTOs.Community.ResidentListDto>();
@@ -110,7 +110,7 @@ namespace ApartmentManagementSystem.Web.Controllers
                     CommunityRole = model.CommunityRole
                 };
 
-                var result = await _communityService.AssignCommunityRoleAsync(request);
+                var result = await CommunityService.AssignCommunityRoleAsync(request);
 
                 if (result?.Success == true)
                 {
@@ -136,7 +136,7 @@ namespace ApartmentManagementSystem.Web.Controllers
             // Make sure apartmentId exists before reloading residents
             if (model.ApartmentId.HasValue)
             {
-                var residentsResponse = await _communityService.GetEligibleResidentsAsync(model.ApartmentId.Value);
+                var residentsResponse = await CommunityService.GetEligibleResidentsAsync(model.ApartmentId.Value);
                 ViewBag.EligibleResidents = residentsResponse?.Success == true && residentsResponse.Data != null
                     ? residentsResponse.Data
                     : new List<Services.DTOs.Community.ResidentListDto>();
@@ -155,7 +155,7 @@ namespace ApartmentManagementSystem.Web.Controllers
                     UserId = userId
                 };
 
-                var result = await _communityService.RemoveCommunityRoleAsync(request);
+                var result = await CommunityService.RemoveCommunityRoleAsync(request);
 
                 if (result?.Success == true)
                 {

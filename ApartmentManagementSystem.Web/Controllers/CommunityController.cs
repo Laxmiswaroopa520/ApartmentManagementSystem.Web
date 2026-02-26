@@ -1,6 +1,5 @@
 ﻿// Web/Controllers/CommunityController.cs
 // COMPLETE REPLACEMENT — scopes everything to a specific apartment
-
 using ApartmentManagementSystem.Web.Mappers.Community;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.Services.DTOs.Community;
@@ -14,22 +13,20 @@ namespace ApartmentManagementSystem.Web.Controllers
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public class CommunityController : Controller
     {
-        private readonly CommunityMemberApiService _communityApiService;
+        private readonly CommunityMemberApiService CommunityApiService;
 
         public CommunityController(CommunityMemberApiService communityApiService)
         {
-            _communityApiService = communityApiService;
+            CommunityApiService = communityApiService;
         }
 
-        /// <summary>
-        /// List all community members.
-        /// URL: /Community/Index?apartmentId={guid}
-        /// </summary>
+        // List all community members.
+        // URL: /Community/Index?apartmentId={guid}
         [HttpGet]
         public async Task<IActionResult> Index(Guid? apartmentId = null)
         {
-            // ⭐ Pass apartmentId to the API so it can filter
-            var response = await _communityApiService.GetAllCommunityMembersAsync(apartmentId);
+            //  Pass apartmentId to the API so it can filter
+            var response = await CommunityApiService.GetAllCommunityMembersAsync(apartmentId);
 
             var viewModel = response?.Success == true && response.Data != null
                 ? CommunityMemberViewModelMapper.From(response.Data)
@@ -39,10 +36,8 @@ namespace ApartmentManagementSystem.Web.Controllers
             return View(viewModel);
         }
 
-        /// <summary>
-        /// Show the "Assign Community Role" form.
-        /// URL: /Community/AssignRole?apartmentId={guid}&role=President
-        /// </summary>
+        // Show the "Assign Community Role" form.
+        // URL: /Community/AssignRole?apartmentId={guid}&role=President
         [HttpGet]
         public async Task<IActionResult> AssignRole(Guid? apartmentId = null, string? role = null)
         {
@@ -52,8 +47,8 @@ namespace ApartmentManagementSystem.Web.Controllers
                 return Redirect("/");
             }
 
-            // ⭐ Load eligible residents ONLY for this apartment
-            var eligibleResponse = await _communityApiService.GetEligibleResidentsAsync(apartmentId.Value);
+            //  Load eligible residents ONLY for this apartment
+            var eligibleResponse = await CommunityApiService.GetEligibleResidentsAsync(apartmentId.Value);
             var eligibleResidents = eligibleResponse?.Success == true && eligibleResponse.Data != null
                 ? EligibleResidentViewModelMapper.From(eligibleResponse.Data)
                 : new List<EligibleResidentViewModel>();
@@ -69,9 +64,7 @@ namespace ApartmentManagementSystem.Web.Controllers
             return View(model);
         }
 
-        /// <summary>
-        /// POST – actually assign the role
-        /// </summary>
+        // POST – actually assign the role
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignRole(AssignCommunityRoleViewModel model)
@@ -92,7 +85,7 @@ namespace ApartmentManagementSystem.Web.Controllers
             if (!ModelState.IsValid)
             {
                 // Reload eligible residents on validation failure
-                var eligibleResponse = await _communityApiService.GetEligibleResidentsAsync(model.ApartmentId ?? Guid.Empty);
+                var eligibleResponse = await CommunityApiService.GetEligibleResidentsAsync(model.ApartmentId ?? Guid.Empty);
                 ViewBag.EligibleResidents = eligibleResponse?.Success == true && eligibleResponse.Data != null
                     ? EligibleResidentViewModelMapper.From(eligibleResponse.Data)
                     : new List<EligibleResidentViewModel>();
@@ -104,10 +97,10 @@ namespace ApartmentManagementSystem.Web.Controllers
             {
                 UserId = model.UserId,
                 CommunityRole = model.CommunityRole,
-                ApartmentId = model.ApartmentId!.Value  // ⭐ send apartmentId
+                ApartmentId = model.ApartmentId!.Value  //  send apartmentId
             };
 
-            var response = await _communityApiService.AssignCommunityRoleAsync(request);
+            var response = await CommunityApiService.AssignCommunityRoleAsync(request);
 
             if (response?.Success == true)
             {
@@ -119,16 +112,14 @@ namespace ApartmentManagementSystem.Web.Controllers
             return RedirectToAction(nameof(Index), new { apartmentId = model.ApartmentId });
         }
 
-        /// <summary>
-        /// POST – remove a community role
-        /// </summary>
+        //remove a community role
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveRole(Guid userId, Guid? apartmentId = null)
         {
             var request = new RemoveCommunityRoleRequest { UserId = userId };
 
-            var response = await _communityApiService.RemoveCommunityRoleAsync(request);
+            var response = await CommunityApiService.RemoveCommunityRoleAsync(request);
 
             if (response?.Success == true)
                 TempData["SuccessMessage"] = "Community role removed successfully.";
@@ -154,168 +145,3 @@ namespace ApartmentManagementSystem.Web.Controllers
 
 
 
-
-/*
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using ApartmentManagementSystem.Web.Services;
-using ApartmentManagementSystem.Web.ViewModels.Community;
-//Delete this..
-namespace ApartmentManagementSystem.Web.Controllers
-{
-    [Authorize(Roles = "SuperAdmin,Manager")]
-    public class CommunityController : Controller
-    {
-        private readonly CommunityMemberApiService _communityService;
-
-        public CommunityController(CommunityMemberApiService communityService)
-        {
-            _communityService = communityService;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            try
-            {
-                var response = await _communityService.GetAllCommunityMembersAsync();
-
-                var viewModel = response?.Success == true && response.Data != null
-                    ? response.Data.Select(dto => new CommunityMemberViewModel
-                    {
-                        UserId = dto.UserId,
-                        FullName = dto.FullName,
-                        Role = dto.Role,
-                        FlatNumber = dto.FlatNumber,
-                        Email = dto.Email,
-                        Phone = dto.Phone,
-                        AssignedOn = dto.AssignedOn,
-                        IsActive = dto.IsActive
-                    }).ToList()
-                    : new List<CommunityMemberViewModel>();
-
-                return View(viewModel);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading community members: {ex.Message}");
-                TempData["ErrorMessage"] = "Failed to load community members";
-                return View(new List<CommunityMemberViewModel>());
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> AssignRole(Guid? apartmentId, string? role)
-        {
-            try
-            {
-                var response = await _communityService.GetEligibleResidentsAsync();
-
-                ViewBag.EligibleResidents = response?.Success == true && response.Data != null
-                    ? response.Data
-                    : new List<Services.DTOs.Community.ResidentListDto>();
-
-                var viewModel = new AssignCommunityRoleViewModel
-                {
-                    ApartmentId = apartmentId,
-                    CommunityRole = role
-                };
-
-                return View(viewModel);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading eligible residents: {ex.Message}");
-                TempData["ErrorMessage"] = "Failed to load eligible residents";
-                return RedirectToAction(nameof(Index));
-            }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignRole(AssignCommunityRoleViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                var response = await _communityService.GetEligibleResidentsAsync();
-                ViewBag.EligibleResidents = response?.Success == true && response.Data != null
-                    ? response.Data
-                    : new List<Services.DTOs.Community.ResidentListDto>();
-
-                return View(model);
-            }
-
-            try
-            {
-                var request = new Services.DTOs.Community.AssignCommunityRoleRequest
-                {
-                    UserId = model.UserId,
-                    CommunityRole = model.CommunityRole
-                };
-
-                var result = await _communityService.AssignCommunityRoleAsync(request);
-
-                if (result?.Success == true)
-                {
-                    TempData["SuccessMessage"] = $"Successfully assigned {model.CommunityRole} role!";
-
-                    // If came from apartment details, redirect back there
-                    if (model.ApartmentId.HasValue)
-                    {
-                        return RedirectToAction("Details", "ApartmentBuilder", new { id = model.ApartmentId.Value });
-                    }
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-                TempData["ErrorMessage"] = result?.Message ?? "Failed to assign role";
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error assigning role: {ex.Message}");
-                TempData["ErrorMessage"] = "An error occurred while assigning the role";
-            }
-
-            var residentsResponse = await _communityService.GetEligibleResidentsAsync();
-            ViewBag.EligibleResidents = residentsResponse?.Success == true && residentsResponse.Data != null
-                ? residentsResponse.Data
-                : new List<Services.DTOs.Community.ResidentListDto>();
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveRole(Guid userId)
-        {
-            try
-            {
-                var request = new Services.DTOs.Community.RemoveCommunityRoleRequest
-                {
-                    UserId = userId
-                };
-
-                var result = await _communityService.RemoveCommunityRoleAsync(request);
-
-                if (result?.Success == true)
-                {
-                    TempData["SuccessMessage"] = "Role removed successfully!";
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = result?.Message ?? "Failed to remove role";
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error removing role: {ex.Message}");
-                TempData["ErrorMessage"] = "An error occurred while removing the role";
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-    }
-}
-
-
-*/

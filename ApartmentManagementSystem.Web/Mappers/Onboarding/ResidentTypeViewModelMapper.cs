@@ -16,23 +16,3 @@ public static class ResidentTypeViewModelMapper
 }
 
 
-
-
-
-
-
-
-
-/*public static class ResidentTypeViewModelMapper
-{
-    // public static List<ResidentTypeOption> From(IEnumerable<ResidentTypeDto> dto)
-    public static List<EligibleResidentViewModel> From(IEnumerable<ResidentListDto> dto)
-
-    {
-        return dto.Select(r => new ResidentTypeOption
-        {
-            Id = r.Id,
-            Name = r.Name
-        }).ToList();
-    }
-}*/

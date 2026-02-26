@@ -38,13 +38,6 @@ namespace ApartmentManagementSystem.Web.Services
                 "api/OnboardingApi/resident-types");
         }
 
-      /*  public async Task<ApiResponse<List<ResidentTypeDto>>?> GetResidentTypesAsync()
-        {
-            return await ApiClient.GetAsync<ApiResponse<List<ResidentTypeDto>>>(
-                "api/onboarding/resident-types");
-        }
-      */
-
     }
 }
 

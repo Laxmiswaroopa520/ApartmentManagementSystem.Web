@@ -1,12 +1,5 @@
-﻿
-
-// PLACE AT: Web/Services/ManagerApiService.cs
-//  REPLACE your existing file completely
-
-using ApartmentManagementSystem.Web.Services.DTOs;
+﻿using ApartmentManagementSystem.Web.Services.DTOs;
 using ApartmentManagementSystem.Web.Services.DTOs.Manager;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
 
 namespace ApartmentManagementSystem.Web.Services
 {
@@ -42,12 +35,10 @@ namespace ApartmentManagementSystem.Web.Services
             );
         }
 
-        /// <summary>
         /// POST /api/Manager/assign
         /// Sends the FULL AssignManagerRequest — all 7 fields.
         /// The API-side ManagerApiController binds this to AssignManagerRequestDto
         /// which has the same shape, so all fields survive the round-trip.
-        /// </summary>
         public async Task<ApiResponse<ManagerAssignmentDto>?> AssignManagerToApartmentAsync(AssignManagerRequest request)
         {
             return await _apiClient.PostAsync<AssignManagerRequest, ApiResponse<ManagerAssignmentDto>>(
@@ -55,10 +46,7 @@ namespace ApartmentManagementSystem.Web.Services
                 request
             );
         }
-
-        /// <summary>
         /// POST /api/Manager/remove
-        /// </summary>
         public async Task<ApiResponse<bool>?> RemoveManagerFromApartmentAsync(RemoveManagerRequest request)
         {
             return await _apiClient.PostAsync<RemoveManagerRequest, ApiResponse<bool>>(
@@ -66,14 +54,12 @@ namespace ApartmentManagementSystem.Web.Services
                 request
             );
         }
-        //
         public async Task<ApiResponse<List<AvailableManagerDto>>?> GetApartmentResidentsAsync(Guid apartmentId)
         {
             return await _apiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
                 $"api/Manager/apartment-residents/{apartmentId}"
             );
         }
-
 
     }
 }

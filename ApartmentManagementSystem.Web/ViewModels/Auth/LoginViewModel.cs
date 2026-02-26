@@ -2,7 +2,6 @@
 
 namespace ApartmentManagementSystem.Web.ViewModels.Auth
 {
-
     public class LoginViewModel
     {
         [Required(ErrorMessage = "Username is required")]

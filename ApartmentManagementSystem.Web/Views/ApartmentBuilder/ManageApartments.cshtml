@@ -447,7 +447,8 @@
 
                     <div class="card-footer">
                         <a href="@Url.Action("Details", "ApartmentBuilder", new { id = apartment.Id })"
-                           class="btn btn-details">
+                          @* class="btn btn-details">       making that both details and visualiz should use the btn-visualize color only..*@
+                           class="btn btn-visualize">
                             <i class="fas fa-info-circle"></i>
                             Details
                         </a>

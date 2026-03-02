@@ -204,7 +204,7 @@
                                 <i class="bi bi-speedometer2"></i> Dashboard
                             </a>
                         </li>
-
+                        @*
                         @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
                         {
                             <li class="nav-item dropdown">
@@ -248,7 +248,53 @@
                                 </ul>
                             </li>
                         }
+                        *@
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle border-0 bg-transparent shadow-none"
+                                   href="#"
+                                   role="button"
+                                   data-bs-toggle="dropdown">
+                                    <i class="bi bi-gear"></i> Management
+                                </a>
 
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Onboarding" asp-action="Create">
+                                            <i class="bi bi-person-plus"></i> Onboard Resident
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="AdminResidents" asp-action="Pending">
+                                            <i class="bi bi-hourglass-split"></i> Pending Registrations
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="CommunityMembers" asp-action="Index">
+                                            <i class="bi bi-award"></i> Community Members
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="StaffMembers" asp-action="Index">
+                                            <i class="bi bi-person-badge"></i> Staff Members
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="ResidentManagement" asp-action="Index">
+                                            <i class="bi bi-people"></i> All Residents
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="ApartmentBuilder" asp-action="ManageApartments">
+                                            <i class="bi bi-buildings"></i> My Apartments
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                         @if (User.IsInRole("President") || User.IsInRole("Secretary") || User.IsInRole("Treasurer"))
                         {
                             <li class="nav-item">

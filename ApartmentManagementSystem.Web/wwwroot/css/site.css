@@ -211,3 +211,9 @@ a {
         display: none !important;
     }
 }
+/*added this inorder to remove that small rectangular box on the layout.cshtml file on the top right corner..*/
+.navbar .nav-link.dropdown-toggle {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}

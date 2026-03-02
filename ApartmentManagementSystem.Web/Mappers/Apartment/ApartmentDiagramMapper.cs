@@ -11,6 +11,7 @@ namespace ApartmentManagementSystem.Web.Mappers.Apartment
             {
                 ApartmentId = dto.ApartmentId,
                 Name = dto.Name,
+                Address=dto.Address,                    //Added this as part of visualize 3d view 
                 TotalFloors = dto.TotalFloors,
                 Floors = dto.Floors.Select(MapFloor).ToList()
             };

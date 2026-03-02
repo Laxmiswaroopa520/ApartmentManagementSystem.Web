@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@*
+
 @model ApartmentManagementSystem.Web.ViewModels.Onboarding.CompleteRegistrationViewModel
 @{
     ViewData["Title"] = "Complete Your Registration";
@@ -425,8 +425,10 @@
 
             <!-- Body -->
             <div class="reg-body">
-                <form asp-action="CompleteRegistration" method="post" id="registrationForm">
-                    @Html.AntiForgeryToken()
+              @*  <form asp-action="CompleteRegistration" method="post" id="registrationForm">*@
+                <form asp-action="Index" method="post" id="registrationForm">
+                    @Html.AntiForgeryToken()     @*Think of it as a "Security Handshake" between your server and the user's browser.*@
+                    <input type="hidden" asp-for="PrimaryPhone" />
 
                     <!-- Full Name -->
                     <div class="field-group">
@@ -631,11 +633,11 @@
         });
     </script>
 }
-*@
 
 
 
 
+@*
 
 
 @model ApartmentManagementSystem.Web.ViewModels.Onboarding.CompleteRegistrationViewModel
@@ -710,7 +712,7 @@
 
   
 
-
+*@
 
 
 

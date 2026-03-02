@@ -11,7 +11,6 @@ namespace ApartmentManagementSystem.Web.Controllers
     public class AdminResidentsController : Controller
     {
         private readonly AdminResidentApiService AdminApiService;
-
         public AdminResidentsController(AdminResidentApiService adminApiService)
         {
             AdminApiService = adminApiService;

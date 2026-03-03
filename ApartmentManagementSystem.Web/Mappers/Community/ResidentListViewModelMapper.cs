@@ -17,6 +17,7 @@ namespace ApartmentManagementSystem.Web.Mappers.Community
                 Phone = r.Phone,
                 ResidentType = r.ResidentType,
                 FlatNumber = r.FlatNumber,
+                ApartmentName=r.ApartmentName,      //added this line for displaying apartment name option in all residents
                 Status = r.Status,
                 RegisteredOn = r.RegisteredOn
             }).ToList();

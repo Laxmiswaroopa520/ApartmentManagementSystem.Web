@@ -96,6 +96,26 @@ public class ApiClient
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         return await Httpclient.PostAsync(endpoint, content);
     }
+
+    // Add this method to your existing ApiClient class if it doesn't already have DeleteAsync.
+    public async Task<TResponse?> DeleteAsync<TResponse>(string endpoint)
+    {
+        try
+        {
+            SetAuthorizationHeader();
+            Console.WriteLine($"DELETE: {Httpclient.BaseAddress}{endpoint}");
+            var response = await Httpclient.DeleteAsync(endpoint);
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"DELETE Response ({response.StatusCode}): {content}");
+            return JsonSerializer.Deserialize<TResponse>(content, JsonOptions);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"DELETE {endpoint} failed: {ex.Message}");
+            return default;
+        }
+    }
+
 }
 
 

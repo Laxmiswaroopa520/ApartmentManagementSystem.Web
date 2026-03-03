@@ -41,5 +41,14 @@ namespace ApartmentManagementSystem.Web.Services
                 $"api/ApartmentManagement/{apartmentId}/diagram"
             );
         }
+        // Add this method to your existing ApartmentApiService class.
+
+        public async Task<ApiResponse<bool>?> DeleteApartmentAsync(Guid apartmentId)
+        {
+            return await ApiClient.DeleteAsync<ApiResponse<bool>>(
+                $"api/ApartmentManagement/{apartmentId}"
+            );
+        }
+
     }
 }

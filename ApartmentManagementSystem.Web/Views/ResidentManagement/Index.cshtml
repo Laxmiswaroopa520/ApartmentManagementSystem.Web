@@ -5,8 +5,15 @@
     var currentFilter = ViewBag.CurrentFilter as string;
 
     // Filter to only show residents with assigned flats
-    var assignedResidents = Model.Where(r => !string.IsNullOrEmpty(r.FlatNumber)).ToList();
-    var pendingResidents = Model.Where(r => string.IsNullOrEmpty(r.FlatNumber)).ToList();
+   // var assignedResidents = Model.Where(r => !string.IsNullOrEmpty(r.FlatNumber)).ToList();
+   // var pendingResidents = Model.Where(r => string.IsNullOrEmpty(r.FlatNumber)).ToList();
+    var assignedResidents = Model
+     .Where(r => r.Status == "Active")
+     .ToList();
+
+    var pendingResidents = Model
+        .Where(r => r.Status == "PendingFlatAllocation")
+        .ToList();
 }
 
 <style>
@@ -410,6 +417,7 @@
                             <tr>
                                 <th>Full Name</th>
                                 <th>Type</th>
+                                <th>Apartment</th>      <!--Added Apartment Name also -->
                                 <th>Flat Number</th>
                                 <th>Email</th>
                                 <th>Phone</th>
@@ -437,11 +445,31 @@
                                             </span>
                                         }
                                     </td>
-                                    <td>
+                                  @*  <td>
                                         <span class="badge bg-secondary" style="font-size: 0.9rem; padding: 0.4rem 0.8rem;">
                                             @resident.FlatNumber
                                         </span>
+                                    </td>*@
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(resident.ApartmentName))
+                                        {
+                                            <span class="badge badge-gradient success">
+                                                <i class="bi bi-building"></i> @resident.ApartmentName
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">N/A</span>
+                                        }
                                     </td>
+
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            @resident.FlatNumber
+                                        </span>
+                                    </td>
+                                    @*newly added line upto this*@
+
                                     <td>@resident.Email</td>
                                     <td>@resident.Phone</td>
                                     <td>
@@ -536,12 +564,12 @@
                 <p>Tenants</p>
             </div>
         </div>
-        <div class="col-md-3 col-sm-6">
+       <div class="col-md-3 col-sm-6">
             <div class="stat-card warning">
                 <h3>@pendingResidents.Count</h3>
                 <p>Pending Assignment</p>
             </div>
-        </div>
+           
     </div>
 </div>
 

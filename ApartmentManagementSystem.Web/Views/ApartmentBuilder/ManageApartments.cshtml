@@ -1,6 +1,830 @@
-﻿
-@* Views/ApartmentBuilder/ManageApartments.cshtml *@
+﻿@* Views/ApartmentBuilder/ManageApartments.cshtml *@
 
+@model List<ApartmentManagementSystem.Web.ViewModels.Apartment.ApartmentListViewModel>
+
+@{
+    ViewData["Title"] = "Manage Apartments - Skyline";
+}
+
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-danger: linear-gradient(135deg, #f5365c 0%, #f56036 100%);
+        --bg-main: #f5f6f7;
+        --bg-card: #ffffff;
+        --text-dark: #1f2933;
+        --text-muted: #6b7280;
+        --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+        --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+        --shadow-hover: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .apartments-dashboard {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .header-content h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-subtitle {
+        font-size: 1rem;
+        color: var(--text-muted);
+    }
+
+    .btn-create {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(102,126,234,0.3);
+        border: none;
+    }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(102,126,234,0.4);
+            color: white;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--bg-card);
+        border-radius: 16px;
+        border: 2px dashed #d1d5db;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #9ca3af;
+        margin-bottom: 1.5rem;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-dark);
+    }
+
+    .empty-state p {
+        font-size: 1rem;
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+    }
+
+    /* ── GRID ── */
+    .apartments-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .apartment-card {
+        background: var(--bg-card);
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+        .apartment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-primary);
+        }
+
+        .apartment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: #667eea;
+        }
+
+    /* ── CARD HEADER ── */
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.875rem 1rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .apartment-status {
+        padding: 0.35rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .status-active {
+        background: rgba(67,233,123,0.15);
+        color: #10b981;
+    }
+
+    .status-underconstruction {
+        background: rgba(251,146,60,0.15);
+        color: #f59e0b;
+    }
+
+    .status-inactive {
+        background: rgba(156,163,175,0.15);
+        color: #6b7280;
+    }
+
+    /* ── MORE OPTIONS DROPDOWN ── */
+    .card-options {
+        position: relative;
+    }
+
+    .btn-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 6px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .btn-icon:hover {
+            background: #f3f4f6;
+            color: var(--text-dark);
+        }
+
+    .options-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 36px;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        box-shadow: var(--shadow-md);
+        min-width: 160px;
+        z-index: 100;
+        overflow: hidden;
+    }
+
+        .options-dropdown.open {
+            display: block;
+        }
+
+    .dropdown-item-custom {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.7rem 1rem;
+        font-size: 0.88rem;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        transition: background 0.15s;
+        color: var(--text-dark);
+    }
+
+        .dropdown-item-custom:hover {
+            background: #f9fafb;
+        }
+
+        .dropdown-item-custom.danger {
+            color: #ef4444;
+        }
+
+            .dropdown-item-custom.danger:hover {
+                background: #fff5f5;
+            }
+
+    /* ── CARD BODY ── */
+    .card-body {
+        padding: 1.25rem 1rem;
+        text-align: center;
+    }
+
+    .apartment-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 1rem;
+        background: var(--gradient-primary);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: white;
+        box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+    }
+
+    .apartment-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .apartment-location {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .apartment-stats {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 0.75rem;
+        margin: 1rem 0;
+    }
+
+    .stat-item {
+        background: #f9fafb;
+        padding: 0.75rem 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .stat-icon {
+        font-size: 1.1rem;
+        color: #667eea;
+        margin-bottom: 0.4rem;
+    }
+
+    .stat-value {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-top: 0.25rem;
+    }
+
+    .occupancy-bar {
+        margin-top: 1rem;
+    }
+
+    .occupancy-progress {
+        height: 6px;
+        background: #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 0.4rem;
+    }
+
+    .occupancy-fill {
+        height: 100%;
+        background: var(--gradient-primary);
+        border-radius: 10px;
+        transition: width 1s ease-out;
+    }
+
+    .occupancy-text {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-align: center;
+    }
+
+    /* ── FOOTER BUTTONS ── */
+    .card-footer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        padding: 0.875rem 1rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .btn-visualize {
+        padding: 0.6rem 0.75rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        font-size: 0.85rem;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+    }
+
+        .btn-visualize:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+            color: white;
+        }
+
+    /* ── DELETE CONFIRM MODAL ── */
+    .delete-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .delete-modal-overlay.show {
+            display: flex;
+        }
+
+    .delete-modal {
+        background: #1a1f3a;
+        border: 1px solid #ef4444;
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        max-width: 440px;
+        width: 90%;
+        text-align: center;
+        animation: popIn .25s ease-out;
+    }
+
+    @@keyframes popIn {
+        from
+
+    {
+        transform: scale(0.85);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    }
+
+    .delete-modal-icon {
+        width: 70px;
+        height: 70px;
+        background: rgba(239,68,68,0.15);
+        border-radius: 50%;
+        margin: 0 auto 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: #ef4444;
+    }
+
+    .delete-modal h3 {
+        color: white;
+        font-size: 1.4rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .delete-modal p {
+        color: #a0aec0;
+        font-size: 0.92rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .delete-apartment-name {
+        color: #ef4444;
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .delete-modal-warning {
+        background: rgba(239,68,68,0.08);
+        border: 1px solid rgba(239,68,68,0.25);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        color: #fca5a5;
+        font-size: 0.82rem;
+        margin-bottom: 1.75rem;
+        text-align: left;
+    }
+
+        .delete-modal-warning i {
+            margin-right: 0.4rem;
+        }
+
+    .delete-modal-btns {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .btn-cancel-del {
+        padding: 0.7rem 1.5rem;
+        border-radius: 10px;
+        border: 1.5px solid #4a5568;
+        background: transparent;
+        color: #a0aec0;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+        .btn-cancel-del:hover {
+            border-color: #718096;
+            color: white;
+        }
+
+    .btn-confirm-del {
+        padding: 0.7rem 1.5rem;
+        border-radius: 10px;
+        border: none;
+        background: var(--gradient-danger);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        box-shadow: 0 4px 14px rgba(245,54,92,0.3);
+    }
+
+        .btn-confirm-del:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(245,54,92,0.45);
+        }
+
+        .btn-confirm-del:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    /* ── TOAST ── */
+    .manage-toast {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        background: #1a1f3a;
+        border-radius: 12px;
+        padding: 0.9rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+        transform: translateY(80px);
+        opacity: 0;
+        transition: all 0.35s ease;
+        z-index: 10000;
+        color: white;
+        border: 1px solid transparent;
+    }
+
+        .manage-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .manage-toast.ok {
+            border-color: #22c55e;
+        }
+
+            .manage-toast.ok i {
+                color: #22c55e;
+            }
+
+        .manage-toast.err {
+            border-color: #ef4444;
+        }
+
+            .manage-toast.err i {
+                color: #ef4444;
+            }
+
+    @@media (max-width: 768px) {
+        .apartments-grid {
+            grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .apartments-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .card-footer {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="apartments-dashboard">
+    <div class="dashboard-header">
+        <div class="header-content">
+            <h1><i class="fas fa-city"></i> My Apartment Buildings</h1>
+            <p class="dashboard-subtitle">Manage all your properties in one place</p>
+        </div>
+        <div class="header-actions">
+            <a href="@Url.Action("Create", "ApartmentBuilder")" class="btn btn-create">
+                <i class="fas fa-plus-circle"></i> Create New Apartment
+            </a>
+        </div>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-building"></i></div>
+            <h3>No Apartments Yet</h3>
+            <p>Get started by creating your first apartment building</p>
+            <a href="@Url.Action("Create", "ApartmentBuilder")" class="btn btn-create">
+                <i class="fas fa-plus"></i> Create Your First Apartment
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="apartments-grid">
+            @foreach (var apartment in Model)
+            {
+                <div class="apartment-card" data-apartment-id="@apartment.Id">
+
+                    <div class="card-header">
+                        <div class="apartment-status status-@apartment.Status.ToLower()">
+                            @apartment.Status
+                        </div>
+
+                        <!-- ── THREE-DOT MENU ── -->
+                        <div class="card-options">
+                            <button class="btn-icon"
+                                    onclick="toggleOptions(this)"
+                                    title="More options">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="options-dropdown">
+                                <a href="@Url.Action("Details", "ApartmentBuilder", new { id = apartment.Id })"
+                                   class="dropdown-item-custom">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </a>
+                                <a href="@Url.Action("Visualize", "ApartmentBuilder", new { id = apartment.Id })"
+                                   class="dropdown-item-custom">
+                                    <i class="fas fa-cube"></i> 3D View
+                                </a>
+                                <hr style="margin:0.3rem 0; border-color:#f3f4f6;" />
+                                <button class="dropdown-item-custom danger"
+                                        onclick="confirmDelete('@apartment.Id', '@apartment.Name', @apartment.OccupiedFlats)">
+                                    <i class="fas fa-trash-alt"></i> Remove Apartment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="apartment-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 class="apartment-name" title="@apartment.Name">@apartment.Name</h3>
+                        <div class="apartment-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>@apartment.Address</span>
+                        </div>
+
+                        <div class="apartment-stats">
+                            <div class="stat-item">
+                                <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                                <div class="stat-value">@apartment.TotalFloors</div>
+                                <div class="stat-label">Floors</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon"><i class="fas fa-home"></i></div>
+                                <div class="stat-value">@apartment.TotalFlats</div>
+                                <div class="stat-label">Flats</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                                <div class="stat-value">@apartment.OccupiedFlats</div>
+                                <div class="stat-label">Occupied</div>
+                            </div>
+                        </div>
+
+                        @{
+                            var pct = apartment.TotalFlats > 0
+                            ? (apartment.OccupiedFlats * 100.0 / apartment.TotalFlats)
+                            : 0;
+                        }
+                        <div class="occupancy-bar">
+                            <div class="occupancy-progress">
+                                <div class="occupancy-fill" style="width:@pct%"></div>
+                            </div>
+                            <div class="occupancy-text">@pct.ToString("F0")% Occupied</div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <a href="@Url.Action("Details", "ApartmentBuilder", new { id = apartment.Id })"
+                           class="btn btn-visualize">
+                            <i class="fas fa-info-circle"></i> Details
+                        </a>
+                        <a href="@Url.Action("Visualize", "ApartmentBuilder", new { id = apartment.Id })"
+                           class="btn btn-visualize">
+                            <i class="fas fa-cube"></i> 3D View
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- ── DELETE CONFIRMATION MODAL ── -->
+<div class="delete-modal-overlay" id="deleteOverlay" onclick="closeDeleteModal(event)">
+    <div class="delete-modal">
+        <div class="delete-modal-icon">
+            <i class="fas fa-trash-alt"></i>
+        </div>
+        <h3>Remove Apartment</h3>
+        <p>You are about to permanently delete</p>
+        <div class="delete-apartment-name" id="deleteApartmentName">—</div>
+        <div class="delete-modal-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>This action cannot be undone.</strong><br>
+            All floors, flats, managers and community records will be permanently removed.
+        </div>
+        <div class="delete-modal-btns">
+            <button class="btn-cancel-del" onclick="closeDeleteModal()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="btn-confirm-del" id="btnConfirmDelete" onclick="executeDelete()">
+                <i class="fas fa-trash-alt"></i> Yes, Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="manage-toast" id="manageToast">
+    <i class="fas fa-check-circle" id="toastIcon"></i>
+    <span id="toastMsg"></span>
+</div>
+
+@section Scripts {
+    <script>
+        // ── DROPDOWN TOGGLE ─────────────────────────────────────────────────────
+        function toggleOptions(btn) {
+            const dd = btn.nextElementSibling;
+            const isOpen = dd.classList.contains('open');
+            // close all first
+            document.querySelectorAll('.options-dropdown.open').forEach(d => d.classList.remove('open'));
+            if (!isOpen) dd.classList.add('open');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.card-options'))
+                document.querySelectorAll('.options-dropdown.open').forEach(d => d.classList.remove('open'));
+        });
+
+        // ── DELETE STATE ────────────────────────────────────────────────────────
+        let pendingDeleteId   = null;
+        let pendingDeleteName = null;
+
+        function confirmDelete(id, name, occupiedCount) {
+            // Close any open dropdown
+            document.querySelectorAll('.options-dropdown.open').forEach(d => d.classList.remove('open'));
+
+            if (occupiedCount > 0) {
+                showToast(
+                    `❌ Cannot delete "${name}" — ${occupiedCount} flat(s) are occupied. Vacate all flats first.`,
+                    'err'
+                );
+                return;
+            }
+
+            pendingDeleteId   = id;
+            pendingDeleteName = name;
+            document.getElementById('deleteApartmentName').textContent = name;
+            document.getElementById('deleteOverlay').classList.add('show');
+        }
+
+        function closeDeleteModal(event) {
+            // Only close if clicking the overlay background itself (not the modal content)
+            if (event && event.target !== document.getElementById('deleteOverlay')) return;
+            document.getElementById('deleteOverlay').classList.remove('show');
+            pendingDeleteId   = null;
+            pendingDeleteName = null;
+        }
+
+        async function executeDelete() {
+            if (!pendingDeleteId) return;
+
+            const btn = document.getElementById('btnConfirmDelete');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting…';
+
+            try {
+                const response = await fetch('/ApartmentBuilder/DeleteApartment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ apartmentId: pendingDeleteId })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Remove the card from DOM
+                    const card = document.querySelector(`[data-apartment-id="${pendingDeleteId}"]`);
+                    if (card) {
+                        card.style.transition = 'all 0.4s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.85)';
+                        setTimeout(() => {
+                            card.remove();
+                            // Show empty state if no cards left
+                            const grid = document.querySelector('.apartments-grid');
+                            if (grid && !grid.querySelector('.apartment-card')) {
+                                location.reload();
+                            }
+                        }, 420);
+                    }
+
+                    document.getElementById('deleteOverlay').classList.remove('show');
+                    showToast(`✅ "${pendingDeleteName}" deleted successfully!`, 'ok');
+                } else {
+                    showToast(`❌ ${result.message || 'Failed to delete apartment'}`, 'err');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('❌ An error occurred. Please try again.', 'err');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-trash-alt"></i> Yes, Delete';
+                pendingDeleteId   = null;
+                pendingDeleteName = null;
+            }
+        }
+
+        // ── TOAST ────────────────────────────────────────────────────────────────
+        function showToast(msg, type = 'ok') {
+            const t    = document.getElementById('manageToast');
+            const icon = document.getElementById('toastIcon');
+            const text = document.getElementById('toastMsg');
+
+            t.className = 'manage-toast';          // reset
+            icon.className = `fas fa-${type === 'ok' ? 'check-circle' : 'exclamation-circle'}`;
+            text.textContent = msg;
+            t.classList.add('show', type);
+
+            setTimeout(() => t.classList.remove('show'), 4000);
+        }
+    </script>
+}
+
+@* Views/ApartmentBuilder/ManageApartments.cshtml *@
+@*
 @model List<ApartmentManagementSystem.Web.ViewModels.Apartment.ApartmentListViewModel>
 
 @{
@@ -447,8 +1271,7 @@
 
                     <div class="card-footer">
                         <a href="@Url.Action("Details", "ApartmentBuilder", new { id = apartment.Id })"
-                          @* class="btn btn-details">       making that both details and visualiz should use the btn-visualize color only..*@
-                           class="btn btn-visualize">
+                          @* class="btn btn-details">       making that both details and visualiz should use the btn-visualize color only..--                          class="btn btn-visualize">
                             <i class="fas fa-info-circle"></i>
                             Details
                         </a>
@@ -465,3 +1288,4 @@
     }
 </div>
 
+*@

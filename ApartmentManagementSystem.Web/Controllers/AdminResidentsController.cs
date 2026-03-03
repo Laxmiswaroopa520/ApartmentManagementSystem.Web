@@ -1,4 +1,5 @@
-﻿using ApartmentManagementSystem.Web.Mappers.Admin;
+﻿using ApartmentManagementSystem.Web.Constants;
+using ApartmentManagementSystem.Web.Mappers.Admin;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.Services.DTOs.Admin;
 using ApartmentManagementSystem.Web.ViewModels.Admin;
@@ -7,29 +8,41 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApartmentManagementSystem.Web.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,Manager")]
+    /// <summary>
+    /// Handles resident administration: viewing pending residents
+    /// and assigning flats. Restricted to SuperAdmin and Manager roles.
+    /// </summary>
+    [Authorize(Roles = AppRoles.AdminAndManager)]
     public class AdminResidentsController : Controller
     {
         private readonly AdminResidentApiService AdminApiService;
+
         public AdminResidentsController(AdminResidentApiService adminApiService)
         {
             AdminApiService = adminApiService;
         }
 
+        /// <summary>
+        /// Displays the list of pending residents awaiting flat assignment.
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> Pending()
         {
             var response = await AdminApiService.GetPendingResidentsAsync();
+
             var viewModel = response?.Success == true && response.Data != null
                 ? PendingResidentViewModelMapper.From(response.Data)
                 : new List<PendingResidentViewModel>();
+
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Displays the Assign Flat page for a specific resident.
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> AssignFlat(Guid userId, string userName)
         {
-            // Get apartments for current user (filtered by role)
             var apartmentsResponse = await AdminApiService.GetApartmentsAsync();
 
             var model = new AssignFlatViewModel
@@ -46,6 +59,217 @@ namespace ApartmentManagementSystem.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Processes flat assignment for a resident.
+        /// Redirects to Pending on success; re-renders form with errors on failure.
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> AssignFlat(AssignFlatViewModel model)
+        {
+            if (!model.ApartmentId.HasValue)
+                ModelState.AddModelError(nameof(model.ApartmentId), AppMessages.SelectApartment);
+
+            if (!model.FloorId.HasValue)
+                ModelState.AddModelError(nameof(model.FloorId), AppMessages.SelectFloor);
+
+            if (!model.FlatId.HasValue)
+                ModelState.AddModelError(nameof(model.FlatId), AppMessages.SelectFlat);
+
+            if (!ModelState.IsValid)
+            {
+                await PopulateDropdownsAsync(model);
+                return View(model);
+            }
+
+            var response = await AdminApiService.AssignFlatAsync(new AssignFlatRequest
+            {
+                UserId = model.UserId,
+                FlatId = model.FlatId!.Value
+            });
+
+            if (response?.Success == true)
+            {
+                TempData[TempDataKeys.SuccessMessage] = response.Message ?? AppMessages.FlatAssignSuccess;
+                return RedirectToAction(AppRoutes.Actions.Pending);
+            }
+
+            ModelState.AddModelError(string.Empty, response?.Message ?? AppMessages.FlatAssignFailed);
+            await PopulateDropdownsAsync(model);
+            return View(model);
+        }
+
+        /// <summary>
+        /// Returns floors for a selected apartment (AJAX).
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetFloorsByApartment(Guid apartmentId)
+        {
+            var response = await AdminApiService.GetFloorsByApartmentAsync(apartmentId);
+
+            var floors = response?.Success == true && response.Data != null
+                ? FloorDropdownMapper.From(response.Data)
+                : new List<FloorDropdownViewModel>();
+
+            return Json(floors);
+        }
+
+        /// <summary>
+        /// Returns vacant flats for a selected floor (AJAX).
+        /// </summary>
+        [HttpGet]
+        public async Task<JsonResult> GetFlatsByFloor(Guid floorId)
+        {
+            var response = await AdminApiService.GetVacantFlatsByFloorAsync(floorId);
+
+            var flats = response?.Success == true && response.Data != null
+                ? FlatOptionMapper.From(response.Data)
+                : new List<FlatOption>();
+
+            return Json(flats);
+        }
+
+        /// <summary>
+        /// Re-populates apartment and floor dropdowns after validation failure.
+        /// </summary>
+        private async Task PopulateDropdownsAsync(AssignFlatViewModel model)
+        {
+            var apartmentsResponse = await AdminApiService.GetApartmentsAsync();
+
+            model.Apartments = apartmentsResponse?.Success == true && apartmentsResponse.Data != null
+                ? ApartmentDropdownMapper.From(apartmentsResponse.Data)
+                : new List<ApartmentDropdownViewModel>();
+
+            if (model.ApartmentId.HasValue)
+            {
+                var floorsResponse = await AdminApiService
+                    .GetFloorsByApartmentAsync(model.ApartmentId.Value);
+
+                model.Floors = floorsResponse?.Success == true && floorsResponse.Data != null
+                    ? FloorDropdownMapper.From(floorsResponse.Data)
+                    : new List<FloorDropdownViewModel>();
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Web.Mappers.Admin;
+using ApartmentManagementSystem.Web.Services;
+using ApartmentManagementSystem.Web.Services.DTOs.Admin;
+using ApartmentManagementSystem.Web.ViewModels.Admin;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ApartmentManagementSystem.Web.Controllers
+{
+    /// <summary>
+    /// Controller responsible for managing resident administration operations.
+    /// Accessible only by users with SuperAdmin or Manager roles.
+    /// Handles:
+    /// - Viewing pending residents
+    /// - Assigning flats to residents
+    /// - Loading apartments, floors, and flats dynamically
+    /// </summary>
+    [Authorize(Roles = "SuperAdmin,Manager")]
+    public class AdminResidentsController : Controller
+    {
+        /// <summary>
+        /// Service used to communicate with Admin Resident API.
+        /// </summary>
+        private readonly AdminResidentApiService AdminApiService;
+
+        /// <summary>
+        /// Constructor for injecting AdminResidentApiService dependency.
+        /// </summary>
+        /// <param name="adminApiService">
+        /// Service responsible for calling backend admin APIs.
+        /// </param>
+        public AdminResidentsController(AdminResidentApiService adminApiService)
+        {
+            AdminApiService = adminApiService;
+        }
+
+        /// <summary>
+        /// Displays list of pending residents awaiting flat assignment.
+        /// </summary>
+        /// <returns>
+        /// View containing list of pending residents.
+        /// </returns>
+        [HttpGet]
+        public async Task<IActionResult> Pending()
+        {
+            var response = await AdminApiService.GetPendingResidentsAsync();
+
+            var viewModel = response?.Success == true && response.Data != null
+                ? PendingResidentViewModelMapper.From(response.Data)
+                : new List<PendingResidentViewModel>();
+
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// Displays the Assign Flat page for a specific resident.
+        /// </summary>
+        /// <param name="userId">
+        /// Unique identifier of the resident.
+        /// </param>
+        /// <param name="userName">
+        /// Name of the resident.
+        /// </param>
+        /// <returns>
+        /// View containing apartment, floor, and flat dropdowns.
+        /// </returns>
+        [HttpGet]
+        public async Task<IActionResult> AssignFlat(Guid userId, string userName)
+        {
+            var apartmentsResponse = await AdminApiService.GetApartmentsAsync();
+
+            var model = new AssignFlatViewModel
+            {
+                UserId = userId,
+                UserName = userName ?? string.Empty,
+                Apartments = apartmentsResponse?.Success == true && apartmentsResponse.Data != null
+                    ? ApartmentDropdownMapper.From(apartmentsResponse.Data)
+                    : new List<ApartmentDropdownViewModel>(),
+                Floors = new List<FloorDropdownViewModel>(),
+                Flats = new List<FlatOption>()
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Assigns a flat to a resident.
+        /// </summary>
+        /// <param name="model">
+        /// AssignFlatViewModel containing selected apartment, floor, and flat.
+        /// </param>
+        /// <returns>
+        /// Redirects to Pending page on success, otherwise returns view with validation errors.
+        /// </returns>
         [HttpPost]
         public async Task<IActionResult> AssignFlat(AssignFlatViewModel model)
         {
@@ -81,37 +305,68 @@ namespace ApartmentManagementSystem.Web.Controllers
             return View(model);
         }
 
-        // Get floors by apartment (AJAX)
+        /// <summary>
+        /// Retrieves floors for a selected apartment (AJAX request).
+        /// </summary>
+        /// <param name="apartmentId">
+        /// Unique identifier of the apartment.
+        /// </param>
+        /// <returns>
+        /// JSON list of floors.
+        /// </returns>
         [HttpGet]
         public async Task<JsonResult> GetFloorsByApartment(Guid apartmentId)
         {
             var response = await AdminApiService.GetFloorsByApartmentAsync(apartmentId);
+
             var floors = response?.Success == true && response.Data != null
                 ? FloorDropdownMapper.From(response.Data)
                 : new List<FloorDropdownViewModel>();
+
             return Json(floors);
         }
 
+        /// <summary>
+        /// Retrieves vacant flats for a selected floor (AJAX request).
+        /// </summary>
+        /// <param name="floorId">
+        /// Unique identifier of the floor.
+        /// </param>
+        /// <returns>
+        /// JSON list of available flats.
+        /// </returns>
         [HttpGet]
         public async Task<JsonResult> GetFlatsByFloor(Guid floorId)
         {
             var response = await AdminApiService.GetVacantFlatsByFloorAsync(floorId);
+
             var flats = response?.Success == true && response.Data != null
                 ? FlatOptionMapper.From(response.Data)
                 : new List<FlatOption>();
+
             return Json(flats);
         }
+
+        /// <summary>
+        /// Populates apartment and floor dropdowns when validation fails.
+        /// Ensures selected values are preserved.
+        /// </summary>
+        /// <param name="model">
+        /// AssignFlatViewModel requiring dropdown repopulation.
+        /// </param>
         private async Task PopulateDropdownsAsync(AssignFlatViewModel model)
         {
             var apartmentsResponse = await AdminApiService.GetApartmentsAsync();
+
             model.Apartments = apartmentsResponse?.Success == true && apartmentsResponse.Data != null
                 ? ApartmentDropdownMapper.From(apartmentsResponse.Data)
                 : new List<ApartmentDropdownViewModel>();
 
-            // If apartment is selected, load its floors
             if (model.ApartmentId.HasValue)
             {
-                var floorsResponse = await AdminApiService.GetFloorsByApartmentAsync(model.ApartmentId.Value);
+                var floorsResponse = await AdminApiService
+                    .GetFloorsByApartmentAsync(model.ApartmentId.Value);
+
                 model.Floors = floorsResponse?.Success == true && floorsResponse.Data != null
                     ? FloorDropdownMapper.From(floorsResponse.Data)
                     : new List<FloorDropdownViewModel>();
@@ -121,112 +376,6 @@ namespace ApartmentManagementSystem.Web.Controllers
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-/*
-[Authorize(Roles = "SuperAdmin,Manager")]
-public class AdminResidentsController : Controller
-{
-    private readonly AdminResidentApiService AdminApiService;
-
-    public AdminResidentsController(AdminResidentApiService adminApiService)
-    {
-        AdminApiService = adminApiService;
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Pending()
-    {
-        var response = await AdminApiService.GetPendingResidentsAsync();
-
-        var viewModel = response?.Success == true && response.Data != null
-            ? PendingResidentViewModelMapper.From(response.Data)
-            : new List<PendingResidentViewModel>();
-
-        return View(viewModel);
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> AssignFlat(Guid userId, string userName)
-    {
-        var floorsResponse = await AdminApiService.GetFloorsAsync();
-
-        var model = new AssignFlatViewModel
-        {
-            UserId = userId,
-            UserName = userName ?? string.Empty,
-            Floors = floorsResponse?.Success == true && floorsResponse.Data != null
-                ? FloorDropdownMapper.From(floorsResponse.Data)
-                : new List<FloorDropdownViewModel>(),
-            Flats = new List<FlatOption>()
-        };
-
-        return View(model);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> AssignFlat(AssignFlatViewModel model)
-    {
-        if (!model.FloorId.HasValue)
-            ModelState.AddModelError(nameof(model.FloorId), "Please select a floor.");
-
-        if (!model.FlatId.HasValue)
-            ModelState.AddModelError(nameof(model.FlatId), "Please select a flat.");
-
-        if (!ModelState.IsValid)
-        {
-            await PopulateFloorsAsync(model);
-            return View(model);
-        }
-
-        var response = await AdminApiService.AssignFlatAsync(new AssignFlatRequest
-        {
-            UserId = model.UserId,
-            FlatId = model.FlatId.Value
-        });
-
-        if (response?.Success == true)
-        {
-            TempData["SuccessMessage"] = response.Message;
-            return RedirectToAction(nameof(Pending));
-        }
-
-        ModelState.AddModelError("", response?.Message ?? "Failed to assign flat");
-        await PopulateFloorsAsync(model);
-        return View(model);
-    }
-
-    [HttpGet]
-    public async Task<JsonResult> GetFlatsByFloor(Guid floorId)
-    {
-        var response = await AdminApiService.GetVacantFlatsByFloorAsync(floorId);
-
-        var flats = response?.Success == true && response.Data != null
-            ? FlatOptionMapper.From(response.Data)
-            : new List<FlatOption>();
-
-        return Json(flats);
-    }
-
-    private async Task PopulateFloorsAsync(AssignFlatViewModel model)
-    {
-        var floorsResponse = await AdminApiService.GetFloorsAsync();
-        model.Floors = floorsResponse?.Success == true && floorsResponse.Data != null
-            ? FloorDropdownMapper.From(floorsResponse.Data)
-            : new List<FloorDropdownViewModel>();
-    }
-}
-
-
 */
 
 
@@ -258,134 +407,27 @@ public class AdminResidentsController : Controller
 
 
 
-/*using ApartmentManagementSystem.Web.Services;
-using ApartmentManagementSystem.Web.Services.DTOs.Admin;
-using ApartmentManagementSystem.Web.ViewModels.Admin;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
-namespace ApartmentManagementSystem.Web.Controllers
-{
-    [Authorize(Roles = "SuperAdmin,Manager")]
-    public class AdminResidentsController : Controller
-    {
-        private readonly AdminResidentApiService AdminApiService;
 
-        public AdminResidentsController(AdminResidentApiService adminApiService)
-        {
-            AdminApiService = adminApiService;
-        }     
-        // GET: Pending Residents
-        [HttpGet]
-        public async Task<IActionResult> Pending()
-        {
-            var response = await AdminApiService.GetPendingResidentsAsync();
 
-            var viewModel = response?.Data?
-                .Select(r => new PendingResidentViewModel
-                {
-                    UserId = r.UserId,
-                    FullName = r.FullName,
-                    PrimaryPhone = r.PrimaryPhone,
-                    Email = r.Email,
-                    ResidentType = r.ResidentType,
-                    RegisteredOn = r.RegisteredOn,
-                    Status = r.Status
-                })
-                .ToList() ?? new List<PendingResidentViewModel>();
 
-            return View(viewModel);
-        }
 
-        // GET: Assign Flat
-        [HttpGet]
-        public async Task<IActionResult> AssignFlat(Guid userId, string userName)
-        {
-            var floorsResponse = await AdminApiService.GetFloorsAsync();
 
-            var model = new AssignFlatViewModel
-            {
-                UserId = userId,
-                UserName = userName ?? string.Empty,
-                Floors = floorsResponse?.Data?
-                    .Select(f => new FloorDropdownViewModel
-                    {
-                        Id = f.Id,
-                        FloorNumber = f.FloorNumber
-                    })
-                    .ToList() ?? new List<FloorDropdownViewModel>(),
 
-                Flats = new List<FlatOption>()   //  IMPORTANT
-            };
 
-            return View(model);
-        }
-        // POST: Assign Flat
 
-        [HttpPost]
-        public async Task<IActionResult> AssignFlat(AssignFlatViewModel model)
-        {
-            if (!model.FloorId.HasValue)
-            {
-                ModelState.AddModelError("FloorId", "Please select a floor.");
-            }
 
-            if (!model.FlatId.HasValue)
-            {
-                ModelState.AddModelError("FlatId", "Please select a flat.");
-            }
 
-            if (!ModelState.IsValid)
-            {
-                var floorsResponse = await AdminApiService.GetFloorsAsync();
-                model.Floors = floorsResponse?.Data?
-                    .Select(f => new FloorDropdownViewModel
-                    {
-                        Id = f.Id,
-                        FloorNumber = f.FloorNumber
-                    })
-                    .ToList() ?? new List<FloorDropdownViewModel>();
 
-                return View(model);
-            }
 
-            var request = new AssignFlatRequest
-            {
-                UserId = model.UserId,
-                FlatId = model.FlatId.Value // now safe
-            };
 
-            var response = await AdminApiService.AssignFlatAsync(request);
 
-            if (response?.Success == true)
-            {
-                TempData["SuccessMessage"] = response.Message;
-                return RedirectToAction(nameof(Pending));
-            }
 
-            ModelState.AddModelError("", response?.Message ?? "Failed to assign flat");
-            return View(model);
-        }     
-        // AJAX: Get Vacant Flats By Floor   only for ui interaction
-        [HttpGet]
-        public async Task<JsonResult> GetFlatsByFloor(Guid floorId)
-        {
-            var response = await AdminApiService.GetVacantFlatsByFloorAsync(floorId);
 
-            if (response?.Success == true && response.Data != null)
-            {
-                // Convert API DTOs to FlatOption for Razor consumption
-                var flats = response.Data.Select(f => new FlatOption
-                {
-                    Id = f.Id,
-                    FlatNumber = f.FlatNumber
-                }).ToList();
 
-                return Json(flats);
-            }
 
-            return Json(new List<FlatOption>());
-        }
-    }
-}
-*/
+
+
+
+
+

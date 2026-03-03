@@ -1,4 +1,192 @@
-﻿using ApartmentManagementSystem.Web.Mappers.Dashboard;
+﻿using ApartmentManagementSystem.Web.Constants;
+using ApartmentManagementSystem.Web.Mappers.Dashboard;
+using ApartmentManagementSystem.Web.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace ApartmentManagementSystem.Web.Controllers
+{
+    /// <summary>
+    /// Routes authenticated users to their role-specific dashboard view.
+    /// Priority order: SuperAdmin > Manager > Community Leader > Owner > Tenant > Staff.
+    /// </summary>
+    [Authorize]
+    public class DashboardController : Controller
+    {
+        private readonly EnhancedDashboardApiService EnhancedDashboardApi;
+        private readonly DashboardApiService BasicDashboardApi;
+
+        public DashboardController(
+            EnhancedDashboardApiService enhancedDashboardApi,
+            DashboardApiService basicDashboardApi)
+        {
+            EnhancedDashboardApi = enhancedDashboardApi;
+            BasicDashboardApi = basicDashboardApi;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var roles = User.FindAll(ClaimTypes.Role)
+                            .Select(r => r.Value)
+                            .ToList();
+
+            if (roles.Contains(AppRoles.SuperAdmin)) return await LoadSuperAdminDashboard();
+            if (roles.Contains(AppRoles.Manager)) return await LoadManagerDashboard();
+
+            if (roles.Any(r => r == AppRoles.President ||
+                               r == AppRoles.Secretary ||
+                               r == AppRoles.Treasurer))
+                return await LoadCommunityLeaderDashboard();
+
+            if (roles.Contains(AppRoles.ResidentOwner)) return await LoadOwnerDashboard();
+            if (roles.Contains(AppRoles.Tenant)) return await LoadTenantDashboard();
+            if (IsStaffRole(roles)) return await LoadStaffDashboard();
+
+            TempData[TempDataKeys.ErrorMessage] = AppMessages.NoDashboardPermission;
+            return RedirectToAction(AppRoutes.Actions.AccessDenied, AppRoutes.Controllers.Home);
+        }
+
+        private async Task<IActionResult> LoadSuperAdminDashboard()
+        {
+            try
+            {
+                var response = await EnhancedDashboardApi.GetEnhancedAdminDashboardAsync();
+                if (response?.Success == true && response.Data != null)
+                    return View(AppRoutes.Views.Index, AdminDashboardViewModelMapper.From(response.Data));
+
+                TempData[TempDataKeys.ErrorMessage] = response?.Message ?? AppMessages.DashboardLoadFailed;
+                return View(AppRoutes.Views.Error);
+            }
+            catch (Exception ex)
+            {
+                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.DashboardLoadFailed}: {ex.Message}";
+                return View(AppRoutes.Views.Error);
+            }
+        }
+
+        private async Task<IActionResult> LoadManagerDashboard()
+        {
+            try
+            {
+                var response = await EnhancedDashboardApi.GetManagerDashboardAsync();
+                if (response?.Success == true && response.Data != null)
+                    return View(AppRoutes.Views.ManagerDashboard, ManagerDashboardViewModelMapper.From(response.Data));
+
+                TempData[TempDataKeys.ErrorMessage] = response?.Message ?? AppMessages.ManagerDashboardFailed;
+                return View(AppRoutes.Views.Error);
+            }
+            catch (Exception ex)
+            {
+                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.ManagerDashboardFailed}: {ex.Message}";
+                return View(AppRoutes.Views.Error);
+            }
+        }
+
+        private async Task<IActionResult> LoadCommunityLeaderDashboard()
+        {
+            try
+            {
+                var response = await EnhancedDashboardApi.GetCommunityLeaderDashboardAsync();
+                if (response?.Success == true && response.Data != null)
+                    return View(AppRoutes.Views.CommunityLeaderDash, CommunityLeaderDashboardViewModelMapper.From(response.Data));
+
+                TempData[TempDataKeys.ErrorMessage] = response?.Message ?? AppMessages.CommunityDashFailed;
+                return View(AppRoutes.Views.Error);
+            }
+            catch (Exception ex)
+            {
+                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.CommunityDashFailed}: {ex.Message}";
+                return View(AppRoutes.Views.Error);
+            }
+        }
+
+        private async Task<IActionResult> LoadOwnerDashboard()
+        {
+            try
+            {
+                var response = await BasicDashboardApi.GetOwnerDashboardAsync();
+                if (response?.Success == true && response.Data != null)
+                    return View(AppRoutes.Views.OwnerDashboard, OwnerDashboardViewModelMapper.From(response.Data));
+
+                TempData[TempDataKeys.ErrorMessage] = AppMessages.OwnerDashboardFailed;
+                return View(AppRoutes.Views.Error);
+            }
+            catch (Exception ex)
+            {
+                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.OwnerDashboardFailed}: {ex.Message}";
+                return View(AppRoutes.Views.Error);
+            }
+        }
+
+        private async Task<IActionResult> LoadTenantDashboard()
+        {
+            try
+            {
+                var response = await BasicDashboardApi.GetTenantDashboardAsync();
+                if (response?.Success == true && response.Data != null)
+                    return View(AppRoutes.Views.TenantDashboard, TenantDashboardViewModelMapper.From(response.Data));
+
+                TempData[TempDataKeys.ErrorMessage] = AppMessages.TenantDashboardFailed;
+                return View(AppRoutes.Views.Error);
+            }
+            catch (Exception ex)
+            {
+                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.TenantDashboardFailed}: {ex.Message}";
+                return View(AppRoutes.Views.Error);
+            }
+        }
+
+        private async Task<IActionResult> LoadStaffDashboard()
+        {
+            try
+            {
+                var response = await EnhancedDashboardApi.GetStaffDashboardAsync();
+                if (response?.Success == true && response.Data != null)
+                    return View(AppRoutes.Views.StaffDashboard, StaffDashboardViewModelMapper.From(response.Data));
+
+                TempData[TempDataKeys.ErrorMessage] = AppMessages.StaffDashboardFailed;
+                return View(AppRoutes.Views.Error);
+            }
+            catch (Exception ex)
+            {
+                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.StaffDashboardFailed}: {ex.Message}";
+                return View(AppRoutes.Views.Error);
+            }
+        }
+
+        private static bool IsStaffRole(IEnumerable<string> roles) =>
+            roles.Any(r => r is
+                AppRoles.Security or AppRoles.Plumber or AppRoles.Electrician or
+                AppRoles.Carpenter or AppRoles.Sweeper or AppRoles.Gardener or
+                AppRoles.MaintenanceStaff);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Web.Mappers.Dashboard;
 using ApartmentManagementSystem.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -208,7 +396,7 @@ namespace ApartmentManagementSystem.Web.Controllers
                 "Carpenter" or "Sweeper" or "Gardener" or "MaintenanceStaff");
     }
 }
-
+*/
 
 /*Priority Order Explanation
 

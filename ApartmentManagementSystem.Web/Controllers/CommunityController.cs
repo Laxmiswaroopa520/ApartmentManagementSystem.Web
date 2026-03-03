@@ -1,5 +1,156 @@
 ﻿// Web/Controllers/CommunityController.cs
-// COMPLETE REPLACEMENT — scopes everything to a specific apartment
+using ApartmentManagementSystem.Web.Constants;
+using ApartmentManagementSystem.Web.Mappers.Community;
+using ApartmentManagementSystem.Web.Services;
+using ApartmentManagementSystem.Web.Services.DTOs.Community;
+using ApartmentManagementSystem.Web.ViewModels.Community;
+using ApartmentManagementSystem.Web.ViewModels.Dashboard;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ApartmentManagementSystem.Web.Controllers
+{
+    /// <summary>
+    /// Manages community roles within a specific apartment.
+    /// Handles viewing, assigning, and removing community roles.
+    /// Accessible by SuperAdmin, Manager, and community role holders.
+    /// </summary>
+    [Authorize(Roles = AppRoles.AdminManagerCommunity)]
+    public class CommunityController : Controller
+    {
+        private readonly CommunityMemberApiService CommunityApiService;
+
+        public CommunityController(CommunityMemberApiService communityApiService)
+        {
+            CommunityApiService = communityApiService;
+        }
+
+        /// <summary>
+        /// Displays all community members for a specific apartment.
+        /// URL: /Community/Index?apartmentId={guid}
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> Index(Guid? apartmentId = null)
+        {
+            var response = await CommunityApiService.GetAllCommunityMembersAsync(apartmentId);
+
+            var viewModel = response?.Success == true && response.Data != null
+                ? CommunityMemberViewModelMapper.From(response.Data)
+                : new List<CommunityMemberViewModel>();
+
+            ViewBag.ApartmentId = apartmentId;
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// Displays the Assign Community Role form for an apartment.
+        /// URL: /Community/AssignRole?apartmentId={guid}&role=President
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> AssignRole(Guid? apartmentId = null, string? role = null)
+        {
+            if (!apartmentId.HasValue)
+            {
+                TempData[TempDataKeys.ErrorMessage] = AppMessages.ApartmentIdRequired;
+                return Redirect("/");
+            }
+
+            var eligibleResponse = await CommunityApiService
+                .GetEligibleResidentsAsync(apartmentId.Value);
+
+            ViewBag.EligibleResidents = eligibleResponse?.Success == true && eligibleResponse.Data != null
+                ? EligibleResidentViewModelMapper.From(eligibleResponse.Data)
+                : new List<EligibleResidentViewModel>();
+
+            var model = new AssignCommunityRoleViewModel
+            {
+                ApartmentId = apartmentId.Value,
+                CommunityRole = role ?? string.Empty
+            };
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Assigns a community role to the selected resident.
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignRole(AssignCommunityRoleViewModel model)
+        {
+            if (model.UserId == Guid.Empty)
+                ModelState.AddModelError(nameof(model.UserId), AppMessages.SelectResident);
+
+            if (string.IsNullOrEmpty(model.CommunityRole))
+                ModelState.AddModelError(nameof(model.CommunityRole), AppMessages.SelectRole);
+
+            if (!model.ApartmentId.HasValue)
+                ModelState.AddModelError(nameof(model.ApartmentId), AppMessages.ApartmentRequired);
+
+            if (!ModelState.IsValid)
+            {
+                var eligibleResponse = await CommunityApiService
+                    .GetEligibleResidentsAsync(model.ApartmentId ?? Guid.Empty);
+
+                ViewBag.EligibleResidents = eligibleResponse?.Success == true && eligibleResponse.Data != null
+                    ? EligibleResidentViewModelMapper.From(eligibleResponse.Data)
+                    : new List<EligibleResidentViewModel>();
+
+                return View(model);
+            }
+
+            var request = new AssignCommunityRoleRequest
+            {
+                UserId = model.UserId,
+                CommunityRole = model.CommunityRole,
+                ApartmentId = model.ApartmentId!.Value
+            };
+
+            var response = await CommunityApiService.AssignCommunityRoleAsync(request);
+
+            if (response?.Success == true)
+            {
+                TempData[TempDataKeys.SuccessMessage] =
+                    string.Format(AppMessages.CommunityRoleAssignSuccess, model.CommunityRole);
+                return RedirectToAction(AppRoutes.Actions.Index, new { apartmentId = model.ApartmentId });
+            }
+
+            TempData[TempDataKeys.ErrorMessage] = response?.Message ?? AppMessages.CommunityRoleAssignFailed;
+            return RedirectToAction(AppRoutes.Actions.Index, new { apartmentId = model.ApartmentId });
+        }
+
+        /// <summary>
+        /// Removes a community role from a resident.
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveRole(Guid userId, Guid? apartmentId = null)
+        {
+            var response = await CommunityApiService.RemoveCommunityRoleAsync(
+                new RemoveCommunityRoleRequest { UserId = userId });
+
+            TempData[response?.Success == true ? TempDataKeys.SuccessMessage : TempDataKeys.ErrorMessage] =
+                response?.Success == true
+                    ? AppMessages.CommunityRoleRemoveSuccess
+                    : response?.Message ?? AppMessages.CommunityRoleRemoveFailed;
+
+            return RedirectToAction(AppRoutes.Actions.Index, new { apartmentId });
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 using ApartmentManagementSystem.Web.Mappers.Community;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.Services.DTOs.Community;
@@ -130,6 +281,7 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
     }
 }
+*/
 
 
 

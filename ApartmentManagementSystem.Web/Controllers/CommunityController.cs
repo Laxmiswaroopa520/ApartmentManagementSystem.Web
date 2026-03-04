@@ -1,5 +1,4 @@
-﻿// Web/Controllers/CommunityController.cs
-using ApartmentManagementSystem.Web.Constants;
+﻿using ApartmentManagementSystem.Web.Constants;
 using ApartmentManagementSystem.Web.Mappers.Community;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.Services.DTOs.Community;
@@ -11,9 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApartmentManagementSystem.Web.Controllers
 {
     /// <summary>
-    /// Manages community roles within a specific apartment.
-    /// Handles viewing, assigning, and removing community roles.
-    /// Accessible by SuperAdmin, Manager, and community role holders.
+    /// Manages community roles scoped to a specific apartment.
+    /// Accessible by SuperAdmin, Manager, President, Secretary, and Treasurer.
     /// </summary>
     [Authorize(Roles = AppRoles.AdminManagerCommunity)]
     public class CommunityController : Controller
@@ -26,7 +24,7 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
 
         /// <summary>
-        /// Displays all community members for a specific apartment.
+        /// Displays all community members for a given apartment.
         /// URL: /Community/Index?apartmentId={guid}
         /// </summary>
         [HttpGet]
@@ -43,7 +41,7 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
 
         /// <summary>
-        /// Displays the Assign Community Role form for an apartment.
+        /// Displays the Assign Community Role form.
         /// URL: /Community/AssignRole?apartmentId={guid}&role=President
         /// </summary>
         [HttpGet]
@@ -51,28 +49,25 @@ namespace ApartmentManagementSystem.Web.Controllers
         {
             if (!apartmentId.HasValue)
             {
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.ApartmentIdRequired;
+                TempData[AppMessages.ErrorMessage] = AppMessages.ApartmentIdRequired;
                 return Redirect("/");
             }
 
-            var eligibleResponse = await CommunityApiService
-                .GetEligibleResidentsAsync(apartmentId.Value);
+            var eligibleResponse = await CommunityApiService.GetEligibleResidentsAsync(apartmentId.Value);
 
             ViewBag.EligibleResidents = eligibleResponse?.Success == true && eligibleResponse.Data != null
                 ? EligibleResidentViewModelMapper.From(eligibleResponse.Data)
                 : new List<EligibleResidentViewModel>();
 
-            var model = new AssignCommunityRoleViewModel
+            return View(new AssignCommunityRoleViewModel
             {
                 ApartmentId = apartmentId.Value,
                 CommunityRole = role ?? string.Empty
-            };
-
-            return View(model);
+            });
         }
 
         /// <summary>
-        /// Assigns a community role to the selected resident.
+        /// Processes community role assignment for a resident.
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -99,24 +94,22 @@ namespace ApartmentManagementSystem.Web.Controllers
                 return View(model);
             }
 
-            var request = new AssignCommunityRoleRequest
+            var response = await CommunityApiService.AssignCommunityRoleAsync(new AssignCommunityRoleRequest
             {
                 UserId = model.UserId,
                 CommunityRole = model.CommunityRole,
                 ApartmentId = model.ApartmentId!.Value
-            };
-
-            var response = await CommunityApiService.AssignCommunityRoleAsync(request);
+            });
 
             if (response?.Success == true)
             {
-                TempData[TempDataKeys.SuccessMessage] =
+                TempData[AppMessages.SuccessMessage] =
                     string.Format(AppMessages.CommunityRoleAssignSuccess, model.CommunityRole);
-                return RedirectToAction(AppRoutes.Actions.Index, new { apartmentId = model.ApartmentId });
+                return RedirectToAction(nameof(Index), new { apartmentId = model.ApartmentId });
             }
 
-            TempData[TempDataKeys.ErrorMessage] = response?.Message ?? AppMessages.CommunityRoleAssignFailed;
-            return RedirectToAction(AppRoutes.Actions.Index, new { apartmentId = model.ApartmentId });
+            TempData[AppMessages.ErrorMessage] = response?.Message ?? AppMessages.CommunityRoleAssignFailed;
+            return RedirectToAction(nameof(Index), new { apartmentId = model.ApartmentId });
         }
 
         /// <summary>
@@ -129,17 +122,15 @@ namespace ApartmentManagementSystem.Web.Controllers
             var response = await CommunityApiService.RemoveCommunityRoleAsync(
                 new RemoveCommunityRoleRequest { UserId = userId });
 
-            TempData[response?.Success == true ? TempDataKeys.SuccessMessage : TempDataKeys.ErrorMessage] =
+            TempData[response?.Success == true ? AppMessages.SuccessMessage : AppMessages.ErrorMessage] =
                 response?.Success == true
                     ? AppMessages.CommunityRoleRemoveSuccess
                     : response?.Message ?? AppMessages.CommunityRoleRemoveFailed;
 
-            return RedirectToAction(AppRoutes.Actions.Index, new { apartmentId });
+            return RedirectToAction(nameof(Index), new { apartmentId });
         }
     }
 }
-
-
 
 
 

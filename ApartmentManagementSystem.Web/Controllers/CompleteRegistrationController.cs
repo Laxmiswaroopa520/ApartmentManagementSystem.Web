@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApartmentManagementSystem.Web.Controllers
 {
+    /// <summary>
+    /// Handles the final step of resident self-registration.
+    /// Requires a verified phone number passed via TempData from VerifyInviteController.
+    /// </summary>
     public class CompleteRegistrationController : Controller
     {
         private readonly OnboardingApiService OnboardingApiService;
@@ -15,20 +19,25 @@ namespace ApartmentManagementSystem.Web.Controllers
             OnboardingApiService = onboardingApiService;
         }
 
+        /// <summary>
+        /// Displays the registration completion form.
+        /// Redirects back to OTP step if VerifiedPhone is missing from TempData.
+        /// </summary>
         [HttpGet]
         public IActionResult Index()
         {
-            var verifiedPhone = TempData[TempDataKeys.VerifiedPhone]?.ToString();
-            var fullName = TempData[TempDataKeys.FullName]?.ToString();
+            var verifiedPhone = TempData[AppMessages.TempVerifiedPhone]?.ToString();
+            var fullName = TempData[AppMessages.TempFullName]?.ToString();
 
             if (string.IsNullOrEmpty(verifiedPhone))
             {
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.OtpVerifyFirst;
-                return RedirectToAction(AppRoutes.Actions.Index, AppRoutes.Controllers.VerifyInvite);
+                TempData[AppMessages.ErrorMessage] = AppMessages.OtpVerifyFirst;
+                return RedirectToAction("Index", "VerifyInvite");
             }
 
-            TempData.Keep(TempDataKeys.VerifiedPhone);
-            TempData.Keep(TempDataKeys.FullName);
+            // Keep values alive for the POST
+            TempData.Keep(AppMessages.TempVerifiedPhone);
+            TempData.Keep(AppMessages.TempFullName);
 
             return View(new CompleteRegistrationViewModel
             {
@@ -37,6 +46,11 @@ namespace ApartmentManagementSystem.Web.Controllers
             });
         }
 
+        /// <summary>
+        /// Processes the registration form and creates the resident account.
+        /// On success: redirects to Login.
+        /// On failure: re-renders form with validation errors.
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(CompleteRegistrationViewModel model)
@@ -59,8 +73,8 @@ namespace ApartmentManagementSystem.Web.Controllers
 
                 if (response?.Success == true && response.Data != null)
                 {
-                    TempData[TempDataKeys.SuccessMessage] = response.Data.Message;
-                    return RedirectToAction(AppRoutes.Actions.Index, AppRoutes.Controllers.Login);
+                    TempData[AppMessages.SuccessMessage] = response.Data.Message;
+                    return RedirectToAction("Index", "Login");
                 }
 
                 ModelState.AddModelError(string.Empty, response?.Message ?? AppMessages.RegistrationFailed);
@@ -74,7 +88,6 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
     }
 }
-
 
 
 

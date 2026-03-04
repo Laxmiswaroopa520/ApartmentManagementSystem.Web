@@ -1,16 +1,14 @@
-﻿
-
-using ApartmentManagementSystem.Web.Constants;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using ApartmentManagementSystem.Web.Constants;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.ViewModels.Community;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ApartmentManagementSystem.Web.Controllers
 {
     /// <summary>
-    /// Secondary community controller scoped to SuperAdmin and Manager.
-    /// Primarily used for apartment-detail-level community role management.
+    /// Secondary community controller used for apartment-detail-level
+    /// role management. Restricted to SuperAdmin and Manager.
     /// </summary>
     [Authorize(Roles = AppRoles.AdminAndManager)]
     public class CommunityMembersController : Controller
@@ -51,7 +49,7 @@ namespace ApartmentManagementSystem.Web.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading community members: {ex.Message}");
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.CommunityLoadFailed;
+                TempData[AppMessages.ErrorMessage] = AppMessages.CommunityLoadFailed;
                 return View(new List<CommunityMemberViewModel>());
             }
         }
@@ -64,8 +62,8 @@ namespace ApartmentManagementSystem.Web.Controllers
         {
             if (!apartmentId.HasValue)
             {
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.ApartmentIdRequiredShort;
-                return RedirectToAction(AppRoutes.Actions.Index);
+                TempData[AppMessages.ErrorMessage] = AppMessages.ApartmentIdRequiredShort;
+                return RedirectToAction(nameof(Index));
             }
 
             try
@@ -85,13 +83,14 @@ namespace ApartmentManagementSystem.Web.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading eligible residents: {ex.Message}");
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.EligibleResidentsLoadFailed;
-                return RedirectToAction(AppRoutes.Actions.Index);
+                TempData[AppMessages.ErrorMessage] = AppMessages.EligibleResidentsLoadFailed;
+                return RedirectToAction(nameof(Index));
             }
         }
 
         /// <summary>
         /// Processes community role assignment.
+        /// Redirects to ApartmentBuilder/Details if apartmentId is present, else to Index.
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -101,8 +100,8 @@ namespace ApartmentManagementSystem.Web.Controllers
             {
                 if (!model.ApartmentId.HasValue)
                 {
-                    TempData[TempDataKeys.ErrorMessage] = AppMessages.ApartmentIdRequiredShort;
-                    return RedirectToAction(AppRoutes.Actions.Index);
+                    TempData[AppMessages.ErrorMessage] = AppMessages.ApartmentIdRequiredShort;
+                    return RedirectToAction(nameof(Index));
                 }
 
                 var response = await CommunityService.GetEligibleResidentsAsync(model.ApartmentId.Value);
@@ -115,38 +114,34 @@ namespace ApartmentManagementSystem.Web.Controllers
 
             try
             {
-                var request = new Services.DTOs.Community.AssignCommunityRoleRequest
-                {
-                    UserId = model.UserId,
-                    CommunityRole = model.CommunityRole
-                };
-
-                var result = await CommunityService.AssignCommunityRoleAsync(request);
+                var result = await CommunityService.AssignCommunityRoleAsync(
+                    new Services.DTOs.Community.AssignCommunityRoleRequest
+                    {
+                        UserId = model.UserId,
+                        CommunityRole = model.CommunityRole
+                    });
 
                 if (result?.Success == true)
                 {
-                    TempData[TempDataKeys.SuccessMessage] =
+                    TempData[AppMessages.SuccessMessage] =
                         string.Format(AppMessages.CommunityRoleAssignSuccess, model.CommunityRole);
 
                     return model.ApartmentId.HasValue
-                        ? RedirectToAction(AppRoutes.Actions.Details,
-                              AppRoutes.Controllers.ApartmentBuilder,
-                              new { id = model.ApartmentId.Value })
-                        : RedirectToAction(AppRoutes.Actions.Index);
+                        ? RedirectToAction("Details", "ApartmentBuilder", new { id = model.ApartmentId.Value })
+                        : RedirectToAction(nameof(Index));
                 }
 
-                TempData[TempDataKeys.ErrorMessage] = result?.Message ?? AppMessages.CommunityRoleAssignFailed;
+                TempData[AppMessages.ErrorMessage] = result?.Message ?? AppMessages.CommunityRoleAssignFailed;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error assigning role: {ex.Message}");
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.GenericError;
+                TempData[AppMessages.ErrorMessage] = AppMessages.GenericError;
             }
 
             if (model.ApartmentId.HasValue)
             {
-                var residentsResponse = await CommunityService
-                    .GetEligibleResidentsAsync(model.ApartmentId.Value);
+                var residentsResponse = await CommunityService.GetEligibleResidentsAsync(model.ApartmentId.Value);
                 ViewBag.EligibleResidents = residentsResponse?.Success == true && residentsResponse.Data != null
                     ? residentsResponse.Data
                     : new List<Services.DTOs.Community.ResidentListDto>();
@@ -167,7 +162,7 @@ namespace ApartmentManagementSystem.Web.Controllers
                 var result = await CommunityService.RemoveCommunityRoleAsync(
                     new Services.DTOs.Community.RemoveCommunityRoleRequest { UserId = userId });
 
-                TempData[result?.Success == true ? TempDataKeys.SuccessMessage : TempDataKeys.ErrorMessage] =
+                TempData[result?.Success == true ? AppMessages.SuccessMessage : AppMessages.ErrorMessage] =
                     result?.Success == true
                         ? AppMessages.CommunityRoleRemoveSuccess
                         : result?.Message ?? AppMessages.CommunityRoleRemoveFailed;
@@ -175,14 +170,13 @@ namespace ApartmentManagementSystem.Web.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error removing role: {ex.Message}");
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.GenericError;
+                TempData[AppMessages.ErrorMessage] = AppMessages.GenericError;
             }
 
-            return RedirectToAction(AppRoutes.Actions.Index);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
-
 
 
 

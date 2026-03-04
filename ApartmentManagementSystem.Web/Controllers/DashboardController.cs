@@ -1,4 +1,5 @@
-﻿using ApartmentManagementSystem.Web.Constants;
+﻿
+using ApartmentManagementSystem.Web.Constants;
 using ApartmentManagementSystem.Web.Mappers.Dashboard;
 using ApartmentManagementSystem.Web.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -43,8 +44,8 @@ namespace ApartmentManagementSystem.Web.Controllers
             if (roles.Contains(AppRoles.Tenant)) return await LoadTenantDashboard();
             if (IsStaffRole(roles)) return await LoadStaffDashboard();
 
-            TempData[TempDataKeys.ErrorMessage] = AppMessages.NoDashboardPermission;
-            return RedirectToAction(AppRoutes.Actions.AccessDenied, AppRoutes.Controllers.Home);
+            TempData[AppMessages.ErrorMessage] = AppMessages.NoDashboardPermission;
+            return RedirectToAction("AccessDenied", "Home");
         }
 
         private async Task<IActionResult> LoadSuperAdminDashboard()
@@ -52,16 +53,17 @@ namespace ApartmentManagementSystem.Web.Controllers
             try
             {
                 var response = await EnhancedDashboardApi.GetEnhancedAdminDashboardAsync();
-                if (response?.Success == true && response.Data != null)
-                    return View(AppRoutes.Views.Index, AdminDashboardViewModelMapper.From(response.Data));
 
-                TempData[TempDataKeys.ErrorMessage] = response?.Message ?? AppMessages.DashboardLoadFailed;
-                return View(AppRoutes.Views.Error);
+                if (response?.Success == true && response.Data != null)
+                    return View("Index", AdminDashboardViewModelMapper.From(response.Data));
+
+                TempData[AppMessages.ErrorMessage] = response?.Message ?? AppMessages.DashboardLoadFailed;
+                return View("Error");
             }
             catch (Exception ex)
             {
-                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.DashboardLoadFailed}: {ex.Message}";
-                return View(AppRoutes.Views.Error);
+                TempData[AppMessages.ErrorMessage] = $"{AppMessages.DashboardLoadFailed}: {ex.Message}";
+                return View("Error");
             }
         }
 
@@ -70,16 +72,17 @@ namespace ApartmentManagementSystem.Web.Controllers
             try
             {
                 var response = await EnhancedDashboardApi.GetManagerDashboardAsync();
-                if (response?.Success == true && response.Data != null)
-                    return View(AppRoutes.Views.ManagerDashboard, ManagerDashboardViewModelMapper.From(response.Data));
 
-                TempData[TempDataKeys.ErrorMessage] = response?.Message ?? AppMessages.ManagerDashboardFailed;
-                return View(AppRoutes.Views.Error);
+                if (response?.Success == true && response.Data != null)
+                    return View("ManagerDashboard", ManagerDashboardViewModelMapper.From(response.Data));
+
+                TempData[AppMessages.ErrorMessage] = response?.Message ?? AppMessages.ManagerDashFailed;
+                return View("Error");
             }
             catch (Exception ex)
             {
-                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.ManagerDashboardFailed}: {ex.Message}";
-                return View(AppRoutes.Views.Error);
+                TempData[AppMessages.ErrorMessage] = $"{AppMessages.ManagerDashFailed}: {ex.Message}";
+                return View("Error");
             }
         }
 
@@ -88,16 +91,17 @@ namespace ApartmentManagementSystem.Web.Controllers
             try
             {
                 var response = await EnhancedDashboardApi.GetCommunityLeaderDashboardAsync();
-                if (response?.Success == true && response.Data != null)
-                    return View(AppRoutes.Views.CommunityLeaderDash, CommunityLeaderDashboardViewModelMapper.From(response.Data));
 
-                TempData[TempDataKeys.ErrorMessage] = response?.Message ?? AppMessages.CommunityDashFailed;
-                return View(AppRoutes.Views.Error);
+                if (response?.Success == true && response.Data != null)
+                    return View("CommunityLeaderDashboard", CommunityLeaderDashboardViewModelMapper.From(response.Data));
+
+                TempData[AppMessages.ErrorMessage] = response?.Message ?? AppMessages.CommunityDashFailed;
+                return View("Error");
             }
             catch (Exception ex)
             {
-                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.CommunityDashFailed}: {ex.Message}";
-                return View(AppRoutes.Views.Error);
+                TempData[AppMessages.ErrorMessage] = $"{AppMessages.CommunityDashFailed}: {ex.Message}";
+                return View("Error");
             }
         }
 
@@ -106,16 +110,17 @@ namespace ApartmentManagementSystem.Web.Controllers
             try
             {
                 var response = await BasicDashboardApi.GetOwnerDashboardAsync();
-                if (response?.Success == true && response.Data != null)
-                    return View(AppRoutes.Views.OwnerDashboard, OwnerDashboardViewModelMapper.From(response.Data));
 
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.OwnerDashboardFailed;
-                return View(AppRoutes.Views.Error);
+                if (response?.Success == true && response.Data != null)
+                    return View("OwnerDashboard", OwnerDashboardViewModelMapper.From(response.Data));
+
+                TempData[AppMessages.ErrorMessage] = AppMessages.OwnerDashFailed;
+                return View("Error");
             }
             catch (Exception ex)
             {
-                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.OwnerDashboardFailed}: {ex.Message}";
-                return View(AppRoutes.Views.Error);
+                TempData[AppMessages.ErrorMessage] = $"{AppMessages.OwnerDashFailed}: {ex.Message}";
+                return View("Error");
             }
         }
 
@@ -124,16 +129,17 @@ namespace ApartmentManagementSystem.Web.Controllers
             try
             {
                 var response = await BasicDashboardApi.GetTenantDashboardAsync();
-                if (response?.Success == true && response.Data != null)
-                    return View(AppRoutes.Views.TenantDashboard, TenantDashboardViewModelMapper.From(response.Data));
 
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.TenantDashboardFailed;
-                return View(AppRoutes.Views.Error);
+                if (response?.Success == true && response.Data != null)
+                    return View("TenantDashboard", TenantDashboardViewModelMapper.From(response.Data));
+
+                TempData[AppMessages.ErrorMessage] = AppMessages.TenantDashFailed;
+                return View("Error");
             }
             catch (Exception ex)
             {
-                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.TenantDashboardFailed}: {ex.Message}";
-                return View(AppRoutes.Views.Error);
+                TempData[AppMessages.ErrorMessage] = $"{AppMessages.TenantDashFailed}: {ex.Message}";
+                return View("Error");
             }
         }
 
@@ -142,16 +148,17 @@ namespace ApartmentManagementSystem.Web.Controllers
             try
             {
                 var response = await EnhancedDashboardApi.GetStaffDashboardAsync();
-                if (response?.Success == true && response.Data != null)
-                    return View(AppRoutes.Views.StaffDashboard, StaffDashboardViewModelMapper.From(response.Data));
 
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.StaffDashboardFailed;
-                return View(AppRoutes.Views.Error);
+                if (response?.Success == true && response.Data != null)
+                    return View("StaffDashboard", StaffDashboardViewModelMapper.From(response.Data));
+
+                TempData[AppMessages.ErrorMessage] = AppMessages.StaffDashFailed;
+                return View("Error");
             }
             catch (Exception ex)
             {
-                TempData[TempDataKeys.ErrorMessage] = $"{AppMessages.StaffDashboardFailed}: {ex.Message}";
-                return View(AppRoutes.Views.Error);
+                TempData[AppMessages.ErrorMessage] = $"{AppMessages.StaffDashFailed}: {ex.Message}";
+                return View("Error");
             }
         }
 
@@ -162,10 +169,6 @@ namespace ApartmentManagementSystem.Web.Controllers
                 AppRoles.MaintenanceStaff);
     }
 }
-
-
-
-
 
 
 

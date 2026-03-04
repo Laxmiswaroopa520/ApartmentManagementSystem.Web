@@ -1,4 +1,5 @@
-﻿using ApartmentManagementSystem.Web.Constants;
+﻿
+using ApartmentManagementSystem.Web.Constants;
 using ApartmentManagementSystem.Web.Mappers.Admin;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.Services.DTOs.Admin;
@@ -23,7 +24,7 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
 
         /// <summary>
-        /// Displays the list of pending residents awaiting flat assignment.
+        /// Displays the list of residents awaiting flat assignment.
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> Pending()
@@ -38,7 +39,7 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
 
         /// <summary>
-        /// Displays the Assign Flat page for a specific resident.
+        /// Displays the Assign Flat form for a specific resident.
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> AssignFlat(Guid userId, string userName)
@@ -60,8 +61,7 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
 
         /// <summary>
-        /// Processes flat assignment for a resident.
-        /// Redirects to Pending on success; re-renders form with errors on failure.
+        /// Processes flat assignment. Redirects to Pending on success.
         /// </summary>
         [HttpPost]
         public async Task<IActionResult> AssignFlat(AssignFlatViewModel model)
@@ -89,8 +89,8 @@ namespace ApartmentManagementSystem.Web.Controllers
 
             if (response?.Success == true)
             {
-                TempData[TempDataKeys.SuccessMessage] = response.Message ?? AppMessages.FlatAssignSuccess;
-                return RedirectToAction(AppRoutes.Actions.Pending);
+                TempData[AppMessages.SuccessMessage] = response.Message ?? AppMessages.FlatAssignSuccess;
+                return RedirectToAction(nameof(Pending));
             }
 
             ModelState.AddModelError(string.Empty, response?.Message ?? AppMessages.FlatAssignFailed);
@@ -129,7 +129,7 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
 
         /// <summary>
-        /// Re-populates apartment and floor dropdowns after validation failure.
+        /// Re-populates dropdowns after a validation failure.
         /// </summary>
         private async Task PopulateDropdownsAsync(AssignFlatViewModel model)
         {
@@ -151,8 +151,6 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
     }
 }
-
-
 
 
 

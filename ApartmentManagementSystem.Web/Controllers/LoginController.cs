@@ -12,7 +12,7 @@ namespace ApartmentManagementSystem.Web.Controllers
 {
     /// <summary>
     /// Handles user authentication: login, logout, and inactive account pages.
-    /// Accessible anonymously - no [Authorize] required.
+    /// Allows anonymous access.
     /// </summary>
     [AllowAnonymous]
     public class LoginController : Controller
@@ -25,22 +25,23 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
 
         /// <summary>
-        /// Displays the login page. Redirects to Dashboard if already authenticated.
+        /// Displays the login page.
+        /// Redirects authenticated users straight to Dashboard.
         /// </summary>
         [HttpGet]
         public IActionResult Index()
         {
             if (User.Identity?.IsAuthenticated == true)
-                return RedirectToAction(AppRoutes.Actions.Index, AppRoutes.Controllers.Dashboard);
+                return RedirectToAction("Index", "Dashboard");
 
             return View();
         }
 
         /// <summary>
-        /// Processes the login form submission.
-        /// On success: creates auth cookie and redirects to Dashboard.
+        /// Processes login form submission.
+        /// On success: writes auth cookie and redirects to Dashboard.
         /// On inactive account: redirects to Inactive page.
-        /// On failure: returns view with error message.
+        /// On failure: re-renders login view with error.
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -57,15 +58,15 @@ namespace ApartmentManagementSystem.Web.Controllers
 
             if (response == null || !response.Success)
             {
-                if (response?.ErrorCode == ApiErrorCodes.AccountInactive)
-                    return RedirectToAction(AppRoutes.Actions.Inactive);
+                if (response?.ErrorCode == AppMessages.ErrorCodeAccountInactive)
+                    return RedirectToAction(nameof(Inactive));
 
                 ModelState.AddModelError(string.Empty, response?.Message ?? AppMessages.LoginFailed);
                 return View(model);
             }
 
-            // Store JWT in secure HTTP-only cookie
-            Response.Cookies.Append(CookieKeys.AuthToken, response.Data.Token, new CookieOptions
+            // Store JWT in a secure HTTP-only cookie
+            Response.Cookies.Append(AppMessages.CookieAuthToken, response.Data.Token, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
@@ -73,17 +74,17 @@ namespace ApartmentManagementSystem.Web.Controllers
                 Expires = DateTimeOffset.UtcNow.AddHours(24)
             });
 
-            var cookieExpiry = new CookieOptions { Expires = DateTimeOffset.UtcNow.AddHours(24) };
-            Response.Cookies.Append(CookieKeys.UserName, response.Data.FullName, cookieExpiry);
-            Response.Cookies.Append(CookieKeys.UserRole, response.Data.Role, cookieExpiry);
-            Response.Cookies.Append(CookieKeys.UserId, response.Data.UserId.ToString(), cookieExpiry);
+            var standardExpiry = new CookieOptions { Expires = DateTimeOffset.UtcNow.AddHours(24) };
+            Response.Cookies.Append(AppMessages.CookieUserName, response.Data.FullName, standardExpiry);
+            Response.Cookies.Append(AppMessages.CookieUserRole, response.Data.Role, standardExpiry);
+            Response.Cookies.Append(AppMessages.CookieUserId, response.Data.UserId.ToString(), standardExpiry);
 
             var claims = new List<Claim>
             {
                 new(ClaimTypes.NameIdentifier, response.Data.UserId.ToString()),
                 new(ClaimTypes.Name,           response.Data.FullName),
                 new(ClaimTypes.Role,           response.Data.Role),
-                new(AppClaimTypes.Username,    model.Username)
+                new(AppMessages.ClaimUsername, model.Username)
             };
 
             await HttpContext.SignInAsync(
@@ -95,20 +96,20 @@ namespace ApartmentManagementSystem.Web.Controllers
                     ExpiresUtc = DateTimeOffset.UtcNow.AddHours(24)
                 });
 
-            TempData[TempDataKeys.SuccessMessage] =
+            TempData[AppMessages.SuccessMessage] =
                 string.Format(AppMessages.WelcomeBack, response.Data.FullName);
 
-            return RedirectToAction(AppRoutes.Actions.Index, AppRoutes.Controllers.Dashboard);
+            return RedirectToAction("Index", "Dashboard");
         }
 
         /// <summary>
-        /// Displays the inactive account page.
+        /// Displays the inactive account notice page.
         /// </summary>
         [HttpGet]
         public IActionResult Inactive() => View();
 
         /// <summary>
-        /// Logs out the current user, clears cookies, and redirects to login.
+        /// Signs out the user, removes all auth cookies, and redirects to Login.
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -116,18 +117,17 @@ namespace ApartmentManagementSystem.Web.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            Response.Cookies.Delete(CookieKeys.AuthToken);
-            Response.Cookies.Delete(CookieKeys.UserName);
-            Response.Cookies.Delete(CookieKeys.UserRole);
-            Response.Cookies.Delete(CookieKeys.UserId);
+            Response.Cookies.Delete(AppMessages.CookieAuthToken);
+            Response.Cookies.Delete(AppMessages.CookieUserName);
+            Response.Cookies.Delete(AppMessages.CookieUserRole);
+            Response.Cookies.Delete(AppMessages.CookieUserId);
 
-            TempData[TempDataKeys.SuccessMessage] = AppMessages.LogoutSuccess;
+            TempData[AppMessages.SuccessMessage] = AppMessages.LogoutSuccess;
 
-            return RedirectToAction(AppRoutes.Actions.Index);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
-
 
 
 

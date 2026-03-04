@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApartmentManagementSystem.Web.Controllers
 {
     /// <summary>
-    /// Handles all apartment CRUD operations, manager assignment/removal,
-    /// and apartment visualization. Restricted to SuperAdmin only.
+    /// Handles apartment CRUD, manager assignment/removal, and diagram visualization.
+    /// Restricted to SuperAdmin only.
     /// </summary>
     [Authorize(Roles = AppRoles.SuperAdmin)]
     public class ApartmentBuilderController : Controller
@@ -29,13 +29,13 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
 
         /// <summary>
-        /// Displays the apartment creation page.
+        /// Displays the apartment creation wizard page.
         /// </summary>
         [HttpGet]
         public IActionResult Create() => View();
 
         /// <summary>
-        /// Displays all apartments owned by the SuperAdmin.
+        /// Lists all apartments belonging to the SuperAdmin.
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> ManageApartments()
@@ -53,7 +53,7 @@ namespace ApartmentManagementSystem.Web.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading apartments: {ex.Message}");
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.ApartmentLoadFailed;
+                TempData[AppMessages.ErrorMessage] = AppMessages.ApartmentLoadFailed;
                 return View(new List<ApartmentListViewModel>());
             }
         }
@@ -71,14 +71,14 @@ namespace ApartmentManagementSystem.Web.Controllers
                 if (response?.Success == true && response.Data != null)
                     return View(ApartmentDetailMapper.From(response.Data));
 
-                TempData[TempDataKeys.ErrorMessage] = response?.Message ?? AppMessages.ApartmentNotFound;
-                return RedirectToAction(AppRoutes.Actions.ManageApartments);
+                TempData[AppMessages.ErrorMessage] = response?.Message ?? AppMessages.ApartmentNotFound;
+                return RedirectToAction(nameof(ManageApartments));
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading details: {ex.Message}");
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.ApartmentDetailFailed;
-                return RedirectToAction(AppRoutes.Actions.ManageApartments);
+                TempData[AppMessages.ErrorMessage] = AppMessages.ApartmentDetailFailed;
+                return RedirectToAction(nameof(ManageApartments));
             }
         }
 
@@ -95,19 +95,19 @@ namespace ApartmentManagementSystem.Web.Controllers
                 if (response?.Success == true && response.Data != null)
                     return View(ApartmentDiagramMapper.From(response.Data));
 
-                TempData[TempDataKeys.ErrorMessage] = response?.Message ?? AppMessages.ApartmentDiagramNotFound;
-                return RedirectToAction(AppRoutes.Actions.Details, new { id });
+                TempData[AppMessages.ErrorMessage] = response?.Message ?? AppMessages.ApartmentDiagramNotFound;
+                return RedirectToAction(nameof(Details), new { id });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading diagram: {ex.Message}");
-                TempData[TempDataKeys.ErrorMessage] = AppMessages.ApartmentDiagramFailed;
-                return RedirectToAction(AppRoutes.Actions.Details, new { id });
+                TempData[AppMessages.ErrorMessage] = AppMessages.ApartmentDiagramFailed;
+                return RedirectToAction(nameof(Details), new { id });
             }
         }
 
         /// <summary>
-        /// Creates a new apartment (JSON POST from apartment-builder.js).
+        /// Creates a new apartment. Called via JSON POST from apartment-builder.js.
         /// </summary>
         [HttpPost]
         public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentViewModel model)
@@ -128,12 +128,12 @@ namespace ApartmentManagementSystem.Web.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in CreateApartment: {ex.Message}");
-                return Json(new { success = false, message = $"Error: {ex.Message}" });
+                return Json(new { success = false, message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Assigns a manager to an apartment (JSON POST from apartment-details.js).
+        /// Assigns a manager to an apartment. Called via JSON POST from apartment-details.js.
         /// </summary>
         [HttpPost]
         public async Task<IActionResult> AssignManager([FromBody] AssignManagerRequest request)
@@ -151,12 +151,12 @@ namespace ApartmentManagementSystem.Web.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error assigning manager: {ex.Message}");
-                return Json(new { success = false, message = $"Error: {ex.Message}" });
+                return Json(new { success = false, message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Removes the current manager from an apartment (JSON POST).
+        /// Removes the current manager from an apartment. Called via JSON POST.
         /// </summary>
         [HttpPost]
         public async Task<IActionResult> RemoveManager([FromBody] RemoveManagerRequest request)
@@ -174,12 +174,12 @@ namespace ApartmentManagementSystem.Web.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error removing manager: {ex.Message}");
-                return Json(new { success = false, message = $"Error: {ex.Message}" });
+                return Json(new { success = false, message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Deletes an apartment (JSON POST).
+        /// Deletes an apartment. Called via JSON POST.
         /// </summary>
         [HttpPost]
         public async Task<IActionResult> DeleteApartment([FromBody] DeleteApartmentRequest request)
@@ -197,12 +197,12 @@ namespace ApartmentManagementSystem.Web.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error deleting apartment: {ex.Message}");
-                return Json(new { success = false, message = $"Error: {ex.Message}" });
+                return Json(new { success = false, message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Returns residents for a specific apartment (used for manager/community assignment).
+        /// Returns residents for a specific apartment (used for manager/community assignment UI).
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetApartmentResidents(Guid apartmentId)
@@ -219,7 +219,6 @@ namespace ApartmentManagementSystem.Web.Controllers
         }
     }
 }
-
 
 
 

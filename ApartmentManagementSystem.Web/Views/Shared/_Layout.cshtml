@@ -14,14 +14,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
+        /* ── STICKY FOOTER: html + body fill the viewport height ── */
+        html {
+            height: 100%;
+        }
+
         body {
+            min-height: 100vh; /* always at least full viewport */
+            display: flex;
+            flex-direction: column; /* stack navbar → main → footer vertically */
             background: #f5f6f7;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #1f2933;
         }
 
+        /* main grows to fill leftover space, pushing footer to the bottom */
+        main[role="main"] {
+            flex: 1 0 auto;
+        }
+
+        /* footer never shrinks */
+        footer {
+            flex-shrink: 0;
+            background: #1a2744;
+            color: #94a3b8;
+        }
+
         /* ── NAVBAR ── */
         .navbar {
+            flex-shrink: 0; /* navbar never shrinks */
             background: #1a2744 !important;
             box-shadow: 0 2px 12px rgba(0,0,0,0.18);
             padding-top: 0;
@@ -29,7 +50,7 @@
             min-height: 54px;
         }
 
-        /* Brand — IDENTICAL to _PublicLayout: bi-buildings icon + bold white text */
+        /* Brand */
         .skyline-brand {
             display: flex;
             align-items: center;
@@ -45,7 +66,7 @@
 
             .skyline-brand i {
                 font-size: 1.4rem;
-                color: #7dd3fc; /* same light-blue accent as public layout */
+                color: #7dd3fc;
             }
 
             .skyline-brand:hover {
@@ -108,7 +129,7 @@
             border-color: #e5e7eb;
         }
 
-        /* User pill — right side */
+        /* User pill */
         .user-pill {
             display: flex;
             align-items: center;
@@ -131,12 +152,6 @@
                 font-size: 1.1rem;
                 color: #7dd3fc;
             }
-
-        /* Footer */
-        footer {
-            background: #1a2744;
-            color: #94a3b8;
-        }
 
         /* Mobile toggler */
         .navbar-toggler {
@@ -180,10 +195,10 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid px-4">
 
-            @* Brand: bi-buildings + "Skyline" — identical to _PublicLayout *@
             <a class="skyline-brand" href="/">
                 <i class="bi bi-buildings"></i>
                 Skyline
@@ -204,61 +219,14 @@
                                 <i class="bi bi-speedometer2"></i> Dashboard
                             </a>
                         </li>
-                        @*
-                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button"
-                                   data-bs-toggle="dropdown">
-                                    <i class="bi bi-gear"></i> Management
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Onboarding" asp-action="Create">
-                                            <i class="bi bi-person-plus"></i> Onboard Resident
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="AdminResidents" asp-action="Pending">
-                                            <i class="bi bi-hourglass-split"></i> Pending Registrations
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="CommunityMembers" asp-action="Index">
-                                            <i class="bi bi-award"></i> Community Members
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="StaffMembers" asp-action="Index">
-                                            <i class="bi bi-person-badge"></i> Staff Members
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="ResidentManagement" asp-action="Index">
-                                            <i class="bi bi-people"></i> All Residents
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="ApartmentBuilder" asp-action="ManageApartments">
-                                            <i class="bi bi-buildings"></i> My Apartments
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        }
-                        *@
+
                         @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle border-0 bg-transparent shadow-none"
-                                   href="#"
-                                   role="button"
-                                   data-bs-toggle="dropdown">
+                                   href="#" role="button" data-bs-toggle="dropdown">
                                     <i class="bi bi-gear"></i> Management
                                 </a>
-
                                 <ul class="dropdown-menu">
                                     <li>
                                         <a class="dropdown-item" asp-controller="Onboarding" asp-action="Create">
@@ -295,6 +263,7 @@
                                 </ul>
                             </li>
                         }
+
                         @if (User.IsInRole("President") || User.IsInRole("Secretary") || User.IsInRole("Treasurer"))
                         {
                             <li class="nav-item">
@@ -337,7 +306,7 @@
         @RenderBody()
     </main>
 
-    <footer class="border-top py-3 mt-5">
+    <footer class="border-top py-3 mt-auto">
         <div class="container text-center small">
             &copy; 2026 Skyline Communities. All rights reserved.
         </div>

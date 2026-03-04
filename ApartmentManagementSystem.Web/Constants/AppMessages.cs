@@ -1,31 +1,51 @@
 ﻿namespace ApartmentManagementSystem.Web.Constants
 {
     /// <summary>
-    /// Centralizes all user-facing messages used across controllers.
-    /// Eliminates magic strings for success, error, and validation messages.
+    /// All string constants used across controllers:
+    /// TempData keys, cookie keys, claim types, API error codes,
+    /// and every user-facing success/error/validation message.
+    /// Use string.Format() for messages that contain {0} placeholders.
     /// </summary>
     public static class AppMessages
     {
-        // Generic
+        // TempData keys
+        public const string SuccessMessage = "SuccessMessage";
+        public const string ErrorMessage = "ErrorMessage";
+
+        //TempData transfer keys (Onboarding flow)
+        public const string TempVerifiedPhone = "VerifiedPhone";
+        public const string TempFullName = "FullName";
+
+        //Cookie keys
+        public const string CookieAuthToken = "AuthToken";
+        public const string CookieUserName = "UserName";
+        public const string CookieUserRole = "UserRole";
+        public const string CookieUserId = "UserId";
+
+        // Custom claim type
+        public const string ClaimUsername = "Username";
+
+        //API error codes
+        public const string ErrorCodeAccountInactive = "ACCOUNT_INACTIVE";
+
+        // Generic 
         public const string GenericError = "An unexpected error occurred. Please try again.";
-        public const string UnauthorizedAccess = "You don't have permission to access this resource.";
 
         // Authentication
         public const string LoginFailed = "Login failed. Please check your credentials.";
         public const string LogoutSuccess = "Logged out successfully";
-        public const string AccountInactive = "Your account is inactive. Please contact support.";
         public const string WelcomeBack = "Welcome back, {0}!";
+        public const string NoDashboardPermission = "You do not have permission to access the dashboard.";
 
-        // Dashboard
+        // Dashboard 
         public const string DashboardLoadFailed = "Failed to load dashboard";
-        public const string ManagerDashboardFailed = "Failed to load manager dashboard";
+        public const string ManagerDashFailed = "Failed to load manager dashboard";
         public const string CommunityDashFailed = "Failed to load community leader dashboard";
-        public const string OwnerDashboardFailed = "Failed to load owner dashboard";
-        public const string TenantDashboardFailed = "Failed to load tenant dashboard";
-        public const string StaffDashboardFailed = "Failed to load staff dashboard";
-        public const string NoDashboardPermission = "You don't have permission to access the dashboard.";
+        public const string OwnerDashFailed = "Failed to load owner dashboard";
+        public const string TenantDashFailed = "Failed to load tenant dashboard";
+        public const string StaffDashFailed = "Failed to load staff dashboard";
 
-        // Apartment
+        // Apartment 
         public const string ApartmentLoadFailed = "Failed to load apartments";
         public const string ApartmentDetailFailed = "Failed to load apartment details";
         public const string ApartmentNotFound = "Apartment not found";
@@ -43,11 +63,11 @@
         public const string ManagerRemoveSuccess = "Manager removed successfully!";
         public const string ManagerRemoveFailed = "Failed to remove manager";
 
-        // Flat Assignment
+        // Flat assignment
         public const string FlatAssignSuccess = "Flat assigned successfully";
         public const string FlatAssignFailed = "Failed to assign flat";
 
-        // Community
+        // Community 
         public const string CommunityLoadFailed = "Failed to load community members";
         public const string CommunityRoleAssignSuccess = "{0} role assigned successfully!";
         public const string CommunityRoleAssignFailed = "Failed to assign role.";
@@ -57,7 +77,7 @@
         public const string ApartmentIdRequired = "Apartment ID is required to assign a community role.";
         public const string ApartmentIdRequiredShort = "Apartment ID is required";
 
-        // Registration
+        //  Registration 
         public const string OtpVerifyFirst = "Please verify OTP first";
         public const string RegistrationFailed = "Registration failed";
 

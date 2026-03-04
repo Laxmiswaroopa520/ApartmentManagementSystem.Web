@@ -2,12 +2,6 @@
     Used for: Home, Login, VerifyInvite, Forgot Password
     Views/Shared/_PublicLayout.cshtml
 *@
-
-
-@*
-    Used for: Home, Login, VerifyInvite, Forgot Password
-    Views/Shared/_PublicLayout.cshtml
-*@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,14 +11,36 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
     <style>
+        /* ── STICKY FOOTER: html + body fill the full viewport ── */
+        html {
+            height: 100%;
+        }
+
         body {
+            min-height: 100vh; /* always fills full screen height */
+            display: flex;
+            flex-direction: column; /* stack nav → main → footer */
             background: #f5f6f7;
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
         }
 
+        /* main grows to fill all leftover vertical space */
+        main {
+            flex: 1 0 auto;
+        }
+
+        /* footer is always pushed to the bottom, never shrinks */
+        .pub-footer {
+            flex-shrink: 0;
+            background: #1a2744;
+            color: #94a3b8;
+            margin-top: auto; /* belt-and-suspenders: also pushes down */
+        }
+
         /* ── NAVBAR ── */
         .pub-nav {
+            flex-shrink: 0;
             background: #1a2744;
             box-shadow: 0 2px 12px rgba(0,0,0,0.18);
         }
@@ -38,7 +54,7 @@
                 padding: 0.7rem 1.5rem;
             }
 
-        /* Brand — left-aligned, bold, always white */
+        /* Brand */
         .skyline-brand {
             display: flex;
             align-items: center;
@@ -53,7 +69,7 @@
 
             .skyline-brand i {
                 font-size: 1.4rem;
-                color: #7dd3fc; /* light sky blue accent — same in both layouts */
+                color: #7dd3fc;
             }
 
             .skyline-brand:hover {
@@ -101,13 +117,7 @@
                 color: #ffffff;
             }
 
-        /* ── FOOTER ── */
-        .pub-footer {
-            background: #1a2744;
-            color: #94a3b8;
-            margin-top: auto;
-        }
-
+        /* ── FOOTER INTERNALS ── */
         .pub-footer-inner {
             max-width: 1200px;
             margin: 0 auto;
@@ -263,6 +273,7 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
 
 
 

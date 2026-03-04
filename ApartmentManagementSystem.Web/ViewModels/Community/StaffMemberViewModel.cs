@@ -1,4 +1,6 @@
-﻿namespace ApartmentManagementSystem.Web.ViewModels.Community
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ApartmentManagementSystem.Web.ViewModels.Community
 {
     public class StaffMemberViewModel
     {
@@ -12,5 +14,19 @@
         public bool IsActive { get; set; }
         public string? Specialization { get; set; }
         public decimal? HourlyRate { get; set; }
+        public Guid? ApartmentId { get; set; }
+        public string? ApartmentName { get; set; }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+

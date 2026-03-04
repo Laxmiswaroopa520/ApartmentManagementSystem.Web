@@ -1,207 +1,272 @@
 ﻿@model ApartmentManagementSystem.Web.ViewModels.Community.CreateStaffMemberViewModel
+@using ApartmentManagementSystem.Web.ViewModels.Community
 @{
     ViewData["Title"] = "Add Staff Member";
     Layout = "_Layout";
 }
 
-<style>
-    :root {
-        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-    }
-
-    body {
-        background: #f5f7fa;
-    }
-
-    .form-card {
-        background: white;
-        border-radius: 16px;
-        box-shadow: var(--shadow-sm);
-        overflow: hidden;
-        margin: 2rem auto;
-        max-width: 900px;
-    }
-
-    .card-header-gradient {
-        background: var(--gradient-primary);
-        color: white;
-        padding: 1.25rem 1.5rem;
-        font-weight: 600;
-        font-size: 1.25rem;
-    }
-
-        .card-header-gradient i {
-            margin-right: 0.5rem;
+@section Styles {
+    <style>
+        .form-wrap {
+            max-width: 860px;
+            margin: 2rem auto;
+            padding: 0 1rem 3rem;
         }
 
-    .form-section-header {
-        color: #667eea;
-        font-weight: 700;
-        font-size: 1.1rem;
-        margin-bottom: 1.25rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #e6e9f4;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-        .form-section-header i {
-            font-size: 1.25rem;
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .88rem;
+            font-weight: 600;
+            color: #6366f1;
+            text-decoration: none;
+            padding: .35rem .75rem .35rem .5rem;
+            border-radius: 8px;
+            border: 1.5px solid #e0e3ff;
+            background: #f5f3ff;
+            transition: all .18s;
+            margin-bottom: 1.4rem;
         }
 
-    .form-label {
-        font-weight: 600;
-        color: #4a5568;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
+            .back-link:hover {
+                background: #ede9fe;
+                border-color: #a5b4fc;
+                color: #4f46e5;
+                text-decoration: none;
+            }
 
-        .form-label .text-danger {
-            color: #fa709a !important;
-        }
+                .back-link:hover i {
+                    transform: translateX(-3px);
+                }
 
-    .form-control, .form-select {
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-        font-size: 0.95rem;
-    }
+            .back-link i {
+                transition: transform .18s;
+            }
 
-        .form-control:focus, .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-    textarea.form-control {
-        resize: vertical;
-    }
-
-    .form-check-input {
-        width: 1.5rem;
-        height: 1.5rem;
-        border: 2px solid #e2e8f0;
-        margin-top: 0;
-    }
-
-        .form-check-input:checked {
-            background-color: #667eea;
-            border-color: #667eea;
-        }
-
-    .form-check-label {
-        margin-left: 0.5rem;
-        font-weight: 600;
-        color: #2d3748;
-    }
-
-    .alert-custom {
-        border-radius: 12px;
-        border: none;
-        padding: 1rem 1.25rem;
-        background: #fff4e6;
-        border-left: 4px solid #fa709a;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-        .alert-custom i {
-            font-size: 1.25rem;
-            color: #fa709a;
-        }
-
-    .btn-submit {
-        background: var(--gradient-primary);
-        border: none;
-        color: white;
-        border-radius: 12px;
-        padding: 0.85rem 2rem;
-        font-weight: 600;
-        font-size: 1rem;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        transition: all 0.3s ease;
-    }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-        }
-
-    .btn-cancel {
-        background: white;
-        border: 2px solid #e2e8f0;
-        color: #4a5568;
-        border-radius: 12px;
-        padding: 0.85rem 2rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-        .btn-cancel:hover {
-            border-color: #cbd5e0;
-            background: #f7fafc;
-        }
-
-    .divider {
-        border: 0;
-        height: 2px;
-        background: linear-gradient(to right, transparent, #e2e8f0, transparent);
-        margin: 2rem 0;
-    }
-
-    @@media (max-width: 768px) {
         .form-card {
-            margin: 1rem;
+            background: #fff;
+            border-radius: 16px;
+            border: 1.5px solid #e8ecf0;
+            box-shadow: 0 4px 18px rgba(0,0,0,.07);
+            overflow: hidden;
         }
 
-        .btn-submit, .btn-cancel {
-            width: 100%;
-            margin-bottom: 0.75rem;
+        .form-card-hdr {
+            background: linear-gradient(135deg,#4f46e5,#6366f1);
+            color: #fff;
+            padding: 1.2rem 1.6rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
         }
-    }
-</style>
 
-<div class="container mt-4">
+        .form-card-body {
+            padding: 2rem 2rem;
+        }
+
+        .sec-hdr {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #4f46e5;
+            margin-bottom: 1.1rem;
+            padding-bottom: .5rem;
+            border-bottom: 2px solid #e0e7ff;
+        }
+
+            .sec-hdr i {
+                font-size: 1.15rem;
+            }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            font-size: .88rem;
+            margin-bottom: .45rem;
+        }
+
+            .form-label .req {
+                color: #ef4444;
+            }
+
+        .form-control, .form-select {
+            border: 1.5px solid #d1d5db;
+            border-radius: 10px;
+            padding: .7rem 1rem;
+            font-size: .92rem;
+            transition: all .18s;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #6366f1;
+                box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+            }
+
+        textarea.form-control {
+            resize: vertical;
+        }
+
+        .apt-select-wrap {
+            position: relative;
+        }
+
+        .apt-select-icon {
+            position: absolute;
+            left: .9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6366f1;
+            pointer-events: none;
+        }
+
+        .apt-select-wrap .form-select {
+            padding-left: 2.4rem;
+        }
+
+        .divider {
+            border: 0;
+            height: 1.5px;
+            background: linear-gradient(to right,transparent,#e0e7ff,transparent);
+            margin: 1.8rem 0;
+        }
+
+        .login-toggle-row {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: 1rem 1.2rem;
+            background: #f8faff;
+            border: 1.5px solid #e0e7ff;
+            border-radius: 10px;
+        }
+
+        .form-check-input {
+            width: 1.3rem;
+            height: 1.3rem;
+            cursor: pointer;
+        }
+
+            .form-check-input:checked {
+                background-color: #6366f1;
+                border-color: #6366f1;
+            }
+
+        .form-check-label {
+            font-weight: 600;
+            color: #1e293b;
+            cursor: pointer;
+        }
+
+        .login-fields-box {
+            background: #f8faff;
+            border: 1.5px solid #e0e7ff;
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-top: .8rem;
+        }
+
+        .login-note {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            background: #fff7ed;
+            border-left: 3px solid #f59e0b;
+            border-radius: 8px;
+            padding: .75rem 1rem;
+            font-size: .85rem;
+            color: #92400e;
+            margin-bottom: 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: .75rem;
+            padding-top: 1.2rem;
+            border-top: 1.5px solid #f1f5f9;
+        }
+
+        .btn-cancel-form {
+            background: #fff;
+            border: 1.5px solid #d1d5db;
+            color: #374151;
+            border-radius: 10px;
+            padding: .65rem 1.4rem;
+            font-weight: 600;
+            font-size: .92rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            transition: all .18s;
+        }
+
+            .btn-cancel-form:hover {
+                border-color: #6366f1;
+                color: #6366f1;
+                text-decoration: none;
+            }
+
+        .btn-submit-form {
+            background: linear-gradient(135deg,#4f46e5,#6366f1);
+            border: none;
+            color: #fff;
+            border-radius: 10px;
+            padding: .65rem 1.6rem;
+            font-weight: 700;
+            font-size: .92rem;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99,102,241,.3);
+            transition: all .2s;
+        }
+
+            .btn-submit-form:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 18px rgba(99,102,241,.4);
+            }
+    </style>
+}
+
+<div class="form-wrap">
+    <a asp-action="Index" class="back-link">
+        <i class="bi bi-arrow-left"></i> Back to Staff Members
+    </a>
+
     <div class="form-card">
-        <div class="card-header-gradient">
+        <div class="form-card-hdr">
             <i class="bi bi-person-plus-fill"></i> Add New Staff Member
         </div>
-        <div class="card-body" style="padding: 2rem;">
+        <div class="form-card-body">
             <form asp-action="Create" method="post">
-                <!-- Basic Information -->
-                <h5 class="form-section-header">
-                    <i class="bi bi-info-circle"></i> Basic Information
-                </h5>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="FullName" class="form-label">Full Name <span class="text-danger">*</span></label>
-                        <input asp-for="FullName" class="form-control" placeholder="Enter full name" required />
-                        <span asp-validation-for="FullName" class="text-danger"></span>
+                @* ── Basic Info ── *@
+                <div class="sec-hdr"><i class="bi bi-person-fill"></i> Basic Information</div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Full Name <span class="req">*</span></label>
+                        <input asp-for="FullName" class="form-control" placeholder="Enter full name" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
                     </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
-                        <input asp-for="Phone" class="form-control" placeholder="Enter phone number" required />
-                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone Number <span class="req">*</span></label>
+                        <input asp-for="Phone" class="form-control" placeholder="Enter phone number" />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Email" class="form-label">Email</label>
-                        <input asp-for="Email" type="email" class="form-control" placeholder="Enter email address" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Enter email" />
                     </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="StaffType" class="form-label">Staff Type <span class="text-danger">*</span></label>
-                        <select asp-for="StaffType" class="form-select" required>
+                    <div class="col-md-6">
+                        <label class="form-label">Staff Type <span class="req">*</span></label>
+                        <select asp-for="StaffType" class="form-select">
                             <option value="">-- Select Type --</option>
                             <option value="Security">🛡️ Security</option>
                             <option value="Plumber">🔧 Plumber</option>
@@ -211,81 +276,78 @@
                             <option value="Gardener">🌳 Gardener</option>
                             <option value="MaintenanceStaff">🛠️ Maintenance Staff</option>
                         </select>
-                        <span asp-validation-for="StaffType" class="text-danger"></span>
+                        <span asp-validation-for="StaffType" class="text-danger small"></span>
                     </div>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Address" class="form-label">Address</label>
-                    <textarea asp-for="Address" class="form-control" rows="2" placeholder="Enter address"></textarea>
-                    <span asp-validation-for="Address" class="text-danger"></span>
-                </div>
-
-                <hr class="divider" />
-
-                <!-- Professional Details -->
-                <h5 class="form-section-header">
-                    <i class="bi bi-briefcase"></i> Professional Details
-                </h5>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Specialization" class="form-label">Specialization</label>
-                        <input asp-for="Specialization" class="form-control" placeholder="e.g., Electrical wiring, Plumbing repairs" />
-                        <span asp-validation-for="Specialization" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="HourlyRate" class="form-label">Hourly Rate (₹)</label>
-                        <input asp-for="HourlyRate" type="number" step="0.01" class="form-control" placeholder="Enter hourly rate" />
-                        <span asp-validation-for="HourlyRate" class="text-danger"></span>
+                    <div class="col-12">
+                        <label class="form-label">Address</label>
+                        <textarea asp-for="Address" class="form-control" rows="2" placeholder="Enter address"></textarea>
                     </div>
                 </div>
 
                 <hr class="divider" />
 
-                <!-- Login Access -->
-                <h5 class="form-section-header">
-                    <i class="bi bi-key"></i> Login Access (Optional)
-                </h5>
-
-                <div class="mb-3">
-                    <div class="form-check">
-                        <input asp-for="CreateLoginAccess" class="form-check-input" type="checkbox" id="createLoginToggle" />
-                        <label class="form-check-label" for="createLoginToggle">
-                            Create login access for this staff member
-                        </label>
-                    </div>
-                    <small class="text-muted" style="margin-left: 2rem;">
-                        Enable this if the staff member needs to access the system (for tasks, reports, etc.)
-                    </small>
-                </div>
-
-                <div id="loginFields" style="display: none;">
-                    <div class="alert-custom mb-3">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        <div>
-                            <strong>Note:</strong> Email is required for creating login access.
+                @* ── Apartment Assignment ── *@
+                <div class="sec-hdr"><i class="bi bi-buildings-fill"></i> Apartment Assignment</div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Assign to Apartment <span class="req">*</span></label>
+                        <div class="apt-select-wrap">
+                            <i class="bi bi-building-fill apt-select-icon"></i>
+                            <select asp-for="ApartmentId" class="form-select" required>
+                                <option value="">-- Select Apartment --</option>
+                                @if (ViewBag.Apartments != null)
+                                {
+                                    foreach (ApartmentDropdownItem apt in ViewBag.Apartments)
+                                    {
+                                        <option value="@apt.Id">@apt.Name</option>
+                                    }
+                                }
+                            </select>
                         </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Password" class="form-label">Password <span class="text-danger">*</span></label>
-                        <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                        <small class="text-muted">Minimum 6 characters</small>
+                        <div class="form-text">Select which apartment this staff member belongs to.</div>
                     </div>
                 </div>
 
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="border-radius: 12px;"></div>
+                <hr class="divider" />
 
-                <div class="d-flex justify-content-end gap-2 mt-4">
-                    <a asp-action="Index" class="btn btn-cancel">
-                        <i class="bi bi-arrow-left"></i> Cancel
-                    </a>
-                    <button type="submit" class="btn btn-submit">
-                        <i class="bi bi-check-circle"></i> Add Staff Member
-                    </button>
+                @* ── Professional Details ── *@
+                <div class="sec-hdr"><i class="bi bi-briefcase-fill"></i> Professional Details</div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Specialization</label>
+                        <input asp-for="Specialization" class="form-control" placeholder="e.g., Electrical wiring" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Hourly Rate (₹)</label>
+                        <input asp-for="HourlyRate" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                    </div>
+                </div>
+
+                <hr class="divider" />
+
+                @* ── Login Access ── *@
+                <div class="sec-hdr"><i class="bi bi-key-fill"></i> Login Access (Optional)</div>
+                <div class="login-toggle-row">
+                    <input asp-for="CreateLoginAccess" class="form-check-input" type="checkbox" id="loginToggle" />
+                    <label class="form-check-label" for="loginToggle">
+                        Create login access for this staff member
+                    </label>
+                </div>
+                <div id="loginFields" class="login-fields-box" style="display:none;">
+                    <div class="login-note">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        Email is required when creating login access.
+                    </div>
+                    <label class="form-label">Password <span class="req">*</span></label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Minimum 6 characters" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 mt-3"></div>
+
+                <div class="form-actions">
+                    <a asp-action="Index" class="btn-cancel-form"><i class="bi bi-x-circle"></i> Cancel</a>
+                    <button type="submit" class="btn-submit-form"><i class="bi bi-check-circle-fill"></i> Add Staff Member</button>
                 </div>
             </form>
         </div>
@@ -296,18 +358,22 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
     <script>
-        document.getElementById('createLoginToggle').addEventListener('change', function() {
-            const loginFields = document.getElementById('loginFields');
-            if (this.checked) {
-                loginFields.style.display = 'block';
-            } else {
-                loginFields.style.display = 'none';
-            }
+        document.getElementById('loginToggle').addEventListener('change', function () {
+            document.getElementById('loginFields').style.display = this.checked ? 'block' : 'none';
         });
     </script>
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

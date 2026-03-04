@@ -11,8 +11,8 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         // If user is authenticated, go to dashboard
-       // if (User.Identity?.IsAuthenticated == true)
-         //   return RedirectToAction("Index", "Dashboard");
+        if (User.Identity?.IsAuthenticated == true)
+            return RedirectToAction("Index", "Dashboard");
         return View();
        
     }

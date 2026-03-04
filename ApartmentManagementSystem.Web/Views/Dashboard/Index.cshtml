@@ -7,9 +7,6 @@
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-    /* ═══════════════════════════════════════════════
-       DESIGN TOKENS
-    ═══════════════════════════════════════════════ */
     :root {
         --page: #eef0f6;
         --card: #ffffff;
@@ -78,9 +75,7 @@
         -webkit-font-smoothing: antialiased;
     }
 
-    /* ═══════════════════════════════════════════════
-       ANIMATIONS
-    ═══════════════════════════════════════════════ */
+    /* ANIMATIONS*/
     @@keyframes riseIn {
         from {
             opacity: 0;
@@ -151,18 +146,14 @@
         animation-delay: .35s;
     }
 
-    /* ═══════════════════════════════════════════════
-       PAGE SHELL
-    ═══════════════════════════════════════════════ */
+     /*PAGE SHELL*/
     .dash-wrap {
         max-width: 1440px;
         margin: 0 auto;
         padding: 1.8rem 2.5rem 5rem;
     }
 
-    /* ═══════════════════════════════════════════════
-       HERO BANNER — compact
-    ═══════════════════════════════════════════════ */
+    /*HERO BANNER — compact */
     .hero {
         background: var(--g-navy);
         border-radius: var(--r12);
@@ -370,9 +361,7 @@
         animation: pulseDot 2s ease-in-out infinite;
     }
 
-    /* ═══════════════════════════════════════════════
-       SECTION LABEL
-    ═══════════════════════════════════════════════ */
+    /*SECTION LABEL */
     .sec-row {
         display: flex;
         align-items: center;
@@ -396,16 +385,12 @@
         color: var(--ink-3);
     }
 
-    /* ═══════════════════════════════════════════════
-       SECTION WRAPPER
-    ═══════════════════════════════════════════════ */
+    /*SECTION WRAPPER*/
     .section {
         margin-bottom: 2.8rem;
     }
 
-    /* ═══════════════════════════════════════════════
-       QUICK ACTIONS — larger tiles
-    ═══════════════════════════════════════════════ */
+    /* QUICK ACTIONS — larger tiles */
     .qa-grid {
         display: grid;
         grid-template-columns: repeat(6, 1fr);
@@ -526,9 +511,7 @@
         color: var(--rose);
     }
 
-    /* ═══════════════════════════════════════════════
-       PORTFOLIO STRIP — SuperAdmin
-    ═══════════════════════════════════════════════ */
+    /* PORTFOLIO STRIP — SuperAdmin*/
     .portfolio {
         background: var(--g-navy);
         border-radius: var(--r10);
@@ -639,9 +622,7 @@
         letter-spacing: 1px;
     }
 
-    /* ═══════════════════════════════════════════════
-       METRICS GRID — 3 col, big cards
-    ═══════════════════════════════════════════════ */
+    /* METRICS GRID — 3 col, big cards*/
     .metrics-grid {
         display: grid;
         grid-template-columns: repeat(3,1fr);
@@ -811,11 +792,8 @@
 
     .metric-card.mc-lime .mc-link {
         color: var(--lime);
-    }
-
-    /* ═══════════════════════════════════════════════
-       BOTTOM ROW: Financial + Module Status
-    ═══════════════════════════════════════════════ */
+    }   
+       /*BOTTOM ROW: Financial + Module Status*/
     .bottom-row {
         display: grid;
         grid-template-columns: 1fr 1fr;

@@ -123,7 +123,7 @@ async function loadResidents(apartmentId) {
     const select = document.getElementById('residentSelect');
 
     try {
-        const response = await fetch(`/api/Manager/apartment-residents/${apartmentId}`);
+        const response = await fetch(`/api/ApartmentManager/apartment-residents/${apartmentId}`);
         const data = await response.json();
 
         if (data && data.success && data.data && data.data.length > 0) {

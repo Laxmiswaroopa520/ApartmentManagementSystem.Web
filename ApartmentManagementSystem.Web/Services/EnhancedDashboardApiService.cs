@@ -22,7 +22,7 @@ public class EnhancedDashboardApiService
     public async Task<ApiResponse<ManagerDashboardDto>?> GetManagerDashboardAsync()
     {
         return await ApiClient.GetAsync<ApiResponse<ManagerDashboardDto>>(
-            "api/EnhancedDashboardApi/manager"
+            "api/EnhancedDashboard"
         );
     }
 

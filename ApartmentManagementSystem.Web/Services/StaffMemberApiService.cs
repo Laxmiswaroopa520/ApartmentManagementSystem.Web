@@ -15,21 +15,21 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<List<StaffMemberDto>>?> GetAllStaffMembersAsync()
         {
             return await ApiClient.GetAsync<ApiResponse<List<StaffMemberDto>>>(
-                "api/StaffMembersApi"
+                "api/ApartmentStaff"
             );
         }
 
         public async Task<ApiResponse<List<StaffMemberDto>>?> GetStaffMembersByTypeAsync(string staffType)
         {
             return await ApiClient.GetAsync<ApiResponse<List<StaffMemberDto>>>(
-                $"api/StaffMembersApi/by-type/{staffType}"
+                $"api/ApartmentStaff/by-type/{staffType}"
             );
         }
 
         public async Task<ApiResponse<StaffMemberDto>?> CreateStaffMemberAsync(CreateStaffMemberRequest request)
         {
             return await ApiClient.PostAsync<CreateStaffMemberRequest, ApiResponse<StaffMemberDto>>(
-                "api/StaffMembersApi",
+                "api/ApartmentStaff",
                 request
             );
         }
@@ -37,7 +37,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<StaffMemberDto>?> UpdateStaffMemberAsync(UpdateStaffMemberRequest request)
         {
             return await ApiClient.PostAsync<UpdateStaffMemberRequest, ApiResponse<StaffMemberDto>>(
-                "api/StaffMembersApi",
+                "api/ApartmentStaff",
                 request
             );
         }
@@ -45,7 +45,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<bool>?> DeactivateStaffMemberAsync(Guid staffId)
         {
             return await ApiClient.PostAsync<object, ApiResponse<bool>>(
-                $"api/StaffMembersApi/{staffId}/deactivate",
+                $"api/ApartmentStaff/{staffId}/deactivate",
                 new { }
             );
         }
@@ -53,7 +53,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<bool>?> ActivateStaffMemberAsync(Guid staffId)
         {
             return await ApiClient.PostAsync<object, ApiResponse<bool>>(
-                $"api/StaffMembersApi/{staffId}/activate",
+                $"api/ApartmentStaff/{staffId}/activate",
                 new { }
             );
         }
@@ -61,7 +61,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<StaffMemberDto>?> GetStaffMemberByIdAsync(Guid staffId)
         {
             return await ApiClient.GetAsync<ApiResponse<StaffMemberDto>>(
-                $"api/StaffMembersApi/{staffId}"
+                $"api/ApartmentStaff/{staffId}"
             );
         }
     }

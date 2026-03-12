@@ -49,7 +49,7 @@
 
     <!-- Stats Overview -->
     <div class="stats-overview">
-        <div class="stat-card">
+        <div class="stat-card stat-highlight">
             <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
             <div class="stat-content">
                 <div class="stat-value">@Model.TotalFloors</div>
@@ -57,7 +57,7 @@
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card stat-highlight">
             <div class="stat-icon"><i class="fas fa-door-open"></i></div>
             <div class="stat-content">
                 <div class="stat-value">@Model.FlatsPerFloor</div>
@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card stat-highlight">
             <div class="stat-icon"><i class="fas fa-home"></i></div>
             <div class="stat-content">
                 <div class="stat-value">@Model.TotalFlats</div>
@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card stat-highlight">
             <div class="stat-icon"><i class="fas fa-key"></i></div>
             <div class="stat-content">
                 <div class="stat-value">@Model.VacantFlats</div>
@@ -723,7 +723,8 @@
             const select = document.getElementById('selectResident');
 
             try {
-              //  const response = await fetch(`/api/Manager/apartment-residents/${APARTMENT_ID}`);
+              //  const response = await fetch(`/
+              // /apartment-residents/${APARTMENT_ID}`);
                const response=await fetch(`/ApartmentBuilder/GetApartmentResidents?apartmentId=${APARTMENT_ID}`);
 
                 const data = await response.json();

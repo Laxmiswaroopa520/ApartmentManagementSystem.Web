@@ -19,7 +19,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<List<AvailableManagerDto>>?> GetAvailableManagersAsync(Guid apartmentId)
         {
             return await ApiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
-                $"api/Manager/available/{apartmentId}"
+                $"api/ApartmentManager/available/{apartmentId}"
             );
         }
 
@@ -31,7 +31,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<List<AvailableManagerDto>>?> GetResidentManagersAsync(Guid apartmentId)
         {
             return await ApiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
-                $"api/Manager/resident-managers/{apartmentId}"
+                $"api/ApartmentManager/resident-managers/{apartmentId}"
             );
         }
 
@@ -42,7 +42,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<ManagerAssignmentDto>?> AssignManagerToApartmentAsync(AssignManagerRequest request)
         {
             return await ApiClient.PostAsync<AssignManagerRequest, ApiResponse<ManagerAssignmentDto>>(
-                "api/Manager/assign",
+                "api/ApartmentManager/assign",
                 request
             );
         }
@@ -50,14 +50,14 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<bool>?> RemoveManagerFromApartmentAsync(RemoveManagerRequest request)
         {
             return await ApiClient.PostAsync<RemoveManagerRequest, ApiResponse<bool>>(
-                "api/Manager/remove",
+                "api/ApartmentManager/remove",
                 request
             );
         }
         public async Task<ApiResponse<List<AvailableManagerDto>>?> GetApartmentResidentsAsync(Guid apartmentId)
         {
             return await ApiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
-                $"api/Manager/apartment-residents/{apartmentId}"
+                $"api/ApartmentManager/apartment-residents/{apartmentId}"
             );
         }
 

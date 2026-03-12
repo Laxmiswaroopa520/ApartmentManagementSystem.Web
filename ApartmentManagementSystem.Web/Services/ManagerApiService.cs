@@ -5,11 +5,11 @@ namespace ApartmentManagementSystem.Web.Services
 {
     public class ManagerApiService
     {
-        private readonly ApiClient _apiClient;
+        private readonly ApiClient ApiClient;
 
         public ManagerApiService(ApiClient apiClient)
         {
-            _apiClient = apiClient;
+            ApiClient = apiClient;
         }
 
         /// <summary>
@@ -18,7 +18,7 @@ namespace ApartmentManagementSystem.Web.Services
         /// </summary>
         public async Task<ApiResponse<List<AvailableManagerDto>>?> GetAvailableManagersAsync(Guid apartmentId)
         {
-            return await _apiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
+            return await ApiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
                 $"api/Manager/available/{apartmentId}"
             );
         }
@@ -30,7 +30,7 @@ namespace ApartmentManagementSystem.Web.Services
         /// </summary>
         public async Task<ApiResponse<List<AvailableManagerDto>>?> GetResidentManagersAsync(Guid apartmentId)
         {
-            return await _apiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
+            return await ApiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
                 $"api/Manager/resident-managers/{apartmentId}"
             );
         }
@@ -41,7 +41,7 @@ namespace ApartmentManagementSystem.Web.Services
         /// which has the same shape, so all fields survive the round-trip.
         public async Task<ApiResponse<ManagerAssignmentDto>?> AssignManagerToApartmentAsync(AssignManagerRequest request)
         {
-            return await _apiClient.PostAsync<AssignManagerRequest, ApiResponse<ManagerAssignmentDto>>(
+            return await ApiClient.PostAsync<AssignManagerRequest, ApiResponse<ManagerAssignmentDto>>(
                 "api/Manager/assign",
                 request
             );
@@ -49,14 +49,14 @@ namespace ApartmentManagementSystem.Web.Services
         /// POST /api/Manager/remove
         public async Task<ApiResponse<bool>?> RemoveManagerFromApartmentAsync(RemoveManagerRequest request)
         {
-            return await _apiClient.PostAsync<RemoveManagerRequest, ApiResponse<bool>>(
+            return await ApiClient.PostAsync<RemoveManagerRequest, ApiResponse<bool>>(
                 "api/Manager/remove",
                 request
             );
         }
         public async Task<ApiResponse<List<AvailableManagerDto>>?> GetApartmentResidentsAsync(Guid apartmentId)
         {
-            return await _apiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
+            return await ApiClient.GetAsync<ApiResponse<List<AvailableManagerDto>>>(
                 $"api/Manager/apartment-residents/{apartmentId}"
             );
         }

@@ -1,4 +1,176 @@
-﻿
+﻿@* Views/Community/Index.cshtml *@
+@model List<ApartmentManagementSystem.Web.ViewModels.Community.CommunityMemberViewModel>
+@{
+    ViewData["Title"] = "Community Members";
+    Layout = "_Layout";
+    var assignedRoles = ViewBag.AssignedRoles as List<string> ?? new List<string>();
+    bool allFilled = ViewBag.AllRolesFilled == true;
+}
+
+<div class="container-fluid mt-4">
+    {{! Back + heading row }}
+    <div class="row mb-3 align-items-center">
+        <div class="col-auto">
+            <a asp-action="SelectApartment" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> All Apartments
+            </a>
+        </div>
+        <div class="col">
+            <h2 class="mb-0">
+                <i class="bi bi-award"></i> Community – @ViewBag.ApartmentName
+            </h2>
+            <p class="text-muted mb-0">Manage President, Secretary, and Treasurer roles</p>
+        </div>
+        <div class="col-auto">
+            @if (!allFilled)
+            {
+                <a asp-action="AssignRole"
+                   asp-route-apartmentId="@ViewBag.ApartmentId"
+                   class="btn btn-primary btn-lg">
+                    <i class="bi bi-person-plus-fill"></i> Assign Community Role
+                </a>
+            }
+            else
+            {
+                <span class="badge bg-success fs-6 p-2">
+                    <i class="bi bi-check-circle-fill"></i> All roles filled
+                </span>
+            }
+        </div>
+    </div>
+
+    @* Role slots summary *@
+    <div class="row mb-4">
+        @foreach (var roleInfo in new[] {
+                ("President",  "danger",  "bi-star-fill"),
+                ("Secretary",  "primary", "bi-file-earmark-text"),
+                ("Treasurer",  "success", "bi-cash-coin")
+                })
+        {
+            var filled = assignedRoles.Contains(roleInfo.Item1);
+            <div class="col-md-4">
+                <div class="card border-@(filled? roleInfo.Item2: "secondary")">
+                    <div class="card-body text-center py-3">
+                        <i class="bi @roleInfo.Item3 text-@(filled? roleInfo.Item2: "secondary") fs-4"></i>
+                        <h6 class="mt-1 mb-0">@roleInfo.Item1</h6>
+                        @if (filled)
+                        {
+                            <span class="badge bg-@roleInfo.Item2 mt-1">Assigned</span>
+                        }
+                        else
+                        {
+                            <a asp-action="AssignRole"
+                               asp-route-apartmentId="@ViewBag.ApartmentId"
+                               asp-route-role="@roleInfo.Item1"
+                               class="badge bg-secondary mt-1 text-decoration-none">Vacant – Assign</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Current Community Members</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Role</th>
+                                <th>Flat</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Assigned On</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var member in Model)
+                            {
+                                <tr>
+                                    <td><strong>@member.FullName</strong></td>
+                                    <td>
+                                        @{
+                                            var (color, icon) = member.Role switch
+                                            {
+                                                "President" => ("danger", "bi-star-fill"),
+                                                "Secretary" => ("primary", "bi-file-earmark-text"),
+                                                _ => ("success", "bi-cash-coin")
+                                            };
+                                        }
+                                        <span class="badge bg-@color fs-6">
+                                            <i class="bi @icon"></i> @member.Role
+                                        </span>
+                                    </td>
+                                    <td><span class="badge bg-secondary">@member.FlatNumber</span></td>
+                                    <td>@member.Email</td>
+                                    <td>@member.Phone</td>
+                                    <td>@member.AssignedOn.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <span class="badge bg-@(member.IsActive ? "success" : "danger")">
+                                            @(member.IsActive ? "Active" : "Inactive")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form asp-action="RemoveRole" method="post" class="d-inline"
+                                              onsubmit="return confirm('Remove @member.Role role from @member.FullName?');">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="userId" value="@member.UserId" />
+                                            <input type="hidden" name="apartmentId" value="@ViewBag.ApartmentId" />
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash"></i> Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No community members assigned yet.
+                    <a asp-action="AssignRole" asp-route-apartmentId="@ViewBag.ApartmentId"
+                       class="alert-link">Assign the first role.</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+@*
 @model List<ApartmentManagementSystem.Web.ViewModels.Community.CommunityMemberViewModel>
 @{
     ViewData["Title"] = "Community Members";
@@ -102,7 +274,7 @@
                                             </td>
                                             <td>
                                                 @* ⭐ FIX: Pass apartmentId as hidden field so the controller
-                                                   can redirect back to the correct apartment's Index *@
+                                                   can redirect back to the correct apartment's Index -----
                                                 <form asp-action="RemoveRole" method="post" class="d-inline"
                                                       onsubmit="return confirm('Are you sure you want to remove @member.Role role from @member.FullName?');">
                                                     <input type="hidden" name="userId" value="@member.UserId" />
@@ -130,7 +302,7 @@
         </div>
     </div>
 
-    @* Role Information Card *@
+    @* Role Information Card ------
     <div class="row mt-4">
         <div class="col-12">
             <div class="card border-info">
@@ -157,6 +329,6 @@
         </div>
     </div>
 </div>
-
+*@
 
 

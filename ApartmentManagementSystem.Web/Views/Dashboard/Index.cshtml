@@ -1771,7 +1771,9 @@
         /* ── Modal ── */
         async function openModal() {
           try {
-            const res  = await fetch('/api/ApartmentManagement/all');
+           // const res  = await fetch('/api/ApartmentManagement/all');
+           // const res=await fetch('/api/Apartments');
+           const res=await fetch('/api/ApartmentManagement/active-list');
             const data = await res.json();
             const sel  = document.getElementById('aptSelect');
             sel.innerHTML = '<option value="">— Choose an apartment —</option>';

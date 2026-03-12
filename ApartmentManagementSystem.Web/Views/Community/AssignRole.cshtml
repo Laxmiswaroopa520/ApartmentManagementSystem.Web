@@ -1,4 +1,130 @@
-﻿@model ApartmentManagementSystem.Web.ViewModels.Community.AssignCommunityRoleViewModel
+﻿@* Views/Community/AssignRole.cshtml *@
+@model ApartmentManagementSystem.Web.ViewModels.Community.AssignCommunityRoleViewModel
+@{
+    ViewData["Title"] = "Assign Community Role";
+    Layout = "_Layout";
+    var eligible = ViewBag.EligibleResidents as List<ApartmentManagementSystem.Web.ViewModels.Community.EligibleResidentViewModel>
+                   ?? new();
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-person-plus-fill"></i> Assign Community Role
+                        @if (!string.IsNullOrEmpty(Model.ApartmentName))
+                        {
+                            <small class="fw-normal ms-2 opacity-75">– @Model.ApartmentName</small>
+                        }
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AssignRole" method="post">
+                        @Html.AntiForgeryToken()
+                        <input asp-for="ApartmentId" type="hidden" />
+                        <input asp-for="ApartmentName" type="hidden" />
+
+                        @* Resident *@
+                        <div class="mb-3">
+                            <label asp-for="UserId" class="form-label fw-semibold">Select Resident</label>
+                            @if (!eligible.Any())
+                            {
+                                <div class="alert alert-warning py-2">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    No eligible residents found for this apartment.
+                                    All owners may already have a community role.
+                                </div>
+                            }
+                            else
+                            {
+                                <select asp-for="UserId" class="form-select">
+                                    <option value="">-- Select Resident --</option>
+                                    @foreach (var r in eligible)
+                                    {
+                                        <option value="@r.UserId">@r.DisplayText</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="UserId" class="text-danger small"></span>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    Only resident owners with flats in this apartment who don't already hold a community role are listed.
+                                </div>
+                            }
+                        </div>
+
+                        @* Role — only shows AVAILABLE (unassigned) roles *@
+                        <div class="mb-3">
+                            <label asp-for="CommunityRole" class="form-label fw-semibold">Community Role</label>
+                            <select asp-for="CommunityRole" class="form-select" required>
+                                <option value="">-- Select Role --</option>
+                                @foreach (var r in Model.AvailableRoles)
+                                {
+                                    var desc = r switch
+                                    {
+                                        "President" => "Leadership & Decision Making",
+                                        "Secretary" => "Records & Communication",
+                                        _ => "Financial Management"
+                                    };
+                                    <option value="@r" selected="@(Model.CommunityRole == r)">
+                                        @r (@desc)
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="CommunityRole" class="text-danger small"></span>
+                            <div class="form-text text-success">
+                                <i class="bi bi-check-circle"></i>
+                                Only unassigned roles are shown. Already-assigned roles are hidden.
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning py-2">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Note:</strong> Each role can only be held by one person per apartment.
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <a asp-action="Index"
+                               asp-route-apartmentId="@Model.ApartmentId"
+                               class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary"
+                                    @(eligible.Any() ? "" : "disabled")>
+                                <i class="bi bi-check-circle"></i> Assign Role
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Community.AssignCommunityRoleViewModel
 @{
     ViewData["Title"] = "Assign Community Role";
     Layout = "_Layout";
@@ -13,10 +139,10 @@
                 </div>
                 <div class="card-body">
                     <form asp-action="AssignRole" method="post">
-                        @* Hidden: ApartmentId — CRITICAL for multi-apartment *@
+                        @* Hidden: ApartmentId — CRITICAL for multi-apartment ------
                         <input asp-for="ApartmentId" type="hidden" />
 
-                        @* Resident Selector *@
+                        @* Resident Selector ---
                         <div class="mb-3">
                             <label asp-for="UserId" class="form-label">Select Resident</label>
                             <select asp-for="UserId" class="form-select">
@@ -32,7 +158,7 @@
                             </div>
                         </div>
 
-                        @* Role Selector *@
+                        @* Role Selector ----
                         <div class="mb-3">
                             <label asp-for="CommunityRole" class="form-label">Community Role</label>
                             <select asp-for="CommunityRole" class="form-select" required>
@@ -65,7 +191,7 @@
                 </div>
             </div>
 
-            @* Role Responsibilities Card *@
+            @* Role Responsibilities Card ----
             <div class="card mt-4 border-info">
                 <div class="card-header bg-info text-white">
                     <h6 class="mb-0"><i class="bi bi-list-check"></i> Role Responsibilities</h6>
@@ -108,7 +234,7 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
+*@
 
 
 

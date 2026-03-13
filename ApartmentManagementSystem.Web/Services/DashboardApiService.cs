@@ -15,27 +15,27 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<AdminDashboardResponse>?> GetAdminDashboardAsync()
         {
             return await ApiClient.GetAsync<ApiResponse<AdminDashboardResponse>>(
-                "api/DashboardApi/admin"
+                "api/Dashboard/admin"
             );
         }
 
         public async Task<ApiResponse<OwnerDashboardResponse>?> GetOwnerDashboardAsync()
         {
             return await ApiClient.GetAsync<ApiResponse<OwnerDashboardResponse>>(
-                "api/DashboardApi/owner"
+                "api/Dashboard/owner"
             );
         }
 
         public async Task<ApiResponse<TenantDashboardResponse>?> GetTenantDashboardAsync()
         {
             return await ApiClient.GetAsync<ApiResponse<TenantDashboardResponse>>(
-                "api/DashboardApi/tenant"
+                "api/Dashboard/tenant"
             );
         }
         public async Task<ApiResponse<DashboardStatsDto>?> GetDashboardStatsAsync()
         {
             return await ApiClient.GetAsync<ApiResponse<DashboardStatsDto>>(
-                "api/DashboardApi/stats");
+                "api/Dashboard/stats");
         }
     }
 }

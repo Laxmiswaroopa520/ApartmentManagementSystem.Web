@@ -15,70 +15,70 @@ public class EnhancedDashboardApiService
     public async Task<ApiResponse<EnhancedAdminDashboardDto>?> GetEnhancedAdminDashboardAsync()
     {
         return await ApiClient.GetAsync<ApiResponse<EnhancedAdminDashboardDto>>(
-            "api/EnhancedDashboardApi/admin"
+            "api/EnhancedDashboard/admin"
         );
     }
 
     public async Task<ApiResponse<ManagerDashboardDto>?> GetManagerDashboardAsync()
     {
         return await ApiClient.GetAsync<ApiResponse<ManagerDashboardDto>>(
-            "api/EnhancedDashboard"
+            "api/EnhancedDashboard/manager"                             // cahnged this line from "api/EnhancedDashboard/manager
         );
     }
 
     public async Task<ApiResponse<CommunityLeaderDashboardDto>?> GetCommunityLeaderDashboardAsync()
     {
         return await ApiClient.GetAsync<ApiResponse<CommunityLeaderDashboardDto>>(
-            "api/EnhancedDashboardApi/community-leader"
+            "api/EnhancedDashboard/community-leader"
         );
     }
 
     public async Task<ApiResponse<StaffDashboardDto>?> GetStaffDashboardAsync()
     {
         return await ApiClient.GetAsync<ApiResponse<StaffDashboardDto>>(
-            "api/EnhancedDashboardApi/staff"
+            "api/EnhancedDashboard/staff"
         );
     }
 
     public async Task<ApiResponse<AdvancedDashboardStatsDto>?> GetAdvancedDashboardStatsAsync()
     {
         return await ApiClient.GetAsync<ApiResponse<AdvancedDashboardStatsDto>>(
-            "api/EnhancedDashboardApi/advanced-stats"
+            "api/EnhancedDashboard/advanced-stats"
         );
     }
 
     public async Task<ApiResponse<ApartmentDashboardStatsDto>?> GetApartmentDashboardStatsAsync(Guid apartmentId)
     {
         return await ApiClient.GetAsync<ApiResponse<ApartmentDashboardStatsDto>>(
-            $"api/EnhancedDashboardApi/apartment-stats/{apartmentId}"
+            $"api/EnhancedDashboard/apartment-stats/{apartmentId}"
         );
     }
 
     public async Task<ApiResponse<FinancialSummaryDto>?> GetFinancialSummaryAsync()
     {
         return await ApiClient.GetAsync<ApiResponse<FinancialSummaryDto>>(
-            "api/EnhancedDashboardApi/financial-summary"
+            "api/EnhancedDashboard/financial-summary"
         );
     }
 
     public async Task<ApiResponse<FinancialSummaryDto>?> GetApartmentFinancialSummaryAsync(Guid apartmentId)
     {
         return await ApiClient.GetAsync<ApiResponse<FinancialSummaryDto>>(
-            $"api/EnhancedDashboardApi/apartment-financial-summary/{apartmentId}"
+            $"api/EnhancedDashboard/apartment-financial-summary/{apartmentId}"
         );
     }
 
     public async Task<ApiResponse<List<NoticeBoardMessageDto>>?> GetNoticeBoardMessagesAsync(Guid apartmentId)
     {
         return await ApiClient.GetAsync<ApiResponse<List<NoticeBoardMessageDto>>>(
-            $"api/EnhancedDashboardApi/notice-board/{apartmentId}"
+            $"api/EnhancedDashboard/notice-board/{apartmentId}"
         );
     }
 
     public async Task<ApiResponse<List<QuickActionDto>>?> GetQuickActionsAsync()
     {
         return await ApiClient.GetAsync<ApiResponse<List<QuickActionDto>>>(
-            "api/EnhancedDashboardApi/quick-actions"
+            "api/EnhancedDashboard/quick-actions"
         );
     }
 }

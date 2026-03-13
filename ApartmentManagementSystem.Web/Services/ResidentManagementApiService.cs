@@ -15,7 +15,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<List<ResidentListDto>>> GetAllResidentsAsync()
         {
             return await ApiClient.GetAsync<ApiResponse<List<ResidentListDto>>>(
-                "api/ResidentManagementApi"
+                "api/ResidentManagement"
             ) ?? ApiResponse<List<ResidentListDto>>
                 .ErrorResponse("No response from server");
         }
@@ -23,7 +23,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<List<ResidentListDto>>> GetResidentsByTypeAsync(string residentType)
         {
             return await ApiClient.GetAsync<ApiResponse<List<ResidentListDto>>>(
-                $"api/ResidentManagementApi/by-type/{residentType}"
+                $"api/ResidentManagement/by-type/{residentType}"
             ) ?? ApiResponse<List<ResidentListDto>>
                 .ErrorResponse("No response from server");
         }
@@ -31,7 +31,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<ResidentDetailDto>> GetResidentDetailAsync(Guid userId)
         {
             return await ApiClient.GetAsync<ApiResponse<ResidentDetailDto>>(
-                $"api/ResidentManagementApi/{userId}"
+                $"api/ResidentManagement/{userId}"
             ) ?? ApiResponse<ResidentDetailDto>
                 .ErrorResponse("Resident not found");
         }
@@ -39,7 +39,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<bool>> DeactivateResidentAsync(Guid userId)
         {
             return await ApiClient.PostAsync<object, ApiResponse<bool>>(
-                $"api/ResidentManagementApi/{userId}/deactivate",
+                $"api/ResidentManagement/{userId}/deactivate",
                 new { }
             ) ?? ApiResponse<bool>.ErrorResponse("Failed to deactivate resident");
         }
@@ -47,7 +47,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<bool>> ActivateResidentAsync(Guid userId)
         {
             return await ApiClient.PostAsync<object, ApiResponse<bool>>(
-                $"api/ResidentManagementApi/{userId}/activate",
+                $"api/ResidentManagement/{userId}/activate",
                 new { }
             ) ?? ApiResponse<bool>.ErrorResponse("Failed to activate resident");
         }

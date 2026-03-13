@@ -14,8 +14,7 @@ builder.Services.AddHttpClient<ApiClient>(client =>
 {
     //right now modified this..
     var apiBaseUrl =
-        builder.Configuration["ApiSettings:BaseUrl"]
-       ?? "http://localhost:7093/";
+        builder.Configuration["ApiSettings:BaseUrl"];
     //var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7001/";
     client.BaseAddress = new Uri(apiBaseUrl);
     client.DefaultRequestHeaders.Add("Accept", "application/json");

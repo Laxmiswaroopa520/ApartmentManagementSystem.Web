@@ -1,5 +1,4 @@
-﻿// Web/Services/CommunityMemberApiService.cs
-using ApartmentManagementSystem.Web.Services.DTOs;
+﻿using ApartmentManagementSystem.Web.Services.DTOs;
 using ApartmentManagementSystem.Web.Services.DTOs.Community;
 using System.Net.Http.Json;
 
@@ -14,8 +13,9 @@ namespace ApartmentManagementSystem.Web.Services
             Http = http;
         }
 
-        // ── Apartments ──────────────────────────────────────────────
-        // Calls the existing api/ApartmentManagement/all endpoint
+        // Apartments 
+        // Calls the existing
+        // /all endpoint
         /*  public async Task<ApiResponse<List<ApartmentDto>>?> GetAllApartmentsAsync()
           {
               try
@@ -35,7 +35,7 @@ namespace ApartmentManagementSystem.Web.Services
             catch { return null; }
         }
 
-        // ── Community Members ───────────────────────────────────────
+        //  Community Members 
         public async Task<ApiResponse<List<CommunityMemberDto>>?> GetAllCommunityMembersAsync(
             Guid? apartmentId = null)
         {

@@ -1,41 +1,411 @@
-﻿
-@model List<ApartmentManagementSystem.Web.ViewModels.Admin.PendingResidentViewModel>
-
+﻿@model List<ApartmentManagementSystem.Web.ViewModels.Admin.PendingResidentViewModel>
 @{
     ViewData["Title"] = "Pending Resident Registrations";
+    Layout = "_Layout";
 }
 
-    <div class="container-fluid mt-4">
-        <div class="card shadow">
-            <div class="card-header bg-warning text-dark">
-                <h4 class="mb-0">
-                    <i class="bi bi-hourglass-split"></i> Pending Resident Registrations
-                </h4>
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #5a6fd8 0%, #6b4299 100%);
+        --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+        --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+        background: #f0f2f5;
+    }
+
+    .page-container {
+        min-height: calc(100vh - 120px);
+        padding: 2rem 0;
+    }
+
+    /* MAIN CARD  */
+    .pending-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        max-width: 1400px; 
+        width: 95%; 
+        margin: 1rem auto;
+        animation: slideUp 0.6s ease-out;
+    }
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* HEADER */
+    .card-header-gradient {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 1.5rem 2rem;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+        .card-header-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+    @@keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .header-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
+    }
+
+    .header-text {
+        position: relative;
+        z-index: 1;
+    }
+
+        .header-text h3 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.35rem;
+        }
+
+        .header-text .subtitle {
+            margin: 0.2rem 0 0;
+            opacity: 0.88;
+            font-size: 0.85rem;
+        }
+
+    /* BODY */
+    .card-body-custom {
+        padding: 2rem;
+    }
+
+    /* ── SUCCESS ALERT ─────────────────────────────────── */
+    .alert-success-custom {
+        background: #f0fdf4;
+        border: 1.5px solid #86efac;
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
+        color: #166534;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        animation: slideUp 0.4s ease-out;
+    }
+
+        .alert-success-custom .btn-close-custom {
+            margin-left: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #166534;
+            font-size: 1rem;
+            padding: 0;
+            opacity: 0.6;
+        }
+
+            .alert-success-custom .btn-close-custom:hover {
+                opacity: 1;
+            }
+
+    /* ── EMPTY STATE ─ */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #718096;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            opacity: 0.35;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+    /* ── TABLE */
+    .table-wrapper {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1.5px solid #e2e8f0;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+
+        .custom-table thead tr {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .custom-table thead th {
+            padding: 0.9rem 1.1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .custom-table tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s ease;
+        }
+
+            .custom-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .custom-table tbody tr:hover {
+                background: #f8faff;
+            }
+
+        .custom-table tbody td {
+            padding: 1rem 1.1rem;
+            font-size: 0.88rem;
+            color: #2d3748;
+            vertical-align: middle;
+        }
+
+    /* name cell */
+    .resident-name {
+        font-weight: 700;
+        color: #1a202c;
+        font-size: 0.92rem;
+    }
+
+    /* phone cell */
+    .phone-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: #4a5568;
+    }
+
+        .phone-cell i {
+            color: #5a6fd8;
+            font-size: 0.8rem;
+        }
+
+    /* email cell */
+    .email-cell {
+        color: #4a5568;
+        font-size: 0.85rem;
+    }
+
+    /* badges */
+    .badge-type {
+        background: linear-gradient(135deg, #0891b2, #0e7490);
+        color: white;
+        padding: 0.3rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .badge-status {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        padding: 0.3rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    /* date cell */
+    .date-cell {
+        color: #718096;
+        font-size: 0.85rem;
+    }
+
+    /* action button */
+    .btn-assign {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        box-shadow: 0 2px 8px rgba(90, 111, 216, 0.3);
+        transition: all 0.25s ease;
+        white-space: nowrap;
+    }
+
+        .btn-assign:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(90, 111, 216, 0.45);
+            color: white;
+        }
+
+        .btn-assign:active {
+            transform: translateY(0);
+        }
+
+    /* FOOTER */
+    .card-footer-custom {
+        padding: 1.25rem 2rem;
+        border-top: 1.5px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .resident-count {
+        font-size: 0.85rem;
+        color: #718096;
+    }
+
+        .resident-count strong {
+            color: #2d3748;
+        }
+
+    .btn-back {
+        background: white;
+        border: 2px solid #e2e8f0;
+        color: #4a5568;
+        border-radius: 10px;
+        padding: 0.6rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.88rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.25s ease;
+    }
+
+        .btn-back:hover {
+            border-color: #5a6fd8;
+            color: #5a6fd8;
+            background: #f8faff;
+        }
+
+    /*  RESPONSIVE */
+    @@media (max-width: 768px) {
+        .page-container {
+            padding: 1rem 0;
+        }
+
+        .pending-card {
+            margin: 0.75rem;
+        }
+
+        .card-body-custom {
+            padding: 1rem;
+        }
+
+        .card-footer-custom {
+            padding: 1rem;
+        }
+
+        .custom-table thead th,
+        .custom-table tbody td {
+            padding: 0.7rem 0.75rem;
+        }
+        /* hide email column on small screens */
+        .col-email {
+            display: none;
+        }
+    }
+</style>
+
+<div class="page-container">
+    <div class="container">
+        <div class="pending-card">
+
+            <!-- ── HEADER ── -->
+            <div class="card-header-gradient">
+                <div class="header-icon">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+                <div class="header-text">
+                    <h3>Pending Resident Registrations</h3>
+                    <p class="subtitle mb-0">Review and assign flats to residents awaiting allocation</p>
+                </div>
             </div>
-            <div class="card-body">
+
+            <!-- ── BODY ── -->
+            <div class="card-body-custom">
+
                 @if (TempData["SuccessMessage"] != null)
                 {
-                    <div class="alert alert-success alert-dismissible fade show">
-                        <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <div class="alert-success-custom" id="successAlert">
+                        <i class="bi bi-check-circle-fill"></i>
+                        @TempData["SuccessMessage"]
+                        <button class="btn-close-custom" onclick="document.getElementById('successAlert').remove()">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
                     </div>
                 }
 
                 @if (Model == null || !Model.Any())
                 {
-                    <div class="alert alert-info text-center">
-                        <i class="bi bi-info-circle"></i> No pending registrations at the moment.
+                    <div class="empty-state">
+                        <i class="bi bi-person-check"></i>
+                        <p>No pending registrations at the moment.<br>All residents have been processed.</p>
                     </div>
                 }
                 else
                 {
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-dark">
+                    <div class="table-wrapper">
+                        <table class="custom-table">
+                            <thead>
                                 <tr>
                                     <th>Full Name</th>
                                     <th>Phone</th>
-                                    <th>Email</th>
+                                    <th class="col-email">Email</th>
                                     <th>Resident Type</th>
                                     <th>Registered On</th>
                                     <th>Status</th>
@@ -47,25 +417,34 @@
                                 {
                                     <tr>
                                         <td>
-                                            <strong>@resident.FullName</strong>
+                                            <span class="resident-name">@resident.FullName</span>
                                         </td>
                                         <td>
-                                            <i class="bi bi-telephone"></i> @resident.PrimaryPhone
+                                            <div class="phone-cell">
+                                                <i class="bi bi-telephone-fill"></i>
+                                                @resident.PrimaryPhone
+                                            </div>
                                         </td>
-                                        <td>@resident.Email</td>
-                                        <td>
-                                            <span class="badge bg-info">@resident.ResidentType</span>
+                                        <td class="col-email">
+                                            <span class="email-cell">@resident.Email</span>
                                         </td>
-                                        <td>@resident.RegisteredOn.ToString("dd MMM yyyy")</td>
                                         <td>
-                                            <span class="badge bg-warning text-dark">@resident.Status</span>
+                                            <span class="badge-type">@resident.ResidentType</span>
+                                        </td>
+                                        <td>
+                                            <span class="date-cell">
+                                                @resident.RegisteredOn.ToString("dd MMM yyyy")
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge-status">@resident.Status</span>
                                         </td>
                                         <td>
                                             <a asp-action="AssignFlat"
                                                asp-route-userId="@resident.UserId"
                                                asp-route-userName="@resident.FullName"
-                                               class="btn btn-sm btn-primary">
-                                                <i class="bi bi-house-check"></i> Assign Flat
+                                               class="btn-assign">
+                                                <i class="bi bi-house-check-fill"></i> Assign Flat
                                             </a>
                                         </td>
                                     </tr>
@@ -74,12 +453,32 @@
                         </table>
                     </div>
                 }
-
-                <div class="mt-3">
-                    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to Dashboard
-                    </a>
-                </div>
             </div>
+
+            <!-- ── FOOTER ── -->
+            <div class="card-footer-custom">
+                <span class="resident-count">
+                    @if (Model != null && Model.Any())
+                    {
+                        <span>Showing <strong>@Model.Count</strong> pending registration@(Model.Count != 1 ? "s" : "")</span>
+                    }
+                </span>
+                <a asp-controller="Dashboard" asp-action="Index" class="btn-back">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+
         </div>
     </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+

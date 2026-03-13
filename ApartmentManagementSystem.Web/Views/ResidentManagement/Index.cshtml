@@ -4,6 +4,1108 @@
     Layout = "_Layout";
     var currentFilter = ViewBag.CurrentFilter as string;
 
+    var assignedResidents = Model
+        .Where(r => r.Status == "Active")
+        .ToList();
+
+    var pendingResidents = Model
+        .Where(r => r.Status == "PendingFlatAllocation")
+        .ToList();
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    :root {
+        --page: #eef0f6;
+        --card: #ffffff;
+        --card-2: #f8f9fc;
+        --border: #e2e6f0;
+        --border-md: #c8cfe0;
+        --ink-1: #0a0e1a;
+        --ink-2: #1c2235;
+        --ink-3: #3d4460;
+        --ink-4: #6b7499;
+        --ink-5: #9ba3be;
+        --indigo-m: #4338ca;
+        --indigo-lt: #eef0ff;
+        --indigo-pale: #f5f3ff;
+        --teal: #0d9488;
+        --teal-lt: #f0fdfb;
+        --amber: #b45309;
+        --amber-lt: #fef3c7;
+        --rose: #be123c;
+        --rose-lt: #fff1f2;
+        --sky: #0369a1;
+        --sky-lt: #e0f2fe;
+        --violet: #6d28d9;
+        --violet-lt: #ede9fe;
+        --lime: #15803d;
+        --lime-lt: #dcfce7;
+        --g-brand: linear-gradient(135deg, #3730a3 0%, #4f46e5 45%, #0d9488 100%);
+        --g-navy: linear-gradient(135deg, #0f172a 0%, #1e2a4a 55%, #0f2027 100%);
+        --g-indigo: linear-gradient(135deg, #3730a3 0%, #4338ca 100%);
+        --g-teal: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+        --g-amber: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        --g-rose: linear-gradient(135deg, #be123c 0%, #e11d48 100%);
+        --g-sky: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+        --g-violet: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+        --g-lime: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+        --s1: 0 2px 8px rgba(10,14,26,.06), 0 1px 3px rgba(10,14,26,.04);
+        --s2: 0 8px 24px rgba(10,14,26,.09), 0 3px 10px rgba(10,14,26,.05);
+        font-family: 'Sora', sans-serif;
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        background: var(--page);
+        color: var(--ink-1);
+        font-family: 'Sora', sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    @@keyframes riseIn {
+        from {
+            opacity: 0;
+            transform: translateY(18px) scale(.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .ri {
+        animation: riseIn .5s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .ri-1 {
+        animation-delay: .07s;
+    }
+
+    .ri-2 {
+        animation-delay: .14s;
+    }
+
+    .ri-3 {
+        animation-delay: .21s;
+    }
+
+    .ri-4 {
+        animation-delay: .28s;
+    }
+
+    /* ── PAGE WRAP ── */
+    .page-wrap {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 1.8rem 2rem 4rem;
+    }
+
+    /* ── PAGE HEADER (navy hero) ── */
+    .page-hd {
+        background: var(--g-navy);
+        border-radius: 20px;
+        padding: 1.8rem 2.2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--s2);
+        border: 1px solid rgba(255,255,255,.06);
+    }
+
+        .page-hd::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: 60px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(ellipse, rgba(67,56,202,.22) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .page-hd::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: 5%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(ellipse, rgba(13,148,136,.15) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+    .hd-left {
+        display: flex;
+        align-items: center;
+        gap: 1.1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hd-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(67,56,202,.55), rgba(13,148,136,.45));
+        border: 1.5px solid rgba(255,255,255,.14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .hd-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -.3px;
+        line-height: 1.2;
+    }
+
+    .hd-sub {
+        font-size: .82rem;
+        color: rgba(255,255,255,.4);
+        margin-top: .2rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn-hd-add {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        background: var(--g-indigo);
+        border: none;
+        color: #fff;
+        border-radius: 10px;
+        padding: .7rem 1.4rem;
+        font-size: .85rem;
+        font-weight: 700;
+        text-decoration: none;
+        font-family: 'Sora', sans-serif;
+        box-shadow: 0 3px 12px rgba(67,56,202,.35);
+        transition: all .22s ease;
+    }
+
+        .btn-hd-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 18px rgba(67,56,202,.5);
+            color: #fff;
+        }
+
+    /* ── SECTION LABEL ── */
+    .sec-row {
+        display: flex;
+        align-items: center;
+        gap: .65rem;
+        margin-bottom: 1rem;
+    }
+
+    .sec-bar {
+        width: 4px;
+        height: 22px;
+        border-radius: 3px;
+        background: var(--g-brand);
+        flex-shrink: 0;
+    }
+
+    .sec-text {
+        font-size: .76rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.6px;
+        color: var(--ink-3);
+    }
+
+    /* ── SUCCESS ALERT ── */
+    .alert-ok {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        background: var(--lime-lt);
+        border: 1.5px solid rgba(21,128,61,.2);
+        border-left: 4px solid var(--lime);
+        border-radius: 12px;
+        padding: .85rem 1.1rem;
+        font-size: .88rem;
+        font-weight: 600;
+        color: var(--lime);
+        margin-bottom: 1.5rem;
+        animation: riseIn .4s ease both;
+    }
+
+    .btn-close-ok {
+        margin-left: auto;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--lime);
+        opacity: .6;
+        font-size: .9rem;
+        padding: 0;
+    }
+
+        .btn-close-ok:hover {
+            opacity: 1;
+        }
+
+    /* ── PENDING BANNER ── */
+    .pending-banner {
+        display: flex;
+        align-items: flex-start;
+        gap: .85rem;
+        background: var(--amber-lt);
+        border: 1.5px solid rgba(180,83,9,.18);
+        border-left: 4px solid var(--amber);
+        border-radius: 12px;
+        padding: 1rem 1.3rem;
+        margin-bottom: 1.5rem;
+        animation: riseIn .4s ease both;
+    }
+
+        .pending-banner i {
+            color: var(--amber);
+            font-size: 1.1rem;
+            margin-top: .1rem;
+            flex-shrink: 0;
+        }
+
+        .pending-banner strong {
+            color: var(--amber);
+            display: block;
+            margin-bottom: .2rem;
+            font-size: .9rem;
+        }
+
+        .pending-banner p {
+            margin: 0;
+            font-size: .83rem;
+            color: var(--ink-4);
+        }
+
+        .pending-banner a {
+            color: var(--amber);
+            font-weight: 800;
+        }
+
+    /* ── METRIC CARDS ── */
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .metric-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--s1);
+        transition: all .25s ease;
+    }
+
+        .metric-card:hover {
+            box-shadow: var(--s2);
+            transform: translateY(-4px);
+            border-color: transparent;
+        }
+
+    .mc-bar {
+        height: 4px;
+    }
+
+    .mc-indigo .mc-bar {
+        background: var(--g-indigo);
+    }
+
+    .mc-teal .mc-bar {
+        background: var(--g-teal);
+    }
+
+    .mc-sky .mc-bar {
+        background: var(--g-sky);
+    }
+
+    .mc-amber .mc-bar {
+        background: var(--g-amber);
+    }
+
+    .mc-body {
+        padding: 1.5rem 1.6rem 1.4rem;
+    }
+
+    .mc-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .mc-label {
+        font-size: .75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.1px;
+        color: var(--ink-4);
+    }
+
+    .mc-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .mc-indigo .mc-icon {
+        background: var(--indigo-lt);
+        color: var(--indigo-m);
+    }
+
+    .mc-teal .mc-icon {
+        background: var(--teal-lt);
+        color: var(--teal);
+    }
+
+    .mc-sky .mc-icon {
+        background: var(--sky-lt);
+        color: var(--sky);
+    }
+
+    .mc-amber .mc-icon {
+        background: var(--amber-lt);
+        color: var(--amber);
+    }
+
+    .mc-value {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: var(--ink-1);
+        line-height: 1;
+        letter-spacing: -1.5px;
+    }
+
+    .mc-sub {
+        font-size: .8rem;
+        color: var(--ink-5);
+        margin-top: .4rem;
+    }
+
+    /* ── FILTER TABS ── */
+    .filter-bar {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--s1);
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+        align-items: center;
+    }
+
+    .filter-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .55rem 1.1rem;
+        border-radius: 10px;
+        font-size: .82rem;
+        font-weight: 700;
+        border: 1.5px solid var(--border);
+        background: var(--card-2);
+        color: var(--ink-4);
+        text-decoration: none;
+        font-family: 'Sora', sans-serif;
+        transition: all .2s ease;
+        cursor: pointer;
+    }
+
+        .filter-btn:hover {
+            border-color: var(--border-md);
+            color: var(--ink-2);
+        }
+
+        .filter-btn.active-indigo {
+            background: var(--g-indigo);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 2px 10px rgba(67,56,202,.3);
+        }
+
+        .filter-btn.active-teal {
+            background: var(--g-teal);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 2px 10px rgba(13,148,136,.3);
+        }
+
+        .filter-btn.active-sky {
+            background: var(--g-sky);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 2px 10px rgba(3,105,161,.3);
+        }
+
+        .filter-btn.active-amber {
+            background: var(--g-amber);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 2px 10px rgba(180,83,9,.3);
+        }
+
+    .filter-count {
+        background: rgba(255,255,255,.25);
+        border-radius: 20px;
+        padding: .1rem .5rem;
+        font-size: .72rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .filter-btn:not([class*="active"]) .filter-count {
+        background: var(--border);
+        color: var(--ink-4);
+    }
+
+    /* ── TABLE CARD ── */
+    .table-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--s1);
+        margin-bottom: 2rem;
+    }
+
+    .table-hd {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.1rem 1.6rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--g-navy);
+    }
+
+    .table-hd-title {
+        font-size: .95rem;
+        font-weight: 700;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+    }
+
+        .table-hd-title i {
+            color: #67e8f9;
+        }
+
+    .table-count-badge {
+        font-family: 'JetBrains Mono', monospace;
+        background: rgba(103,232,249,.15);
+        border: 1px solid rgba(103,232,249,.28);
+        color: #67e8f9;
+        font-size: .7rem;
+        font-weight: 700;
+        padding: .25rem .7rem;
+        border-radius: 20px;
+    }
+
+    /* ── TABLE ── */
+    .res-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .res-table thead th {
+            padding: .85rem 1.3rem;
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--ink-5);
+            background: var(--card-2);
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .res-table tbody td {
+            padding: 1rem 1.3rem;
+            font-size: .88rem;
+            color: var(--ink-2);
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+            transition: background .12s;
+        }
+
+        .res-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .res-table tbody tr:hover td {
+            background: var(--card-2);
+        }
+
+    .res-name {
+        font-weight: 700;
+        color: var(--ink-1);
+        font-size: .9rem;
+    }
+
+    .res-email {
+        color: var(--ink-4);
+        font-size: .83rem;
+    }
+
+    .res-phone {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .82rem;
+        color: var(--ink-3);
+    }
+
+    .res-date {
+        color: var(--ink-5);
+        font-size: .82rem;
+    }
+
+    /* flat number */
+    .flat-chip {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .82rem;
+        font-weight: 700;
+        background: var(--indigo-lt);
+        color: var(--indigo-m);
+        border: 1px solid rgba(67,56,202,.15);
+        padding: .22rem .65rem;
+        border-radius: 8px;
+        display: inline-block;
+    }
+
+    /* ── PILLS ── */
+    .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .3rem;
+        padding: .28rem .75rem;
+        border-radius: 20px;
+        font-size: .74rem;
+        font-weight: 700;
+    }
+
+    .pill-teal {
+        background: var(--teal-lt);
+        color: var(--teal);
+        border: 1.5px solid rgba(13,148,136,.2);
+    }
+
+    .pill-sky {
+        background: var(--sky-lt);
+        color: var(--sky);
+        border: 1.5px solid rgba(3,105,161,.2);
+    }
+
+    .pill-lime {
+        background: var(--lime-lt);
+        color: var(--lime);
+        border: 1.5px solid rgba(21,128,61,.2);
+    }
+
+    .pill-amber {
+        background: var(--amber-lt);
+        color: var(--amber);
+        border: 1.5px solid rgba(180,83,9,.2);
+    }
+
+    .pill-rose {
+        background: var(--rose-lt);
+        color: var(--rose);
+        border: 1.5px solid rgba(190,18,60,.2);
+    }
+
+    .pill-indigo {
+        background: var(--indigo-lt);
+        color: var(--indigo-m);
+        border: 1.5px solid rgba(67,56,202,.2);
+    }
+
+    .pill-violet {
+        background: var(--violet-lt);
+        color: var(--violet);
+        border: 1.5px solid rgba(109,40,217,.2);
+    }
+
+    /* ── ACTION BUTTONS ── */
+    .act-btns {
+        display: flex;
+        gap: .35rem;
+        align-items: center;
+    }
+
+        .act-btns form {
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+    .act-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        font-size: .88rem;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .18s ease;
+        padding: 0;
+        line-height: 1;
+        font-family: inherit;
+        flex-shrink: 0;
+    }
+
+        .act-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--s1);
+        }
+
+    /* View — indigo */
+    .act-btn-view {
+        background: var(--indigo-lt);
+        border: 1.5px solid rgba(67,56,202,.25);
+        color: var(--indigo-m);
+    }
+
+        .act-btn-view:hover {
+            background: var(--g-indigo);
+            border-color: transparent;
+            color: #fff;
+        }
+
+    /* Deactivate — rose */
+    .act-btn-deact {
+        background: var(--rose-lt);
+        border: 1.5px solid rgba(190,18,60,.25);
+        color: var(--rose);
+    }
+
+        .act-btn-deact:hover {
+            background: var(--g-rose);
+            border-color: transparent;
+            color: #fff;
+        }
+
+    /* Activate — lime */
+    .act-btn-act {
+        background: var(--lime-lt);
+        border: 1.5px solid rgba(21,128,61,.25);
+        color: var(--lime);
+    }
+
+        .act-btn-act:hover {
+            background: var(--g-lime);
+            border-color: transparent;
+            color: #fff;
+        }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+        text-align: center;
+        padding: 3.5rem 1rem;
+        color: var(--ink-5);
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            opacity: .3;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            font-size: .9rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state a {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            background: var(--g-indigo);
+            color: #fff;
+            border-radius: 10px;
+            padding: .6rem 1.2rem;
+            font-size: .84rem;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(67,56,202,.3);
+        }
+
+    /* ── RESPONSIVE ── */
+    @@media (max-width: 1024px) {
+        .metrics-grid {
+            grid-template-columns: repeat(2,1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-wrap {
+            padding: 1rem 1rem 3rem;
+        }
+
+        .page-hd {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1.2rem;
+        }
+
+        .btn-hd-add {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .metrics-grid {
+            grid-template-columns: repeat(2,1fr);
+        }
+
+        .col-hide {
+            display: none;
+        }
+    }
+
+    @@media (max-width: 520px) {
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+
+<div class="page-wrap">
+
+    <!-- ── PAGE HEADER ── -->
+    <div class="page-hd ri">
+        <div class="hd-left">
+            <div class="hd-icon">👥</div>
+            <div>
+                <div class="hd-title">All Residents</div>
+                <div class="hd-sub">@assignedResidents.Count active · @pendingResidents.Count pending</div>
+            </div>
+        </div>
+        <a asp-controller="Onboarding" asp-action="Create" class="btn-hd-add">
+            <i class="bi bi-person-plus-fill"></i> Add New Resident
+        </a>
+    </div>
+
+    <!-- ── SUCCESS ALERT ── -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-ok" id="successAlert">
+            <i class="bi bi-check-circle-fill"></i>
+            @TempData["SuccessMessage"]
+            <button class="btn-close-ok" onclick="document.getElementById('successAlert').remove()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    }
+
+    <!-- ── PENDING BANNER ── -->
+    @if (pendingResidents.Any())
+    {
+        <div class="pending-banner ri">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <div>
+                <strong>@pendingResidents.Count resident(s) pending flat assignment</strong>
+                <p>
+                    These residents are not shown in the table below.
+                    <a asp-controller="AdminResidents" asp-action="Pending">View pending assignments →</a>
+                </p>
+            </div>
+        </div>
+    }
+
+    <!-- ── METRIC CARDS ── -->
+    <div class="metrics-grid ri ri-1">
+
+        <div class="metric-card mc-indigo">
+            <div class="mc-bar"></div>
+            <div class="mc-body">
+                <div class="mc-top">
+                    <span class="mc-label">Assigned Residents</span>
+                    <div class="mc-icon"><i class="bi bi-people-fill"></i></div>
+                </div>
+                <div class="mc-value">@assignedResidents.Count</div>
+                <div class="mc-sub">Active with flat assigned</div>
+            </div>
+        </div>
+
+        <div class="metric-card mc-teal">
+            <div class="mc-bar"></div>
+            <div class="mc-body">
+                <div class="mc-top">
+                    <span class="mc-label">Owners</span>
+                    <div class="mc-icon"><i class="bi bi-house-fill"></i></div>
+                </div>
+                <div class="mc-value">@assignedResidents.Count(r => r.ResidentType == "Owner")</div>
+                <div class="mc-sub">Resident owners</div>
+            </div>
+        </div>
+
+        <div class="metric-card mc-sky">
+            <div class="mc-bar"></div>
+            <div class="mc-body">
+                <div class="mc-top">
+                    <span class="mc-label">Tenants</span>
+                    <div class="mc-icon"><i class="bi bi-person-fill"></i></div>
+                </div>
+                <div class="mc-value">@assignedResidents.Count(r => r.ResidentType == "Tenant")</div>
+                <div class="mc-sub">Active tenants</div>
+            </div>
+        </div>
+
+        <div class="metric-card mc-amber">
+            <div class="mc-bar"></div>
+            <div class="mc-body">
+                <div class="mc-top">
+                    <span class="mc-label">Pending</span>
+                    <div class="mc-icon"><i class="bi bi-hourglass-split"></i></div>
+                </div>
+                <div class="mc-value">@pendingResidents.Count</div>
+                <div class="mc-sub">Awaiting flat assignment</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── FILTER BAR ── -->
+    <div class="filter-bar ri ri-2">
+        <a asp-action="Index"
+           class="filter-btn @(string.IsNullOrEmpty(currentFilter) ? "active-indigo" : "")">
+            <i class="bi bi-people-fill"></i>
+            All Assigned
+            <span class="filter-count">@assignedResidents.Count</span>
+        </a>
+
+        <a asp-action="Index" asp-route-residentType="Owner"
+           class="filter-btn @(currentFilter == "Owner" ? "active-teal" : "")">
+            <i class="bi bi-house-fill"></i>
+            Owners
+            <span class="filter-count">@assignedResidents.Count(r => r.ResidentType == "Owner")</span>
+        </a>
+
+        <a asp-action="Index" asp-route-residentType="Tenant"
+           class="filter-btn @(currentFilter == "Tenant" ? "active-sky" : "")">
+            <i class="bi bi-person-fill"></i>
+            Tenants
+            <span class="filter-count">@assignedResidents.Count(r => r.ResidentType == "Tenant")</span>
+        </a>
+
+        <a asp-controller="AdminResidents" asp-action="Pending"
+           class="filter-btn @(currentFilter == "Pending" ? "active-amber" : "")">
+            <i class="bi bi-hourglass-split"></i>
+            Pending Assignment
+            <span class="filter-count">@pendingResidents.Count</span>
+        </a>
+    </div>
+
+    <!-- ── RESIDENTS TABLE ── -->
+    <div class="table-card ri ri-3">
+        <div class="table-hd">
+            <div class="table-hd-title">
+                <i class="bi bi-people-fill"></i>
+                @if (string.IsNullOrEmpty(currentFilter))
+                {
+                    <span>All Assigned Residents</span>
+                }
+                else
+                {
+                    <span>@currentFilter Residents</span>
+                }
+            </div>
+            <span class="table-count-badge">
+                @(string.IsNullOrEmpty(currentFilter)
+                                ? assignedResidents.Count
+                                : assignedResidents.Count(r => r.ResidentType == currentFilter)) records
+            </span>
+        </div>
+
+        @{
+            var filtered = assignedResidents
+            .Where(r => string.IsNullOrEmpty(currentFilter) || r.ResidentType == currentFilter)
+            .ToList();
+        }
+
+        @if (filtered.Any())
+        {
+            <div style="overflow-x:auto;">
+                <table class="res-table">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Type</th>
+                            <th>Apartment</th>
+                            <th>Flat</th>
+                            <th class="col-hide">Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th class="col-hide">Registered</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var resident in filtered)
+                        {
+                            <tr>
+                                <td><span class="res-name">@resident.FullName</span></td>
+
+                                <td>
+                                    @if (resident.ResidentType == "Owner")
+                                    {
+                                        <span class="pill pill-teal">
+                                            <i class="bi bi-house-fill"></i> Owner
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="pill pill-sky">
+                                            <i class="bi bi-person-fill"></i> Tenant
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(resident.ApartmentName))
+                                    {
+                                        <span class="pill pill-violet">
+                                            <i class="bi bi-building"></i> @resident.ApartmentName
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="pill pill-amber">N/A</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <span class="flat-chip">@resident.FlatNumber</span>
+                                </td>
+
+                                <td class="col-hide">
+                                    <span class="res-email">@resident.Email</span>
+                                </td>
+
+                                <td>
+                                    <span class="res-phone">@resident.Phone</span>
+                                </td>
+
+                                <td>
+                                    @if (resident.Status == "Active")
+                                    {
+                                        <span class="pill pill-lime">
+                                            <i class="bi bi-check-circle-fill"></i> Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="pill pill-rose">
+                                            <i class="bi bi-x-circle-fill"></i> Inactive
+                                        </span>
+                                    }
+                                </td>
+
+                                <td class="col-hide">
+                                    <span class="res-date">
+                                        @resident.RegisteredOn.ToString("dd MMM yyyy")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="act-btns">
+                                        <a asp-action="Details" asp-route-userId="@resident.UserId"
+                                           class="act-btn act-btn-view" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
+                                        {
+                                            @if (resident.Status == "Active")
+                                            {
+                                                <form asp-action="Deactivate" method="post"
+                                                      onsubmit="return confirm('Deactivate @resident.FullName?');">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="userId" value="@resident.UserId" />
+                                                    <button type="submit" class="act-btn act-btn-deact" title="Deactivate">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form asp-action="Activate" method="post"
+                                                      onsubmit="return confirm('Activate @resident.FullName?');">
+                                                    <input type="hidden" name="userId" value="@resident.UserId" />
+                                                    <button type="submit" class="act-btn act-btn-act" title="Activate">
+                                                        <i class="bi bi-check-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-person-x"></i>
+                <p>No residents with assigned flats found.</p>
+                @if (pendingResidents.Any())
+                {
+                    <a asp-controller="AdminResidents" asp-action="Pending">
+                        <i class="bi bi-clock"></i>
+                        @pendingResidents.Count pending — assign flats now
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Onboarding" asp-action="Create">
+                        <i class="bi bi-person-plus-fill"></i> Add New Resident
+                    </a>
+                }
+            </div>
+        }
+    </div>
+
+</div>
+
+
+@*
+@model List<ApartmentManagementSystem.Web.ViewModels.Community.ResidentListViewModel>
+@{
+    ViewData["Title"] = "All Residents";
+    Layout = "_Layout";
+    var currentFilter = ViewBag.CurrentFilter as string;
+
     // Filter to only show residents with assigned flats
    // var assignedResidents = Model.Where(r => !string.IsNullOrEmpty(r.FlatNumber)).ToList();
    // var pendingResidents = Model.Where(r => string.IsNullOrEmpty(r.FlatNumber)).ToList();
@@ -320,6 +1422,61 @@
             color: #e8658a;
             margin-right: 0.75rem;
         }
+    /* ── ACTION BUTTONS — identical square icon buttons Added these features for buttons --*/
+    .act-btns {
+        display: flex;
+        gap: .35rem;
+        align-items: center;
+    }
+
+        .act-btns form {
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+    .act-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        font-size: .88rem;
+        border: 1.5px solid #e2e8f0;
+        background: #f7fafc;
+        color: #6b7499;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .18s ease;
+        padding: 0;
+        line-height: 1;
+        font-family: inherit;
+        flex-shrink: 0;
+    }
+
+        .act-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+
+    .act-btn-view:hover {
+        background: #eef0ff;
+        border-color: rgba(67,56,202,.3);
+        color: #4338ca;
+    }
+
+    .act-btn-deact:hover {
+        background: #fff1f2;
+        border-color: rgba(190,18,60,.3);
+        color: #be123c;
+    }
+
+    .act-btn-act:hover {
+        background: #dcfce7;
+        border-color: rgba(21,128,61,.3);
+        color: #15803d;
+    }
 
     @@media (max-width: 768px) {
         .page-header
@@ -449,7 +1606,7 @@
                                         <span class="badge bg-secondary" style="font-size: 0.9rem; padding: 0.4rem 0.8rem;">
                                             @resident.FlatNumber
                                         </span>
-                                    </td>*@
+                                    </td> ----------
                                     <td>
                                         @if (!string.IsNullOrEmpty(resident.ApartmentName))
                                         {
@@ -468,7 +1625,7 @@
                                             @resident.FlatNumber
                                         </span>
                                     </td>
-                                    @*newly added line upto this*@
+                                    @*newly added line upto this----------------
 
                                     <td>@resident.Email</td>
                                     <td>@resident.Phone</td>
@@ -483,6 +1640,7 @@
                                         }
                                     </td>
                                     <td>@resident.RegisteredOn.ToString("MMM dd, yyyy")</td>
+                                    @*
                                     <td>
                                         <div class="btn-group" role="group">
                                             <a asp-action="Details" asp-route-userId="@resident.UserId"
@@ -515,7 +1673,41 @@
                                                 }
                                             }
                                         </div>
+                                    </td>--------------
+
+                                    <td>
+                                        <div class="act-btns">
+                                            <a asp-action="Details" asp-route-userId="@resident.UserId"
+                                               class="act-btn act-btn-view" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
+                                            {
+                                                @if (resident.Status == "Active")
+                                                {
+                                                    <form asp-action="Deactivate" method="post"
+                                                          onsubmit="return confirm('Deactivate @resident.FullName?');">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="userId" value="@resident.UserId" />
+                                                        <button type="submit" class="act-btn act-btn-deact" title="Deactivate">
+                                                            <i class="bi bi-x-circle"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <form asp-action="Activate" method="post"
+                                                          onsubmit="return confirm('Activate @resident.FullName?');">
+                                                        <input type="hidden" name="userId" value="@resident.UserId" />
+                                                        <button type="submit" class="act-btn act-btn-act" title="Activate">
+                                                            <i class="bi bi-check-circle"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                            }
+                                        </div>
                                     </td>
+
                                 </tr>
                             }
                         </tbody>
@@ -574,7 +1766,7 @@
 </div>
 
 
-
+*@
 
 
 

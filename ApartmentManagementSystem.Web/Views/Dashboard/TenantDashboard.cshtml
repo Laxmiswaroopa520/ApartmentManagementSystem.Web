@@ -1,12 +1,755 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ApartmentManagementSystem.Web.ViewModels.Dashboard.TenantDashboardViewModel
+@{
+    ViewData["Title"] = "My Dashboard - Skyline";
+    Layout = "_Layout";
+}
 
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    :root {
+        --page: #eef0f6;
+        --card: #ffffff;
+        --card-2: #f8f9fc;
+        --border: #e2e6f0;
+        --border-md: #c8cfe0;
+        --ink-1: #0a0e1a;
+        --ink-2: #1c2235;
+        --ink-3: #3d4460;
+        --ink-4: #6b7499;
+        --ink-5: #9ba3be;
+        --indigo-m: #4338ca;
+        --indigo-lt: #eef0ff;
+        --indigo-pale: #f5f3ff;
+        --teal: #0d9488;
+        --teal-lt: #f0fdfb;
+        --amber: #b45309;
+        --amber-lt: #fef3c7;
+        --rose: #be123c;
+        --rose-lt: #fff1f2;
+        --sky: #0369a1;
+        --sky-lt: #e0f2fe;
+        --violet: #6d28d9;
+        --violet-lt: #ede9fe;
+        --lime: #15803d;
+        --lime-lt: #dcfce7;
+        --g-brand: linear-gradient(135deg, #3730a3 0%, #4f46e5 45%, #0d9488 100%);
+        --g-navy: linear-gradient(135deg, #0f172a 0%, #1e2a4a 55%, #0f2027 100%);
+        --g-indigo: linear-gradient(135deg, #3730a3 0%, #4338ca 100%);
+        --g-teal: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+        --g-amber: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        --g-rose: linear-gradient(135deg, #be123c 0%, #e11d48 100%);
+        --g-sky: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+        --g-violet: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+        --g-lime: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+        --s1: 0 2px 8px rgba(10,14,26,.06), 0 1px 3px rgba(10,14,26,.04);
+        --s2: 0 8px 24px rgba(10,14,26,.09), 0 3px 10px rgba(10,14,26,.05);
+        --r4: 8px;
+        --r6: 12px;
+        --r8: 16px;
+        --r10: 20px;
+        --r12: 24px;
+        font-family: 'Sora', sans-serif;
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: var(--page);
+        color: var(--ink-1);
+        font-family: 'Sora', sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    @@keyframes riseIn {
+        from {
+            opacity: 0;
+            transform: translateY(22px) scale(.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .ri {
+        animation: riseIn .55s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .ri-1 {
+        animation-delay: .07s;
+    }
+
+    .ri-2 {
+        animation-delay: .14s;
+    }
+
+    .ri-3 {
+        animation-delay: .21s;
+    }
+
+    .ri-4 {
+        animation-delay: .28s;
+    }
+
+    .dash-wrap {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 1.8rem 2.2rem 5rem;
+    }
+
+    /* ── HERO ── */
+    .hero {
+        background: var(--g-navy);
+        border-radius: var(--r12);
+        padding: 2rem 2.8rem;
+        margin-bottom: 2.2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--s2);
+        border: 1px solid rgba(255,255,255,.06);
+    }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            top: -150px;
+            right: 60px;
+            background: radial-gradient(ellipse, rgba(67,56,202,.22) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            bottom: -90px;
+            left: 4%;
+            background: radial-gradient(ellipse, rgba(13,148,136,.15) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+    .hero-grid {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+    }
+
+    .hero-left {
+        display: flex;
+        align-items: center;
+        gap: 1.4rem;
+    }
+
+    .hero-avatar {
+        width: 62px;
+        height: 62px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(67,56,202,.55), rgba(13,148,136,.45));
+        border: 1.5px solid rgba(255,255,255,.14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        flex-shrink: 0;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        background: rgba(67,56,202,.22);
+        border: 1px solid rgba(99,102,241,.35);
+        color: #a5b4fc;
+        font-size: .78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.4px;
+        padding: .32rem .95rem;
+        border-radius: 30px;
+        margin-bottom: .65rem;
+    }
+
+    .hero-title {
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: #fff;
+        line-height: 1.2;
+        letter-spacing: -.5px;
+        margin-bottom: .55rem;
+    }
+
+        .hero-title .accent {
+            background: linear-gradient(90deg, #818cf8 0%, #67e8f9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+    .hero-role-pill {
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.12);
+        color: rgba(255,255,255,.7);
+        font-size: .82rem;
+        font-weight: 600;
+        padding: .32rem .95rem;
+        border-radius: 30px;
+        display: inline-block;
+    }
+
+    /* ── SECTION LABEL ── */
+    .sec-row {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        margin-bottom: 1.3rem;
+    }
+
+    .sec-bar {
+        width: 4px;
+        height: 24px;
+        border-radius: 3px;
+        background: var(--g-brand);
+        flex-shrink: 0;
+    }
+
+    .sec-text {
+        font-size: .82rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.8px;
+        color: var(--ink-3);
+    }
+
+    .section {
+        margin-bottom: 2.8rem;
+    }
+
+    /* ── FLAT CARD ── */
+    .flat-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: var(--r10);
+        overflow: hidden;
+        box-shadow: var(--s1);
+    }
+
+    .flat-hd {
+        background: var(--g-navy);
+        padding: 1.2rem 1.8rem;
+    }
+
+    .flat-hd-title {
+        font-size: .98rem;
+        font-weight: 700;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+    }
+
+        .flat-hd-title i {
+            color: #67e8f9;
+        }
+
+    .flat-body {
+        padding: 1.6rem;
+    }
+
+    .flat-detail {
+        background: var(--card-2);
+        border: 1.5px solid var(--border);
+        border-radius: var(--r8);
+        padding: 1.4rem 1.6rem;
+    }
+
+    .flat-detail-title {
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--ink-1);
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin-bottom: 1.2rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+        .flat-detail-title i {
+            color: var(--sky);
+        }
+
+    .fi-grid {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 1rem;
+    }
+
+    .fi-row {
+    }
+
+    .fi-label {
+        font-size: .72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--ink-5);
+        margin-bottom: .25rem;
+    }
+
+    .fi-value {
+        font-size: .9rem;
+        font-weight: 600;
+        color: var(--ink-2);
+    }
+
+    .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .3rem;
+        padding: .28rem .75rem;
+        border-radius: 20px;
+        font-size: .76rem;
+        font-weight: 700;
+    }
+
+    .pill-lime {
+        background: var(--lime-lt);
+        color: var(--lime);
+        border: 1.5px solid rgba(21,128,61,.2);
+    }
+
+    .pill-amber {
+        background: var(--amber-lt);
+        color: var(--amber);
+        border: 1.5px solid rgba(180,83,9,.2);
+    }
+
+    /* no flat warning */
+    .warn-banner {
+        display: flex;
+        align-items: flex-start;
+        gap: .85rem;
+        background: var(--amber-lt);
+        border: 1.5px solid rgba(180,83,9,.18);
+        border-left: 4px solid var(--amber);
+        border-radius: var(--r6);
+        padding: 1.1rem 1.3rem;
+    }
+
+        .warn-banner i {
+            color: var(--amber);
+            font-size: 1.1rem;
+            margin-top: .1rem;
+            flex-shrink: 0;
+        }
+
+        .warn-banner strong {
+            color: var(--amber);
+            display: block;
+            margin-bottom: .2rem;
+            font-size: .88rem;
+        }
+
+        .warn-banner p {
+            margin: 0;
+            font-size: .82rem;
+            color: var(--ink-4);
+        }
+
+    /* ── METRICS ── */
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 1.2rem;
+    }
+
+    .metric-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: var(--r10);
+        overflow: hidden;
+        box-shadow: var(--s1);
+        transition: all .26s ease;
+    }
+
+        .metric-card:hover {
+            box-shadow: var(--s2);
+            transform: translateY(-4px);
+            border-color: transparent;
+        }
+
+    .mc-accent-bar {
+        height: 4px;
+    }
+
+    .mc-amber .mc-accent-bar {
+        background: var(--g-amber);
+    }
+
+    .mc-teal .mc-accent-bar {
+        background: var(--g-teal);
+    }
+
+    .mc-body {
+        padding: 2.1rem 2.1rem 2rem;
+    }
+
+    .mc-row-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.4rem;
+    }
+
+    .mc-label {
+        font-size: .82rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--ink-4);
+    }
+
+    .mc-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .mc-amber .mc-icon {
+        background: var(--amber-lt);
+        color: var(--amber);
+    }
+
+    .mc-teal .mc-icon {
+        background: var(--teal-lt);
+        color: var(--teal);
+    }
+
+    .mc-value {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 3.8rem;
+        font-weight: 700;
+        color: var(--ink-1);
+        line-height: 1;
+        letter-spacing: -2px;
+        margin-bottom: .65rem;
+    }
+
+    .mc-sub {
+        font-size: .86rem;
+        color: var(--ink-5);
+        display: flex;
+        align-items: center;
+        gap: .3rem;
+    }
+
+        .mc-sub i {
+            font-size: .5rem;
+        }
+
+    /* ── QUICK ACTIONS ── */
+    .qa-grid {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 1rem;
+    }
+
+    .qa-tile {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: var(--r8);
+        padding: 2.2rem 1rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: var(--ink-3);
+        box-shadow: var(--s1);
+        text-align: center;
+        font-family: 'Sora', sans-serif;
+        position: relative;
+        overflow: hidden;
+        opacity: .5;
+        cursor: not-allowed;
+    }
+
+        .qa-tile::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 0 0 var(--r8) var(--r8);
+        }
+
+        .qa-tile.qt-amber::before {
+            background: var(--g-amber);
+        }
+
+        .qa-tile.qt-teal::before {
+            background: var(--g-teal);
+        }
+
+    .qa-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+    }
+
+    .ico-amber {
+        background: var(--amber-lt);
+        color: var(--amber);
+    }
+
+    .ico-teal {
+        background: var(--teal-lt);
+        color: var(--teal);
+    }
+
+    .phase-tag {
+        font-size: .72rem;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        background: var(--card-2);
+        color: var(--ink-5);
+        border: 1px solid var(--border);
+        padding: .18rem .55rem;
+        border-radius: 20px;
+    }
+
+    /* ── INFO BANNER ── */
+    .info-banner {
+        display: flex;
+        align-items: flex-start;
+        gap: .85rem;
+        background: var(--sky-lt);
+        border: 1.5px solid rgba(3,105,161,.18);
+        border-left: 4px solid var(--sky);
+        border-radius: var(--r8);
+        padding: 1.1rem 1.4rem;
+        margin-top: 1.5rem;
+    }
+
+        .info-banner i {
+            color: var(--sky);
+            font-size: 1.1rem;
+            margin-top: .1rem;
+            flex-shrink: 0;
+        }
+
+        .info-banner strong {
+            color: var(--sky);
+            display: block;
+            margin-bottom: .2rem;
+            font-size: .88rem;
+        }
+
+        .info-banner p {
+            margin: 0;
+            font-size: .82rem;
+            color: var(--ink-4);
+        }
+
+    @@media (max-width: 768px) {
+        .dash-wrap {
+            padding: 1rem 1rem 4rem;
+        }
+
+        .hero {
+            padding: 1.2rem 1.3rem;
+        }
+
+        .hero-content {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .hero-title {
+            font-size: 1.4rem;
+        }
+
+        .fi-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .qa-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dash-wrap">
+
+    <!-- ── HERO ── -->
+    <div class="hero ri">
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-left">
+                <div class="hero-avatar">🏡</div>
+                <div>
+                    <div class="hero-badge">
+                        <i class="bi bi-person-fill"></i> Skyline Resident Portal
+                    </div>
+                    <h1 class="hero-title">
+                        Welcome back, <span class="accent">@Model.FullName</span> 👋
+                    </h1>
+                    <span class="hero-role-pill">Tenant</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MY FLAT ── -->
+    <div class="section ri ri-1">
+        <div class="sec-row">
+            <div class="sec-bar"></div>
+            <span class="sec-text">My Flat</span>
+        </div>
+        <div class="flat-card">
+            <div class="flat-hd">
+                <div class="flat-hd-title">
+                    <i class="bi bi-house-door-fill"></i> Flat Details
+                </div>
+            </div>
+            <div class="flat-body">
+                @if (Model.MyFlat != null)
+                {
+                    <div class="flat-detail">
+                        <div class="flat-detail-title">
+                            <i class="bi bi-building"></i> Flat @Model.MyFlat.FlatNumber
+                        </div>
+                        <div class="fi-grid">
+                            <div class="fi-row">
+                                <div class="fi-label">Building</div>
+                                <div class="fi-value">@Model.MyFlat.ApartmentName</div>
+                            </div>
+                            <div class="fi-row">
+                                <div class="fi-label">Owner</div>
+                                <div class="fi-value">@Model.MyFlat.OwnerName</div>
+                            </div>
+                            <div class="fi-row">
+                                <div class="fi-label">Status</div>
+                                <span class="pill pill-lime">
+                                    <i class="bi bi-check-circle-fill"></i> Active
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="warn-banner">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <div>
+                            <strong>No flat assigned yet</strong>
+                            <p>Please contact your owner or administrator to get your flat assignment.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- ── KEY METRICS ── -->
+    <div class="section ri ri-2">
+        <div class="sec-row">
+            <div class="sec-bar"></div>
+            <span class="sec-text">Key Metrics</span>
+        </div>
+        <div class="metrics-grid">
+
+            <div class="metric-card mc-amber">
+                <div class="mc-accent-bar"></div>
+                <div class="mc-body">
+                    <div class="mc-row-top">
+                        <span class="mc-label">Pending Complaints</span>
+                        <div class="mc-icon"><i class="bi bi-clipboard-x-fill"></i></div>
+                    </div>
+                    <div class="mc-value">@Model.PendingComplaints</div>
+                    <div class="mc-sub"><i class="bi bi-circle-fill"></i> Coming in Phase 5</div>
+                </div>
+            </div>
+
+            <div class="metric-card mc-teal">
+                <div class="mc-accent-bar"></div>
+                <div class="mc-body">
+                    <div class="mc-row-top">
+                        <span class="mc-label">Pending Rent</span>
+                        <div class="mc-icon"><i class="bi bi-currency-rupee"></i></div>
+                    </div>
+                    <div class="mc-value" style="font-size:2.6rem; letter-spacing:-1px;">₹@Model.PendingRent.ToString("N0")</div>
+                    <div class="mc-sub"><i class="bi bi-circle-fill"></i> Coming in Phase 6</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── QUICK ACTIONS ── -->
+    <div class="section ri ri-3">
+        <div class="sec-row">
+            <div class="sec-bar"></div>
+            <span class="sec-text">Quick Actions</span>
+        </div>
+        <div class="qa-grid">
+            <div class="qa-tile qt-amber">
+                <div class="qa-icon ico-amber"><i class="bi bi-file-text-fill"></i></div>
+                Raise Complaint
+                <span class="phase-tag">Phase 5</span>
+            </div>
+            <div class="qa-tile qt-teal">
+                <div class="qa-icon ico-teal"><i class="bi bi-credit-card-fill"></i></div>
+                Pay Rent
+                <span class="phase-tag">Phase 6</span>
+            </div>
+        </div>
+
+        <div class="info-banner ri ri-4">
+            <i class="bi bi-info-circle-fill"></i>
+            <div>
+                <strong>Limited Access</strong>
+                <p>As a tenant, you can raise complaints and pay rent. For other services, please contact your flat owner.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
 
 @*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
 @model ApartmentManagementSystem.Web.ViewModels.Dashboard.TenantDashboardViewModel
 @{
     ViewData["Title"] = "My Dashboard - Skyline";
@@ -386,309 +1129,5 @@
         </div>
     </div>
 </div>
-
-
-@*
-
-@model ApartmentManagementSystem.Web.ViewModels.Dashboard.TenantDashboardViewModel
-@{
-    ViewData["Title"] = "My Dashboard - Skyline";
-    Layout = "_Layout";
-}
-
-<style>
-    :root {
-        --primary-color: #4f6d7a;
-        --accent-blue: #5b9aa9;
-        --accent-orange: #c97e5d;
-        --bg-card: #ffffff;
-        --text-dark: #1f2933;
-        --text-muted: #6b7280;
-        --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
-    }
-
-    .dashboard-header h2 {
-        font-weight: 700;
-        color: var(--text-dark);
-    }
-
-    .role-badge {
-        background: var(--accent-blue);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        font-weight: 600;
-    }
-
-    .card {
-        border: none;
-        border-radius: 16px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-    }
-
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-        }
-
-    .card-header {
-        border: none;
-        border-radius: 16px 16px 0 0 !important;
-        font-weight: 600;
-        background: var(--accent-blue) !important;
-        color: white !important;
-    }
-
-    .flat-card {
-        border: 2px solid var(--accent-blue);
-        border-radius: 12px;
-        padding: 1.5rem;
-        background: var(--bg-card);
-        transition: all 0.3s ease;
-    }
-
-        .flat-card:hover {
-            box-shadow: var(--shadow-md);
-        }
-
-        .flat-card h5 {
-            color: var(--text-dark);
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-    .flat-badge {
-        background: var(--accent-blue);
-        color: white;
-        padding: 0.4rem 1rem;
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        display: inline-block;
-    }
-
-    .stat-card {
-        border-radius: 16px;
-        padding: 2rem;
-        color: white;
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .stat-card .display-4 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-card h3 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-card p {
-            margin: 0;
-            font-size: 1rem;
-            opacity: 0.95;
-        }
-
-        .stat-card hr {
-            background: rgba(255, 255, 255, 0.3);
-            opacity: 1;
-            height: 2px;
-            margin: 1.5rem 0;
-        }
-
-        .stat-card small {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .stat-card.stat-orange {
-            background: var(--accent-orange);
-        }
-
-        .stat-card.stat-primary {
-            background: var(--primary-color);
-        }
-
-    .btn-action {
-        padding: 0.85rem 1.5rem;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: 2px solid;
-        opacity: 0.7;
-        cursor: not-allowed;
-    }
-
-    .alert-custom {
-        border-radius: 12px;
-        border: none;
-        padding: 1.25rem 1.5rem;
-        background: #fff4e6;
-        border-left: 4px solid var(--accent-orange);
-    }
-
-    @@media (max-width: 768px) {
-        .stat-card h3
-
-    {
-        font-size: 2rem;
-    }
-
-    .stat-card .display-4 {
-        font-size: 2.8rem;
-    }
-
-    .flat-card {
-        margin-bottom: 1rem;
-    }
-
-    }
-
-    @@media (max-width: 576px) {
-        .stat-card
-
-    {
-        padding: 1.5rem;
-    }
-
-    .btn-action {
-        padding: 0.75rem 1.25rem;
-        font-size: 0.9rem;
-    }
-
-    }
-</style>
-
-<div class="container mt-4">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="dashboard-header">
-                <h2 class="mb-2">Welcome, @Model.FullName! 👋</h2>
-                <p class="text-muted mb-0">
-                    Role: <span class="role-badge">Tenant</span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- My Flat Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-house-door"></i> My Flat</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.MyFlat != null)
-                    {
-                        <div class="flat-card">
-                            <h5><i class="bi bi-building"></i> Flat @Model.MyFlat.FlatNumber</h5>
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <p class="text-muted mb-1 small">Building</p>
-                                    <p class="fw-semibold mb-0">@Model.MyFlat.ApartmentName</p>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <p class="text-muted mb-1 small">Owner</p>
-                                    <p class="fw-semibold mb-0">@Model.MyFlat.OwnerName</p>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <p class="text-muted mb-1 small">Status</p>
-                                    <span class="flat-badge">Active</span>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-custom">
-                            <div class="d-flex align-items-start">
-                                <i class="bi bi-exclamation-triangle-fill me-3" style="font-size: 1.5rem; color: var(--accent-orange);"></i>
-                                <div>
-                                    <strong>No flat assigned yet</strong>
-                                    <p class="mb-0 mt-1">Please contact your owner or administrator to get your flat assignment.</p>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-6">
-            <div class="stat-card stat-orange">
-                <div class="display-4">📝</div>
-                <h3>@Model.PendingComplaints</h3>
-                <p>Pending Complaints</p>
-                <hr />
-                <small>Coming in Phase 5</small>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="stat-card stat-primary">
-                <div class="display-4">💰</div>
-                <h3>₹@Model.PendingRent.ToString("N2")</h3>
-                <p>Pending Rent</p>
-                <hr />
-                <small>Coming in Phase 6</small>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header" style="background: var(--primary-color) !important;">
-                    <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Quick Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <button class="btn btn-action w-100"
-                                    style="background: white; border-color: var(--accent-orange); color: var(--accent-orange);"
-                                    disabled>
-                                <i class="bi bi-file-text"></i> Raise Complaint (Phase 5)
-                            </button>
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-action w-100"
-                                    style="background: white; border-color: var(--primary-color); color: var(--primary-color);"
-                                    disabled>
-                                <i class="bi bi-credit-card"></i> Pay Rent (Phase 6)
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Info Alert -->
-    <div class="alert alert-custom mt-4" style="background: #e6f2f5; border-left-color: var(--accent-blue);">
-        <div class="d-flex align-items-start">
-            <i class="bi bi-info-circle-fill me-3" style="font-size: 1.5rem; color: var(--accent-blue);"></i>
-            <div>
-                <strong>Limited Access</strong>
-                <p class="mb-0 mt-1">As a tenant, you have access to raise complaints and pay rent. For other services, please contact your flat owner.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 *@
+

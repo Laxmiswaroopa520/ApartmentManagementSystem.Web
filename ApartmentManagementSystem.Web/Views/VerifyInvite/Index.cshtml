@@ -1,48 +1,391 @@
 ﻿@model ApartmentManagementSystem.Web.ViewModels.Onboarding.VerifyOtpViewModel
-
 @{
     ViewData["Title"] = "Verify OTP - New User";
     Layout = "_Layout";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="bi bi-shield-check"></i> Verify Your OTP
-                    </h4>
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #5a6fd8 0%, #6b4299 100%);
+        --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+        background: #f0f2f5;
+    }
+
+    .page-container {
+        min-height: calc(100vh - 120px);
+        padding: 2rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ── MAIN CARD ── */
+    .otp-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        max-width: 480px;
+        width: 100%;
+        margin: 1rem auto;
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ── HEADER ── */
+    .card-header-gradient {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 1.5rem 2rem;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-align: left;
+    }
+
+        .card-header-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+    @@keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .header-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
+    }
+
+    .header-text {
+        position: relative;
+        z-index: 1;
+    }
+
+        .header-text h3 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.35rem;
+        }
+
+        .header-text .subtitle {
+            margin: 0.2rem 0 0;
+            opacity: 0.88;
+            font-size: 0.85rem;
+        }
+
+    /* ── BODY ── */
+    .card-body-custom {
+        padding: 2rem;
+    }
+
+    .info-text {
+        background: #f8faff;
+        border: 1.5px solid #e0e7ff;
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
+        color: #4338ca;
+        font-size: 0.88rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 1.75rem;
+        line-height: 1.5;
+    }
+
+        .info-text i {
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+
+    /* ── FORM LABELS ── */
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+        .form-label i {
+            color: #5a6fd8;
+            font-size: 0.85rem;
+        }
+
+    /* ── INPUTS ── */
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+        .form-control:focus {
+            border-color: #5a6fd8;
+            box-shadow: 0 0 0 4px rgba(90, 111, 216, 0.1);
+            outline: none;
+        }
+
+        .form-control.is-invalid {
+            border-color: #e85d5d;
+        }
+
+        .form-control.is-valid {
+            border-color: #38c96b;
+        }
+
+    /* OTP input — centered large digits */
+    #OtpCode {
+        text-align: center;
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: 0.5rem;
+        color: #1a202c;
+        padding: 0.85rem 1rem;
+    }
+
+        #OtpCode::placeholder {
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: normal;
+            color: #a0aec0;
+        }
+
+    /* ── VALIDATION ── */
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: #e85d5d;
+    }
+
+    /* ── OTP DOTS INDICATOR ── */
+    .otp-dots {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 0.75rem 0 0.25rem;
+    }
+
+    .otp-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        transition: background 0.2s ease;
+    }
+
+        .otp-dot.filled {
+            background: #5a6fd8;
+        }
+
+    /* ── SUBMIT BUTTON ── */
+    .btn-submit {
+        background: var(--gradient-primary);
+        border: none;
+        color: white;
+        border-radius: 10px;
+        padding: 0.85rem 1.75rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        width: 100%;
+        box-shadow: 0 4px 14px rgba(90, 111, 216, 0.3);
+        transition: all 0.3s ease;
+        margin-top: 0.5rem;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(90, 111, 216, 0.4);
+            color: white;
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+    /* ── BACK LINK ── */
+    .btn-back {
+        background: white;
+        border: 2px solid #e2e8f0;
+        color: #4a5568;
+        border-radius: 10px;
+        padding: 0.75rem 1.75rem;
+        font-weight: 600;
+        font-size: 0.88rem;
+        width: 100%;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        transition: all 0.25s ease;
+        margin-top: 0.75rem;
+    }
+
+        .btn-back:hover {
+            border-color: #5a6fd8;
+            color: #5a6fd8;
+            background: #f8faff;
+        }
+
+    /* ── RESPONSIVE ── */
+    @@media (max-width: 576px) {
+        .page-container {
+            padding: 1rem 0;
+        }
+
+        .otp-card {
+            margin: 0.5rem;
+        }
+
+        .card-body-custom {
+            padding: 1.25rem;
+        }
+
+        #OtpCode {
+            font-size: 1.3rem;
+            letter-spacing: 0.35rem;
+        }
+    }
+</style>
+
+<div class="page-container">
+    <div class="container">
+        <div class="otp-card">
+
+            <!-- ── HEADER ── -->
+            <div class="card-header-gradient">
+                <div class="header-icon">
+                    <i class="bi bi-shield-check"></i>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted">
-                        Enter the phone number and OTP provided by your admin to continue registration.
-                    </p>
-
-                    <form asp-action="Index" method="post">
-                        <div class="mb-3">
-                            <label asp-for="PrimaryPhone" class="form-label">Phone Number</label>
-                            <input asp-for="PrimaryPhone" class="form-control" placeholder="Enter phone number" />
-                            <span asp-validation-for="PrimaryPhone" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="OtpCode" class="form-label">OTP Code</label>
-                            <input asp-for="OtpCode" class="form-control text-center"
-                                   placeholder="Enter 6-digit OTP" maxlength="6" />
-                            <span asp-validation-for="OtpCode" class="text-danger"></span>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-circle"></i> Verify OTP
-                            </button>
-                            <a asp-controller="Login" asp-action="Index" class="btn btn-outline-secondary">
-                                Back to Login
-                            </a>
-                        </div>
-                    </form>
+                <div class="header-text">
+                    <h3>Verify Your OTP</h3>
+                    <p class="subtitle mb-0">Enter your credentials to continue registration</p>
                 </div>
+            </div>
+
+            <!-- ── BODY ── -->
+            <div class="card-body-custom">
+
+                <div class="info-text">
+                    <i class="bi bi-info-circle-fill"></i>
+                    Enter the phone number and OTP provided by your admin to complete your registration.
+                </div>
+
+                <form asp-action="Index" method="post" id="otpForm">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Phone Number -->
+                    <div class="mb-3">
+                        <label asp-for="PrimaryPhone" class="form-label">
+                            <i class="bi bi-telephone-fill"></i> Phone Number
+                        </label>
+                        <input asp-for="PrimaryPhone"
+                               class="form-control"
+                               placeholder="Enter your phone number"
+                               type="tel" maxlength="10"
+                               autocomplete="tel" />
+                        <span asp-validation-for="PrimaryPhone" class="text-danger"></span>
+                    </div>
+
+                    <!-- OTP Code -->
+                    <div class="mb-4">
+                        <label asp-for="OtpCode" class="form-label">
+                            <i class="bi bi-key-fill"></i> OTP Code
+                        </label>
+                        <input asp-for="OtpCode"
+                               id="OtpCode"
+                               class="form-control"
+                               placeholder="Enter 6-digit OTP"
+                               maxlength="6"
+                               inputmode="numeric"
+                               autocomplete="one-time-code" />
+
+                        <!-- Visual OTP progress dots -->
+                        <div class="otp-dots" id="otpDots">
+                            <div class="otp-dot" id="dot-0"></div>
+                            <div class="otp-dot" id="dot-1"></div>
+                            <div class="otp-dot" id="dot-2"></div>
+                            <div class="otp-dot" id="dot-3"></div>
+                            <div class="otp-dot" id="dot-4"></div>
+                            <div class="otp-dot" id="dot-5"></div>
+                        </div>
+
+                        <span asp-validation-for="OtpCode" class="text-danger"></span>
+                    </div>
+
+                    <!-- Verify Button -->
+                    <button type="submit" class="btn-submit" id="btnVerify">
+                        <i class="bi bi-check-circle-fill"></i> Verify OTP
+                    </button>
+
+                    <!-- Back to Login -->
+                    <a asp-controller="Login" asp-action="Index" class="btn-back">
+                        <i class="bi bi-arrow-left"></i> Back to Login
+                    </a>
+                </form>
+
             </div>
         </div>
     </div>
@@ -50,9 +393,90 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const otpInput  = document.getElementById('OtpCode');
+            const phoneInput = document.querySelector('[name="PrimaryPhone"]');
+            const dots      = document.querySelectorAll('.otp-dot');
+            const btnVerify = document.getElementById('btnVerify');
+
+            // ── Phone: digits only ──
+            phoneInput.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+                if (this.value.length === 10) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else if (this.value.length > 0) {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-valid', 'is-invalid');
+                }
+            });
+
+            // ── OTP: digits only + dot progress ──
+            otpInput.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+                const len  = this.value.length;
+
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('filled', i < len);
+                });
+
+                if (len === 6) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else if (len > 0) {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-valid', 'is-invalid');
+                }
+            });
+
+            // ── Submit loading state ──
+            document.getElementById('otpForm').addEventListener('submit', function (e) {
+                const phone = phoneInput.value;
+                const otp   = otpInput.value;
+
+                if (phone.length !== 10) {
+                    e.preventDefault();
+                    phoneInput.classList.add('is-invalid');
+                    phoneInput.focus();
+                    return;
+                }
+                if (otp.length !== 6) {
+                    e.preventDefault();
+                    otpInput.classList.add('is-invalid');
+                    otpInput.focus();
+                    return;
+                }
+
+                btnVerify.disabled = true;
+                btnVerify.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Verifying...';
+            });
+        });
+    </script>
+
+    <style>
+        .spin {
+            display: inline-block;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @@keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 }
-
-
 
 
 

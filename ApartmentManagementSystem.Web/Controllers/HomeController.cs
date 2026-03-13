@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using ApartmentManagementSystem.Web.Models;
+using ApartmentManagementSystem.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 namespace ApartmentManagementSystem.Web.Controllers;
 

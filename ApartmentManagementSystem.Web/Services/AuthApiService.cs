@@ -14,7 +14,7 @@ namespace ApartmentManagementSystem.Web.Services
          public async Task<ApiResponse<LoginResponse>?> LoginAsync(LoginRequest request)
          {
              return await ApiClient.PostAsync<LoginRequest, ApiResponse<LoginResponse>>(
-                 "api/AuthApi/login",
+                 "api/Auth/login",
                  request
              );
          }
@@ -22,7 +22,7 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<bool> IsUserActiveAsync(Guid userId)
         {
             var response = await ApiClient.GetAsync<bool>(
-                $"api/AuthApi/users/{userId}/is-active");
+                $"api/Auth/users/{userId}/is-active");
 
             return response;
         }

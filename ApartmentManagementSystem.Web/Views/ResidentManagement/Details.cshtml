@@ -5,6 +5,956 @@
 }
 
 <style>
+    @@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    :root {
+        --page: #eef0f6;
+        --card: #ffffff;
+        --card-2: #f8f9fc;
+        --border: #e2e6f0;
+        --border-md: #c8cfe0;
+        --ink-1: #0a0e1a;
+        --ink-2: #1c2235;
+        --ink-3: #3d4460;
+        --ink-4: #6b7499;
+        --ink-5: #9ba3be;
+        --navy: #1e2a4a;
+        --navy-deep: #111827;
+        --indigo-m: #4338ca;
+        --indigo-lt: #eef0ff;
+        --indigo-pale: #f5f3ff;
+        --teal: #0d9488;
+        --teal-lt: #f0fdfb;
+        --teal-m: #14b8a6;
+        --amber: #b45309;
+        --amber-lt: #fef3c7;
+        --rose: #be123c;
+        --rose-lt: #fff1f2;
+        --sky: #0369a1;
+        --sky-lt: #e0f2fe;
+        --violet: #6d28d9;
+        --violet-lt: #ede9fe;
+        --lime: #15803d;
+        --lime-lt: #dcfce7;
+        --g-brand: linear-gradient(135deg, #3730a3 0%, #4f46e5 45%, #0d9488 100%);
+        --g-navy: linear-gradient(135deg, #0f172a 0%, #1e2a4a 55%, #0f2027 100%);
+        --g-indigo: linear-gradient(135deg, #3730a3 0%, #4338ca 100%);
+        --g-teal: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+        --g-amber: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        --g-rose: linear-gradient(135deg, #be123c 0%, #e11d48 100%);
+        --g-sky: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+        --g-violet: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+        --g-lime: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+        --s1: 0 2px 8px rgba(10,14,26,.06), 0 1px 3px rgba(10,14,26,.04);
+        --s2: 0 8px 24px rgba(10,14,26,.09), 0 3px 10px rgba(10,14,26,.05);
+        font-family: 'Sora', sans-serif;
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        background: var(--page);
+        color: var(--ink-1);
+        font-family: 'Sora', sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    @@keyframes riseIn {
+        from {
+            opacity: 0;
+            transform: translateY(18px) scale(.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .ri {
+        animation: riseIn .5s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .ri-1 {
+        animation-delay: .07s;
+    }
+
+    .ri-2 {
+        animation-delay: .14s;
+    }
+
+    .ri-3 {
+        animation-delay: .21s;
+    }
+
+    .ri-4 {
+        animation-delay: .28s;
+    }
+
+    /* ── PAGE WRAP ── */
+    .detail-wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 2rem 4rem;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-hd {
+        background: var(--g-navy);
+        border-radius: 16px;
+        padding: 1.6rem 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--s2);
+    }
+
+        .page-hd::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: 60px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(ellipse, rgba(67,56,202,.22) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+    .hd-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hd-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(67,56,202,.55), rgba(13,148,136,.45));
+        border: 1.5px solid rgba(255,255,255,.14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .hd-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -.3px;
+        line-height: 1.2;
+    }
+
+    .hd-sub {
+        font-size: .82rem;
+        color: rgba(255,255,255,.4);
+        margin-top: .2rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn-back-hd {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        background: rgba(255,255,255,.09);
+        border: 1px solid rgba(255,255,255,.15);
+        color: rgba(255,255,255,.8);
+        border-radius: 10px;
+        padding: .6rem 1.2rem;
+        font-size: .84rem;
+        font-weight: 600;
+        text-decoration: none;
+        font-family: 'Sora', sans-serif;
+        transition: all .2s;
+    }
+
+        .btn-back-hd:hover {
+            background: rgba(255,255,255,.18);
+            color: #fff;
+        }
+
+    /* ── SECTION LABEL ── */
+    .sec-row {
+        display: flex;
+        align-items: center;
+        gap: .65rem;
+        margin-bottom: 1rem;
+    }
+
+    .sec-bar {
+        width: 4px;
+        height: 22px;
+        border-radius: 3px;
+        background: var(--g-brand);
+        flex-shrink: 0;
+    }
+
+    .sec-text {
+        font-size: .76rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.6px;
+        color: var(--ink-3);
+    }
+
+    /* ── INFO CARD ── */
+    .info-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--s1);
+        transition: box-shadow .25s ease, transform .25s ease;
+        height: 100%;
+    }
+
+        .info-card:hover {
+            box-shadow: var(--s2);
+            transform: translateY(-3px);
+        }
+
+    /* ── CARD ACCENT HEADER ── */
+    .ch {
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        font-size: .9rem;
+        font-weight: 700;
+        color: #fff;
+    }
+
+        .ch i {
+            font-size: 1rem;
+        }
+
+    .ch-indigo {
+        background: var(--g-indigo);
+    }
+
+    .ch-teal {
+        background: var(--g-teal);
+    }
+
+    .ch-sky {
+        background: var(--g-sky);
+    }
+
+    .ch-amber {
+        background: var(--g-amber);
+    }
+
+    .ch-violet {
+        background: var(--g-violet);
+    }
+
+    .ch-rose {
+        background: var(--g-rose);
+    }
+
+    .ch-lime {
+        background: var(--g-lime);
+    }
+
+    /* ── TABLE INSIDE CARD ── */
+    .detail-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .detail-table tr {
+            border-bottom: 1px solid var(--border);
+        }
+
+            .detail-table tr:last-child {
+                border-bottom: none;
+            }
+
+        .detail-table th {
+            padding: .85rem 1.4rem;
+            font-size: .78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            color: var(--ink-4);
+            width: 42%;
+            background: var(--card-2);
+        }
+
+        .detail-table td {
+            padding: .85rem 1.4rem;
+            font-size: .9rem;
+            color: var(--ink-2);
+            font-weight: 500;
+        }
+
+    /* flat number highlight */
+    .flat-num {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--ink-1);
+        letter-spacing: -1px;
+    }
+
+    /* ── BADGES ── */
+    .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .3rem;
+        padding: .32rem .9rem;
+        border-radius: 30px;
+        font-size: .76rem;
+        font-weight: 700;
+        letter-spacing: .2px;
+    }
+
+    .pill-teal {
+        background: var(--teal-lt);
+        color: var(--teal);
+        border: 1.5px solid rgba(13,148,136,.2);
+    }
+
+    .pill-sky {
+        background: var(--sky-lt);
+        color: var(--sky);
+        border: 1.5px solid rgba(3,105,161,.2);
+    }
+
+    .pill-amber {
+        background: var(--amber-lt);
+        color: var(--amber);
+        border: 1.5px solid rgba(180,83,9,.2);
+    }
+
+    .pill-indigo {
+        background: var(--indigo-lt);
+        color: var(--indigo-m);
+        border: 1.5px solid rgba(67,56,202,.2);
+    }
+
+    .pill-rose {
+        background: var(--rose-lt);
+        color: var(--rose);
+        border: 1.5px solid rgba(190,18,60,.2);
+    }
+
+    .pill-lime {
+        background: var(--lime-lt);
+        color: var(--lime);
+        border: 1.5px solid rgba(21,128,61,.2);
+    }
+
+    .pill-violet {
+        background: var(--violet-lt);
+        color: var(--violet);
+        border: 1.5px solid rgba(109,40,217,.2);
+    }
+
+    /* ── ROLES GRID ── */
+    .roles-body {
+        padding: 1.4rem 1.5rem;
+    }
+
+    .roles-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+    }
+
+    .role-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .5rem 1rem;
+        border-radius: 10px;
+        font-size: .84rem;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .rc-indigo {
+        background: var(--g-indigo);
+        box-shadow: 0 2px 10px rgba(67,56,202,.25);
+    }
+
+    .rc-teal {
+        background: var(--g-teal);
+        box-shadow: 0 2px 10px rgba(13,148,136,.25);
+    }
+
+    .rc-sky {
+        background: var(--g-sky);
+        box-shadow: 0 2px 10px rgba(3,105,161,.25);
+    }
+
+    .rc-amber {
+        background: var(--g-amber);
+        box-shadow: 0 2px 10px rgba(180,83,9,.25);
+    }
+
+    .rc-violet {
+        background: var(--g-violet);
+        box-shadow: 0 2px 10px rgba(109,40,217,.25);
+    }
+
+    .rc-lime {
+        background: var(--g-lime);
+        box-shadow: 0 2px 10px rgba(21,128,61,.25);
+    }
+
+    .rc-rose {
+        background: var(--g-rose);
+        box-shadow: 0 2px 10px rgba(190,18,60,.25);
+    }
+
+    /* ── STAT BOXES ── */
+    .stats-body {
+        padding: 1.4rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: .9rem;
+    }
+
+    .stat-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.2rem 1.4rem;
+        border-radius: 12px;
+        border: 1.5px solid var(--border);
+        background: var(--card-2);
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+        .stat-row:hover {
+            border-color: var(--border-md);
+            box-shadow: var(--s1);
+        }
+
+    .stat-label {
+        font-size: .75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .9px;
+        color: var(--ink-4);
+        margin-bottom: .35rem;
+    }
+
+    .stat-val {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -1px;
+        line-height: 1;
+    }
+
+    .sv-sky {
+        color: var(--sky);
+    }
+
+    .sv-rose {
+        color: var(--rose);
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .coming-note {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        background: var(--indigo-pale);
+        border-radius: 10px;
+        padding: .75rem 1rem;
+        font-size: .8rem;
+        color: var(--indigo-m);
+        font-weight: 600;
+        border: 1.5px solid rgba(67,56,202,.12);
+    }
+
+    /* ── ALERT ── */
+    .alert-warn {
+        display: flex;
+        align-items: flex-start;
+        gap: .75rem;
+        background: var(--amber-lt);
+        border-left: 4px solid var(--amber);
+        border-radius: 0 10px 10px 0;
+        padding: .9rem 1.1rem;
+        margin: 0 1.5rem 1.5rem;
+        font-size: .85rem;
+        color: var(--amber);
+        font-weight: 600;
+    }
+
+        .alert-warn i {
+            font-size: 1rem;
+            margin-top: .1rem;
+            flex-shrink: 0;
+        }
+
+        .alert-warn a {
+            color: var(--amber);
+            font-weight: 800;
+        }
+
+    /* ── ADMIN ACTIONS CARD ── */
+    .action-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--s1);
+    }
+
+    .actions-body {
+        padding: 1.4rem 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: .75rem;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .65rem 1.3rem;
+        border-radius: 10px;
+        font-size: .85rem;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        font-family: 'Sora', sans-serif;
+        transition: all .22s ease;
+    }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+
+    .ba-indigo {
+        background: var(--g-indigo);
+        color: #fff;
+        box-shadow: 0 3px 12px rgba(67,56,202,.3);
+    }
+
+        .ba-indigo:hover {
+            box-shadow: 0 5px 18px rgba(67,56,202,.45);
+            color: #fff;
+        }
+
+    .ba-rose {
+        background: var(--g-rose);
+        color: #fff;
+        box-shadow: 0 3px 12px rgba(190,18,60,.3);
+    }
+
+        .ba-rose:hover {
+            box-shadow: 0 5px 18px rgba(190,18,60,.45);
+            color: #fff;
+        }
+
+    .ba-lime {
+        background: var(--g-lime);
+        color: #fff;
+        box-shadow: 0 3px 12px rgba(21,128,61,.3);
+    }
+
+        .ba-lime:hover {
+            box-shadow: 0 5px 18px rgba(21,128,61,.45);
+            color: #fff;
+        }
+
+    /* ── RESPONSIVE ── */
+    @@media (max-width: 768px) {
+        .detail-wrap {
+            padding: 1rem 1rem 3rem;
+        }
+
+        .page-hd {
+            padding: 1.2rem;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .btn-back-hd {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .flat-num {
+            font-size: 1.15rem;
+        }
+    }
+</style>
+
+<div class="detail-wrap">
+
+    <!-- ── PAGE HEADER ── -->
+    <div class="page-hd ri">
+        <div class="hd-left">
+            <div class="hd-avatar">👤</div>
+            <div>
+                <div class="hd-title">@Model.FullName</div>
+              @*  <div class="hd-sub">Resident Details · ID @Model.UserId.ToString("D").Substring(0, 8).ToUpper()…</div>*@
+            </div>
+        </div>
+        <a asp-action="Index" class="btn-back-hd">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <!-- ── ROW 1: Personal + Property ── -->
+    <div class="row g-3 mb-3 ri ri-1">
+
+        <!-- Personal Information -->
+        <div class="col-md-6 d-flex flex-column">
+            <div class="sec-row"><div class="sec-bar"></div><span class="sec-text">Personal Information</span></div>
+            <div class="info-card">
+                <div class="ch ch-indigo">
+                    <i class="bi bi-person-badge-fill"></i> Personal Information
+                </div>
+                <table class="detail-table">
+                    <tr>
+                        <th>Full Name</th>
+                        <td><strong>@Model.FullName</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>@Model.Email</td>
+                    </tr>
+                    <tr>
+                        <th>Primary Phone</th>
+                        <td>
+                            <span style="font-family:'JetBrains Mono',monospace; font-weight:600;">
+                                @Model.PrimaryPhone
+                            </span>
+                        </td>
+                    </tr>
+                    @if (!string.IsNullOrEmpty(Model.SecondaryPhone))
+                    {
+                        <tr>
+                            <th>Secondary Phone</th>
+                            <td>
+                                <span style="font-family:'JetBrains Mono',monospace; font-weight:600;">
+                                    @Model.SecondaryPhone
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <th>Resident Type</th>
+                        <td>
+                            @if (Model.ResidentType == "Owner")
+                            {
+                                <span class="pill pill-teal">
+                                    <i class="bi bi-house-fill"></i> Owner
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="pill pill-sky">
+                                    <i class="bi bi-person-fill"></i> Tenant
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Registered On</th>
+                        <td style="color:var(--ink-4); font-size:.87rem;">
+                            @Model.RegisteredOn.ToString("MMMM dd, yyyy")
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                            @if (Model.Status == "Active")
+                            {
+                                <span class="pill pill-lime">
+                                    <i class="bi bi-check-circle-fill"></i> Active
+                                </span>
+                            }
+                            else if (Model.Status == "Pending Assignment")
+                            {
+                                <span class="pill pill-amber">
+                                    <i class="bi bi-hourglass-split"></i> Pending Assignment
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="pill pill-rose">
+                                    <i class="bi bi-x-circle-fill"></i> Inactive
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Property Information -->
+        <div class="col-md-6 d-flex flex-column">
+            <div class="sec-row"><div class="sec-bar"></div><span class="sec-text">Property Information</span></div>
+            <div class="info-card">
+                <div class="ch ch-teal">
+                    <i class="bi bi-building-fill"></i> Property Information
+                </div>
+                <table class="detail-table">
+                    <tr>
+                        <th>Flat Number</th>
+                        <td>
+                            @if (string.IsNullOrEmpty(Model.FlatNumber))
+                            {
+                                <span class="pill pill-amber">
+                                    <i class="bi bi-dash-circle"></i> Not Assigned
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="flat-num">@Model.FlatNumber</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Apartment / Building</th>
+                        <td><strong>@(Model.ApartmentName ?? "N/A")</strong></td>
+                    </tr>
+                </table>
+
+                @if (string.IsNullOrEmpty(Model.FlatNumber))
+                {
+                    <div class="alert-warn">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <div>
+                            No flat assigned yet.
+                            <a asp-controller="AdminResidents" asp-action="AssignFlat"
+                               asp-route-userId="@Model.UserId"
+                               asp-route-userName="@Model.FullName">
+                                Assign flat now →
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- ── ROW 2: Roles + Activity Stats ── -->
+    <div class="row g-3 mb-3 ri ri-2">
+
+        <!-- Roles & Permissions -->
+        <div class="col-md-6 d-flex flex-column">
+            <div class="sec-row"><div class="sec-bar"></div><span class="sec-text">Roles & Permissions</span></div>
+            <div class="info-card">
+                <div class="ch ch-sky">
+                    <i class="bi bi-shield-fill-check"></i> Roles & Permissions
+                </div>
+                <div class="roles-body">
+                    @if (Model.Roles.Any())
+                    {
+                        <div class="roles-wrap">
+                            @foreach (var role in Model.Roles)
+                            {
+                                @if (role == "President")
+                                {
+                                    <span class="role-chip rc-amber">
+                                        <i class="bi bi-star-fill"></i> President
+                                    </span>
+                                }
+                                else if (role == "Secretary")
+                                {
+                                    <span class="role-chip rc-indigo">
+                                        <i class="bi bi-file-earmark-text-fill"></i> Secretary
+                                    </span>
+                                }
+                                else if (role == "Treasurer")
+                                {
+                                    <span class="role-chip rc-lime">
+                                        <i class="bi bi-cash-coin"></i> Treasurer
+                                    </span>
+                                }
+                                else if (role == "ResidentOwner")
+                                {
+                                    <span class="role-chip rc-teal">
+                                        <i class="bi bi-house-fill"></i> Resident Owner
+                                    </span>
+                                }
+                                else if (role == "Tenant")
+                                {
+                                    <span class="role-chip rc-sky">
+                                        <i class="bi bi-person-fill"></i> Tenant
+                                    </span>
+                                }
+                                else if (role == "Manager")
+                                {
+                                    <span class="role-chip rc-violet">
+                                        <i class="bi bi-person-workspace"></i> Manager
+                                    </span>
+                                }
+                                else if (role == "SuperAdmin")
+                                {
+                                    <span class="role-chip rc-rose">
+                                        <i class="bi bi-shield-fill"></i> Super Admin
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="role-chip rc-indigo">
+                                        <i class="bi bi-person-badge"></i> @role
+                                    </span>
+                                }
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p style="color:var(--ink-5); font-size:.88rem; margin:0;">
+                            No special roles assigned.
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Statistics -->
+        <div class="col-md-6 d-flex flex-column">
+            <div class="sec-row"><div class="sec-bar"></div><span class="sec-text">Activity Statistics</span></div>
+            <div class="info-card">
+                <div class="ch ch-violet">
+                    <i class="bi bi-graph-up-arrow"></i> Activity Statistics
+                </div>
+                <div class="stats-body">
+                    <div class="stat-row">
+                        <div>
+                            <div class="stat-label">Total Complaints</div>
+                            <div class="stat-val sv-sky">@Model.TotalComplaints</div>
+                        </div>
+                        <div class="stat-icon" style="background:var(--sky-lt); color:var(--sky);">
+                            <i class="bi bi-clipboard-check-fill"></i>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div>
+                            <div class="stat-label">Outstanding Bills</div>
+                            <div class="stat-val sv-rose">₹@Model.OutstandingBills.ToString("N2")</div>
+                        </div>
+                        <div class="stat-icon" style="background:var(--rose-lt); color:var(--rose);">
+                            <i class="bi bi-receipt-cutoff"></i>
+                        </div>
+                    </div>
+                    <div class="coming-note">
+                        <i class="bi bi-info-circle-fill"></i>
+                        Detailed statistics available in Phase 5–6
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── ADMIN ACTIONS ── -->
+    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Manager"))
+    {
+        <div class="row g-3 ri ri-3">
+            <div class="col-12">
+                <div class="sec-row"><div class="sec-bar"></div><span class="sec-text">Admin Actions</span></div>
+                <div class="action-card">
+                    <div class="ch ch-rose">
+                        <i class="bi bi-tools"></i> Admin Actions
+                    </div>
+                    <div class="actions-body">
+                        @if (string.IsNullOrEmpty(Model.FlatNumber))
+                        {
+                            <a asp-controller="AdminResidents" asp-action="AssignFlat"
+                               asp-route-userId="@Model.UserId"
+                               asp-route-userName="@Model.FullName"
+                               class="btn-action ba-indigo">
+                                <i class="bi bi-house-add-fill"></i> Assign Flat
+                            </a>
+                        }
+
+                        @if (Model.Status == "Active")
+                        {
+                            <form asp-controller="ResidentManagement" asp-action="Deactivate"
+                                  method="post" class="d-inline"
+                                  onsubmit="return confirm('Deactivate @Model.FullName?');">
+                                <input type="hidden" name="userId" value="@Model.UserId" />
+                                <button type="submit" class="btn-action ba-rose">
+                                    <i class="bi bi-x-circle-fill"></i> Deactivate Account
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="ResidentManagement" asp-action="Activate"
+                                  method="post" class="d-inline"
+                                  onsubmit="return confirm('Activate @Model.FullName?');">
+                                <input type="hidden" name="userId" value="@Model.UserId" />
+                                <button type="submit" class="btn-action ba-lime">
+                                    <i class="bi bi-check-circle-fill"></i> Activate Account
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+@model ApartmentManagementSystem.Web.ViewModels.Community.ResidentDetailViewModel
+@{
+    ViewData["Title"] = "Resident Details";
+    Layout = "_Layout";
+}
+
+<style>
     :root {
         --gradient-primary: linear-gradient(135deg, #5a6fd8 0%, #6b4299 100%);
         --gradient-success: linear-gradient(135deg, #0e8f7d 0%, #2fd98e 100%);
@@ -482,7 +1432,7 @@
     }
 </div>
 
-
+*@
 
 
 

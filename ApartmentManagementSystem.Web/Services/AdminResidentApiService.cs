@@ -17,33 +17,33 @@ namespace ApartmentManagementSystem.Web.Services
         public async Task<ApiResponse<List<PendingResidentDto>>?> GetPendingResidentsAsync()
         {
             return await ApiClient.GetAsync<ApiResponse<List<PendingResidentDto>>>(
-                "api/AdminResidentApi/pending");
+                "api/AdminResident/pending");
         }
 
-        // ⭐ NEW: Get apartments for current user
+        // Get apartments for current user
         public async Task<ApiResponse<List<ApartmentDropdownDto>>?> GetApartmentsAsync()
         {
             return await ApiClient.GetAsync<ApiResponse<List<ApartmentDropdownDto>>>(
-                "api/AdminResidentApi/apartments");
+                "api/AdminResident/apartments");
         }
 
-        // ⭐ NEW: Get floors by apartment
+        //  Get floors by apartment
         public async Task<ApiResponse<List<FloorDto>>?> GetFloorsByApartmentAsync(Guid apartmentId)
         {
             return await ApiClient.GetAsync<ApiResponse<List<FloorDto>>>(
-                $"api/AdminResidentApi/apartments/{apartmentId}/floors");
+                $"api/AdminResident/apartments/{apartmentId}/floors");
         }
 
         public async Task<ApiResponse<List<FlatDto>>?> GetVacantFlatsByFloorAsync(Guid floorId)
         {
             return await ApiClient.GetAsync<ApiResponse<List<FlatDto>>>(
-                $"api/AdminResidentApi/floors/{floorId}/flats");
+                $"api/AdminResident/floors/{floorId}/flats");
         }
 
         public async Task<ApiResponse<AssignFlatResponse>?> AssignFlatAsync(AssignFlatRequest request)
         {
             return await ApiClient.PostAsync<AssignFlatRequest, ApiResponse<AssignFlatResponse>>(
-                "api/AdminResidentApi/assign-flat", request);
+                "api/AdminResident/assign-flat", request);
         }
     }
 }

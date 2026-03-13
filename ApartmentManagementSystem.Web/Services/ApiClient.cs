@@ -21,7 +21,7 @@ public class ApiClient
             PropertyNameCaseInsensitive = true
         };
 
-        // ⭐ Debug: Log the base URL when ApiClient is created
+        //  Log the base URL when ApiClient is created
         Console.WriteLine($"ApiClient created with BaseAddress: {Httpclient.BaseAddress}");
     }
 

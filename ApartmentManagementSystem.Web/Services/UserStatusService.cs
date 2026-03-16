@@ -1,6 +1,4 @@
-﻿using ApartmentManagementSystem.Web.Interface;
-
-namespace ApartmentManagementSystem.Web.Services
+﻿namespace ApartmentManagementSystem.Web.Services
 {
     // used for checking user status whether active or inactive status..
     public class UserStatusService : IUserStatusService

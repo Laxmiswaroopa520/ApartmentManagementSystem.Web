@@ -7,6 +7,257 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApartmentManagementSystem.Web.Controllers
 {
     /// <summary>
+    /// Secondary community controller used for apartment-detail-level role management.
+    /// Provides a global view of all community members and allows role assignment
+    /// from within the ApartmentBuilder Details page.
+    ///
+    /// Restricted to SuperAdmin and Manager.
+    /// </summary>
+    [Authorize(Roles = AppRoles.AdminAndManager)]
+    public class CommunityMembersController : Controller
+    {
+        private readonly CommunityMemberApiService CommunityService;
+
+        /// <summary>
+        /// Initialises the controller with the community member API service.
+        /// </summary>
+        public CommunityMembersController(CommunityMemberApiService communityService)
+        {
+            CommunityService = communityService;
+        }
+
+        /// <summary>
+        /// Displays all active community members across all apartments.
+        /// On failure, shows an empty list with a TempData error message.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                var response = await CommunityService.GetAllCommunityMembersAsync();
+
+                var viewModel = response?.Success == true && response.Data != null
+                    ? response.Data.Select(dto => new CommunityMemberViewModel
+                    {
+                        UserId = dto.UserId,
+                        FullName = dto.FullName,
+                        Role = dto.Role,
+                        FlatNumber = dto.FlatNumber,
+                        Email = dto.Email,
+                        Phone = dto.Phone,
+                        AssignedOn = dto.AssignedOn,
+                        IsActive = dto.IsActive
+                    }).ToList()
+                    : new List<CommunityMemberViewModel>();
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ErrorMessages.ErrorLoadingCommunityMembers}:{ex.Message}");
+                TempData[AppMessages.ErrorMessage] = AppMessages.CommunityLoadFailed;
+                return View(new List<CommunityMemberViewModel>());
+            }
+        }
+
+        /// <summary>
+        /// Displays the role assignment form for a specific apartment.
+        /// Loads eligible residents (owners with no current community role in this apartment).
+        /// Redirects to Index if apartmentId is missing or eligible residents fail to load.
+        /// </summary>
+        /// <param name="apartmentId">Unique identifier of the apartment to assign the role in.</param>
+        /// <param name="role">Optional pre-selected role name.</param>
+        [HttpGet]
+        public async Task<IActionResult> AssignRole(Guid? apartmentId, string? role)
+        {
+            if (!apartmentId.HasValue)
+            {
+                TempData[AppMessages.ErrorMessage] = AppMessages.ApartmentIdRequiredShort;
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                var response = await CommunityService.GetEligibleResidentsAsync(apartmentId.Value);
+
+                ViewBag.EligibleResidents = response?.Success == true && response.Data != null
+                    ? response.Data
+                    : new List<Services.DTOs.Community.ResidentListDto>();
+
+                return View(new AssignCommunityRoleViewModel
+                {
+                    ApartmentId = apartmentId,
+                    CommunityRole = role
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ErrorMessages.ErrorLoadingEligibleResidents}:{ex.Message}");
+                TempData[AppMessages.ErrorMessage] = AppMessages.EligibleResidentsLoadFailed;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        /// <summary>
+        /// Processes the role assignment form submission.
+        ///
+        /// On success: redirects to ApartmentBuilder/Details if apartmentId is present,
+        /// otherwise redirects to Index.
+        /// On failure: re-renders the form with eligible residents.
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignRole(AssignCommunityRoleViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                if (!model.ApartmentId.HasValue)
+                {
+                    TempData[AppMessages.ErrorMessage] = AppMessages.ApartmentIdRequiredShort;
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var response = await CommunityService.GetEligibleResidentsAsync(model.ApartmentId.Value);
+                ViewBag.EligibleResidents = response?.Success == true && response.Data != null
+                    ? response.Data
+                    : new List<Services.DTOs.Community.ResidentListDto>();
+
+                return View(model);
+            }
+
+            try
+            {
+                var result = await CommunityService.AssignCommunityRoleAsync(
+                    new Services.DTOs.Community.AssignCommunityRoleRequest
+                    {
+                        UserId = model.UserId,
+                        CommunityRole = model.CommunityRole
+                    });
+
+                if (result?.Success == true)
+                {
+                    TempData[AppMessages.SuccessMessage] =
+                        string.Format(AppMessages.CommunityRoleAssignSuccess, model.CommunityRole);
+
+                    return model.ApartmentId.HasValue
+                        ? RedirectToAction("Details", "ApartmentBuilder", new { id = model.ApartmentId.Value })
+                        : RedirectToAction(nameof(Index));
+                }
+
+                TempData[AppMessages.ErrorMessage] =
+                    result?.Message ?? AppMessages.CommunityRoleAssignFailed;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ErrorMessages.ErrorAssignRole}: {ex.Message}");
+                TempData[AppMessages.ErrorMessage] = AppMessages.GenericError;
+            }
+
+            if (model.ApartmentId.HasValue)
+            {
+                var residentsResponse = await CommunityService
+                    .GetEligibleResidentsAsync(model.ApartmentId.Value);
+                ViewBag.EligibleResidents = residentsResponse?.Success == true && residentsResponse.Data != null
+                    ? residentsResponse.Data
+                    : new List<Services.DTOs.Community.ResidentListDto>();
+            }
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Soft-removes a community role from a resident.
+        /// Always redirects back to Index.
+        /// </summary>
+        /// <param name="userId">Unique identifier of the resident whose role should be removed.</param>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveRole(Guid userId)
+        {
+            try
+            {
+                var result = await CommunityService.RemoveCommunityRoleAsync(
+                    new Services.DTOs.Community.RemoveCommunityRoleRequest { UserId = userId });
+
+                TempData[result?.Success == true ? AppMessages.SuccessMessage : AppMessages.ErrorMessage] =
+                    result?.Success == true
+                        ? AppMessages.CommunityRoleRemoveSuccess
+                        : result?.Message ?? AppMessages.CommunityRoleRemoveFailed;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ErrorMessages.ErrorRemovingRole}: {ex.Message}");
+                TempData[AppMessages.ErrorMessage] = AppMessages.GenericError;
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Web.Constants;
+using ApartmentManagementSystem.Web.Services;
+using ApartmentManagementSystem.Web.ViewModels.Community;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ApartmentManagementSystem.Web.Controllers
+{
+    /// <summary>
     /// Secondary community controller used for apartment-detail-level
     /// role management. Restricted to SuperAdmin and Manager.
     /// </summary>
@@ -178,7 +429,7 @@ namespace ApartmentManagementSystem.Web.Controllers
     }
 }
 
-
+*/
 
 
 

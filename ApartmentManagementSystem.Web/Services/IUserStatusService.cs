@@ -1,4 +1,4 @@
-﻿namespace ApartmentManagementSystem.Web.Interface
+﻿namespace ApartmentManagementSystem.Web.Services
 {
     public interface IUserStatusService
     {

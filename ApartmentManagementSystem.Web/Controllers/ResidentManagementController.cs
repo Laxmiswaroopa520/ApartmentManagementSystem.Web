@@ -4,7 +4,7 @@ using ApartmentManagementSystem.Web.Services.DTOs;
 using ApartmentManagementSystem.Web.ViewModels.Community;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using ApartmentManagementSystem.Web.Constants;
 namespace ApartmentManagementSystem.Web.Controllers;
 
 /// <summary>
@@ -19,7 +19,8 @@ namespace ApartmentManagementSystem.Web.Controllers;
 /// - Viewing resident details
 /// - Activating and deactivating residents (restricted to SuperAdmin & Manager)
 /// </summary>
-[Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
+//[Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
+[Authorize(Roles = AppRoles.AdminManagerCommunity)] 
 public class ResidentManagementController : Controller
 {
     /// <summary>

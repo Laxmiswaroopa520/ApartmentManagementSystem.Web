@@ -88,5 +88,15 @@
         public const string SelectResident = "Please select a resident.";
         public const string SelectRole = "Please select a role.";
         public const string ApartmentRequired = "Apartment is required.";
+
+        public const string ApartmentNotLoading = "Error loading apartments: ";
+        public const string AllRolesAlreadyFilled = "All community roles are already assigned for this apartment.";
+
+
+
+        public const string CreateApartment = "CreateApartment: Name";
+        public const string AssignManager="AssignManager: ApartmentId";
+        public const string RemoveManager = "RemoveManager: ApartmentId";
+        public const string DeleteApartment="DeleteApartment: ApartmentId";
     }
 }

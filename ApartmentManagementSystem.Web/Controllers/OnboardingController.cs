@@ -1,4 +1,5 @@
-﻿using ApartmentManagementSystem.Web.Mappers.Onboarding;
+﻿using ApartmentManagementSystem.Web.Constants;
+using ApartmentManagementSystem.Web.Mappers.Onboarding;
 using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.Services.DTOs.Onboarding;
 using ApartmentManagementSystem.Web.ViewModels.Onboarding;
@@ -18,7 +19,8 @@ namespace ApartmentManagementSystem.Web.Controllers;
 /// - Loading available resident types
 /// - Displaying invite success details including OTP
 /// </summary>
-[Authorize(Roles = "SuperAdmin,Manager")]
+//[Authorize(Roles = "SuperAdmin,Manager")]
+[Authorize(Roles = AppRoles.AdminAndManager)]
 public class OnboardingController : Controller
 {
     /// <summary>

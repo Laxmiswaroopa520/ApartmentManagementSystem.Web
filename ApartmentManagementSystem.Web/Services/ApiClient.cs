@@ -1,6 +1,4 @@
-﻿// Web/Services/ApiClient.cs
-
-namespace ApartmentManagementSystem.Web.Services;
+﻿namespace ApartmentManagementSystem.Web.Services;
 
 using System.Net.Http.Headers;
 using System.Text;

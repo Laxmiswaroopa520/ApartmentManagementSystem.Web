@@ -98,5 +98,16 @@
         public const string AssignManager="AssignManager: ApartmentId";
         public const string RemoveManager = "RemoveManager: ApartmentId";
         public const string DeleteApartment="DeleteApartment: ApartmentId";
+
+
+
+
+        //staff messages
+        public const string StaffCreatedSuccessMessage = "Staff member created successfully";
+        public const string StaffNotFound="Staff member not found";
+        public const string StaffUpdatedSuccessfully = "Staff member updated successfully";
+        public const string StaffActivated = "Staff member activated successfully";
+
+        public const string StaffMemberDeactivateSuccess="Staff member deactivated successfully";
     }
 }

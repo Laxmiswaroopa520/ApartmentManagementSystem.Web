@@ -99,15 +99,16 @@ public class ResidentManagementController : Controller
     /// Redirects to Index with success or failure message.
     /// </returns>
     [HttpPost]
-    [Authorize(Roles = "SuperAdmin,Manager")]
+    [Authorize(Roles = AppRoles.SuperAdmin+","+AppRoles.Manager)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Deactivate(Guid userId)
     {
         await ToggleResidentStatusAsync(
             userId,
             ResidentApiService.DeactivateResidentAsync,
-            "Resident deactivated successfully",
-            "Failed to deactivate resident"
+            ApartmentMessages.ResidentDeactivatedSuccesfully,
+            ApartmentMessages.FailedToDeactivateResident
+            
         );
 
         return RedirectToAction(nameof(Index));
@@ -124,15 +125,15 @@ public class ResidentManagementController : Controller
     /// Redirects to Index with success or failure message.
     /// </returns>
     [HttpPost]
-    [Authorize(Roles = "SuperAdmin,Manager")]
+    [Authorize(Roles = AppRoles.SuperAdmin + "," + AppRoles.Manager)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Activate(Guid userId)
     {
         await ToggleResidentStatusAsync(
             userId,
             id => ResidentApiService.ActivateResidentAsync(id),
-            "Resident activated successfully",
-            "Failed to activate resident"
+            ApartmentMessages.ResidentActivatedSuccesfully,
+           ApartmentMessages.FailedToActivateResident
         );
 
         return RedirectToAction(nameof(Index));

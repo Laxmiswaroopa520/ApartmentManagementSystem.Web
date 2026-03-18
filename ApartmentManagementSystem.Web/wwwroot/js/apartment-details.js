@@ -1,8 +1,4 @@
-﻿/// ═══════════════════════════════════════════════════════════════════════════
-// apartment-details.js - SIMPLIFIED MANAGER ASSIGNMENT
-// ═══════════════════════════════════════════════════════════════════════════
-
-function assignManager() {
+﻿function assignManager() {
     const apartmentId = getApartmentIdFromUrl();
 
     const modalHtml = `

@@ -113,11 +113,11 @@ public class StaffMembersController : Controller
 
         if (result?.Success == true)
         {
-            TempData[AppMessages.SuccessMessage] = "Staff member created successfully";
+            TempData[AppMessages.SuccessMessage] = AppMessages.StaffCreatedSuccessMessage;
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, result?.Message ?? "Failed to create staff member");
+        ModelState.AddModelError(string.Empty, result?.Message ?? ErrorMessages.FailedToCreateStaffMessage);
         await PopulateApartmentsAsync();
         return View(model);
     }
@@ -135,7 +135,7 @@ public class StaffMembersController : Controller
 
         if (response?.Data == null)
         {
-            TempData[AppMessages.ErrorMessage] = "Staff member not found";
+            TempData[AppMessages.ErrorMessage] = AppMessages.StaffNotFound;
             return RedirectToAction(nameof(Index));
         }
 
@@ -190,11 +190,11 @@ public class StaffMembersController : Controller
 
         if (result?.Success == true)
         {
-            TempData[AppMessages.SuccessMessage] = "Staff member updated successfully";
+            TempData[AppMessages.SuccessMessage] = AppMessages.StaffUpdatedSuccessfully;
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError(string.Empty, result?.Message ?? "Failed to update staff member");
+        ModelState.AddModelError(string.Empty, result?.Message ?? ErrorMessages.FailedToUpdateStaff);
         await PopulateApartmentsAsync();
         return View(model);
     }
@@ -211,8 +211,8 @@ public class StaffMembersController : Controller
         var result = await StaffApiService.DeactivateStaffMemberAsync(staffId);
         TempData[result?.Success == true ? AppMessages.SuccessMessage : AppMessages.ErrorMessage] =
             result?.Success == true
-                ? "Staff member deactivated successfully"
-                : result?.Message ?? "Failed to deactivate staff member";
+                ? AppMessages.StaffMemberDeactivateSuccess
+                : result?.Message ?? ErrorMessages.FailedToDeactivateStaff;
         return RedirectToAction(nameof(Index));
     }
 
@@ -228,8 +228,8 @@ public class StaffMembersController : Controller
         var result = await StaffApiService.ActivateStaffMemberAsync(staffId);
         TempData[result?.Success == true ? AppMessages.SuccessMessage : AppMessages.ErrorMessage] =
             result?.Success == true
-                ? "Staff member activated successfully"
-                : result?.Message ?? "Failed to activate staff member";
+                ?AppMessages.StaffActivated
+                : result?.Message ?? ErrorMessages.FailedToActivateStaff;
         return RedirectToAction(nameof(Index));
     }
 

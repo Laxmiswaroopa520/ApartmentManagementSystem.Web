@@ -93,7 +93,7 @@ public class OnboardingController : Controller
             });
         }
 
-        ModelState.AddModelError("", response?.Message ?? "Failed to create invite");
+        ModelState.AddModelError("", response?.Message ?? ErrorMessages.FailedToCreateInvite);
         await LoadResidentTypesAsync(model);
         return View(model);
     }

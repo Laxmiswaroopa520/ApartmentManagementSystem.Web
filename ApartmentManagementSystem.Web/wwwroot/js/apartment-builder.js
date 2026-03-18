@@ -1,8 +1,4 @@
-﻿/* ============================================================
-   apartment-builder.js
-   Place in: wwwroot/js/apartment-builder.js
-   ============================================================ */
-
+﻿
 let abCur = 1;
 
 /* ── NAVIGATION ── */
@@ -132,7 +128,7 @@ function abRender2D() {
     wrap.appendChild(bld);
 }
 
-/* ── VIEW TOGGLE (2D / 3D) ── */
+/*VIEW TOGGLE (2D / 3D)*/
 function abView(v) {
     const d2 = document.getElementById('ab-p2d');
     const d3 = document.getElementById('ab-p3d');
@@ -161,7 +157,7 @@ function abView(v) {
     }
 }
 
-/* ── SUBMIT ── */
+/*SUBMIT */
 async function abSubmit() {
     const data = {
         name: document.getElementById('apartmentName')?.value || '',
@@ -223,6 +219,26 @@ document.addEventListener('DOMContentLoaded', () => {
         inp.addEventListener('input', fix);
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

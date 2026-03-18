@@ -1,4 +1,5 @@
-﻿using ApartmentManagementSystem.Web.Services;
+﻿using ApartmentManagementSystem.Web.Constants;
+using ApartmentManagementSystem.Web.Services;
 using ApartmentManagementSystem.Web.Services.DTOs.Onboarding;
 using ApartmentManagementSystem.Web.ViewModels.Onboarding;
 using Microsoft.AspNetCore.Mvc;
@@ -76,7 +77,7 @@ public class VerifyInviteController : Controller
             return RedirectToAction("Index", "CompleteRegistration");
         }
 
-        ModelState.AddModelError("", response?.Message ?? "OTP verification failed");
+        ModelState.AddModelError("", response?.Message ?? ErrorMessages.OtpVerificationFailed);
 
         return View(model);
     }

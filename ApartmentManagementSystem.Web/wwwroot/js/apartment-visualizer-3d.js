@@ -6,11 +6,6 @@
 //Three.js is a js library that makes graphics WEbGl  easy..WebGL is a browser that renders 2d and 3d graphics using the gpu.(cross browser)
 //it has built in cameras,lights,materials,geometrics and animations
 
-
-
-
-
-
 let scene, camera, renderer, controls;          //global references for the 3D Environment..
 let buildingGroup;                              //buildingGroup-->group containing the entire building..                            
 let animationId;                                  //used to stop animation safely  (stores id from requestanimatioframe)

@@ -253,8 +253,8 @@
     }
 
         .hero-title .accent {
-            background: linear-gradient(90deg, #818cf8 0%, #67e8f9 100%);
-            -webkit-background-clip: text;
+            background: linear-gradient(90deg, #818cf8 0%, #67e8f9 100%);               /*90 degrees-->left to right direction    purple to light blue*/
+            -webkit-background-clip: text; /*Apply the background ONLY inside the text*/
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
@@ -1771,7 +1771,8 @@
           if (el('clockDate')) el('clockDate').textContent = date;
           if (el('heroDate'))  el('heroDate').textContent  = date;
         }
-        tick(); setInterval(tick, 1000);
+        tick(); /*checks current time*/
+        setInterval(tick, 1000);    /*check every second*/
 
         /* ── Modal ── */
         async function openModal() {
